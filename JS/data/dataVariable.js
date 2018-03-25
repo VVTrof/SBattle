@@ -1,50 +1,13 @@
 // глобальные переменные и константы
 var startLevel = 1,
-    FRAME_RATE = 50;
+    FRAME_RATE = 20;
 var TORPED_WIDTH = 20,
     TORPED_HEIGHT = 60;
 var SHIP_WIDTH = 200;
     SHIP_HEIGHT = 100;
 var YANDEX_MONEY = false;
-// объекты "торпеды""
-{var torpedComments = {
-    x :      "координата X (левый край торпеды)",
-    y :      "координата Y (верхний край торпеды)",
-    width :  "ширина торпеды",
-    height:  "длина торпеды",
-    speed:   "скорость торпеды",
-    visible: "видимость торпеды (true/false)",
-    kof:     "изменение скорости торпеды в зависимости от применения модулей улучшения"
-  };
-  var lTorped = {
-    x : techParam[1].leftTorpedsX,
-    y : 800,
-    width : TORPED_WIDTH,
-    height: TORPED_HEIGHT,
-    speed: techParam[1].leftTorpedSpeed,
-    visible: false,
-    kof: 1
-    };
-  var cTorped = {
-    x : techParam[1].centerTorpedsX,
-    y : 800,
-    width : TORPED_WIDTH,
-    height: TORPED_HEIGHT,
-    speed: techParam[1].centerTorpedSpeed,
-    visible: false,
-    kof: 1
-  };
-  var rTorped = {
-    x : techParam[1].rightTorpedsX,
-    y : 800,
-    width : TORPED_WIDTH,
-    height: TORPED_HEIGHT,
-    speed: techParam[1].rightTorpedSpeed,
-    visible: false,
-    kof: 1
-  };
-  var torped = [torpedComments,lTorped, cTorped, rTorped];
-};
+
+
 // прототипы кораблей
 {var warShipProtoComments = {
   name          : "название корабля",

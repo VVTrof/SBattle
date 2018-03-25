@@ -51,7 +51,7 @@ var level1 = {
   target                : 5,
   numberOfShips         : 10,
 
-  warShip1              : 10,
+  warShip1              : 20,
   warShip1Prize         : 1,
   warShip2              : 0,
   warShip2Prize         : 0,

@@ -8,6 +8,45 @@ function game(lvl,nSub){
       offset2           = -50,          //анимация моря
       direction_offset1 = "reduction",  //анимация моря
       direction_offset2 = "increase";   //анимация моря
+      // объекты "торпеды""
+  var torpedComments = {
+      x :      "координата X (левый край торпеды)",
+      y :      "координата Y (верхний край торпеды)",
+      width :  "ширина торпеды",
+      height:  "длина торпеды",
+      speed:   "скорость торпеды",
+      visible: "видимость торпеды (true/false)",
+      kof:     "изменение скорости торпеды в зависимости от применения модулей улучшения"
+  };
+  var lTorped = {
+    x : techParam[nSub].leftTorpedsX,
+    y : 800,
+    width : TORPED_WIDTH,
+    height: TORPED_HEIGHT,
+    speed: techParam[nSub].leftTorpedSpeed,
+    visible: false,
+    kof: 1
+    };
+  var cTorped = {
+    x : techParam[nSub].centerTorpedsX,
+    y : 800,
+    width : TORPED_WIDTH,
+    height: TORPED_HEIGHT,
+    speed: techParam[nSub].centerTorpedSpeed,
+    visible: false,
+    kof: 1
+  };
+  var rTorped = {
+    x : techParam[nSub].rightTorpedsX,
+    y : 800,
+    width : TORPED_WIDTH,
+    height: TORPED_HEIGHT,
+    speed: techParam[nSub].rightTorpedSpeed,
+    visible: false,
+    kof: 1
+  };
+  var torped = [torpedComments,lTorped, cTorped, rTorped];
+
   //визуализируем объекты игровой страницы
   visualGamePage();
   //загружаем море, небо, землю
@@ -15,8 +54,11 @@ function game(lvl,nSub){
   sea2.src = level[lvl].seaSrc;
   sky.src  = level[lvl].skySrc;
   land.src = level[lvl].landSrc;
+
+
   //поднимаем перископ
   lidMove(true);
+
   //игровой процес
   var timerGame = setInterval(function(){
     delayNewShip++
@@ -53,18 +95,54 @@ function game(lvl,nSub){
     //анимация суши
     land.style.left = -300 - pozitionPeriscop;
     //цвет индикаторов торпед
-    if (torped[0].y == 800) {indLeftTorpedText.style.background   = "lightblue"}
-    if (torped[1].y == 800) {indCenterTorpedText.style.background = "lightblue"}
-    if (torped[2].y == 800) {indRightTorpedText.style.background  = "lightblue"}
+    if (torped[1].y == 800) {indLeftTorpedText.style.background   = "lightblue"}
+    if (torped[2].y == 800) {indCenterTorpedText.style.background = "lightblue"}
+    if (torped[3].y == 800) {indRightTorpedText.style.background  = "lightblue"}
     // движение перископа по нажатию мыши
-    if (per_mouse_left) {rotatePeriscop ("left")}
+    if (per_mouse_left)  {rotatePeriscop ("left")}
     if (per_mouse_right) {rotatePeriscop ("right")}
+    //рассчет полета торпед
+    for (var i = 1; i <= 3; i++) {
+      //коэффиц. который зависит от удаленности торпеды (от 1 до 0.25)
+      torped[i].kof = 1-(800-torped[i].y)*0.0015;
+      //определяем размеры торпед в зависимости от удаленности
+      torped[i].width  = TORPED_WIDTH  * torped[i].kof;
+      torped[i].height = TORPED_HEIGHT * torped[i].kof;
+      //если торпеда выпущена перемещаем её
+      if (torped[i].y < 800) {torped[i].y = torped[i].y - torped[i].speed * torped[i].kof};
+      //возвращаем торпеду в торпедный аппарат при y<300
+      if (torped[i].y < 300) {torped[i].y = 800};
+      //если торпеда ушла за горизонт делаем её невидимой
+      if (torped[i].y < level[lvl].gorizontY) {torped[i].visible = false}
+      //если торпеда попала в цель делаем её невидимой
+      //---------------------------прописать
+    }
+    //визуализация левой торпеды
+
+    if (torped[1].visible) {
+      leftTorped.style.top    = torped[1].y;
+      leftTorped.style.left   = torped[1].x - pozitionPeriscop + (TORPED_WIDTH - torped[1].width) / 2;
+      leftTorped.style.width  = torped[1].width;
+      leftTorped.style.height = torped[1].height;
+    }
+    //визуализация центральной торпеды
+    if (torped[2].visible) {
+      centerTorped.style.top    = torped[2].y;
+      centerTorped.style.left   = torped[2].x - pozitionPeriscop + (TORPED_WIDTH - torped[2].width) / 2;
+      centerTorped.style.width  = torped[2].width;
+      centerTorped.style.height = torped[2].height;
+    }
+    //визуализация правой торпеды
+    if (torped[3].visible) {
+      //alert(torped[0].y);
+      rightTorped.style.top    = torped[3].y;
+      rightTorped.style.left   = torped[3].x - pozitionPeriscop + (TORPED_WIDTH - torped[3].width) / 2;
+      rightTorped.style.width  = torped[3].width;
+      rightTorped.style.height = torped[3].height;
+    }
 
 
-
-
-
-    },20);
+    },FRAME_RATE);
 
 
   //получение объекта событие, поворот перископа, запуск торпед,
@@ -187,12 +265,12 @@ function game(lvl,nSub){
       torped[1].y = 799;
       torped[1].x = techParam[nSub].leftTorpedsX + pozitionPeriscop;
       //списываем одну торпеду
-      techParam.leftTorpeds--;
+      techParam[nSub].leftTorpeds--;
       //делаем торпеду видимой
       torped[1].visible = true;
       //вывожу на экран кол-во левых торпед
       document.getElementById('indLeftTorpedText').innerText
-        = techParam.leftTorpeds;
+        = techParam[nSub].leftTorpeds;
       //меняю цвет индикатора запуска торпеды
       indLeftTorpedText.style.background = "red";
     }
@@ -203,11 +281,11 @@ function game(lvl,nSub){
       torped[2].y = 799;
       torped[2].x = techParam[nSub].centerTorpedsX + pozitionPeriscop;
       //списываем одну торпеду
-      techParam.centerTorpeds--;
+      techParam[nSub].centerTorpeds--;
       //делаем торпеду видимой
       torped[2].visible = true;
       document.getElementById('indCenterTorpedText').innerText
-        = techParam.centerTorpeds;
+        = techParam[nSub].centerTorpeds;
       //меняю цвет индикатора запуска торпеды
       indCenterTorpedText.style.background = "red";
     };
@@ -220,7 +298,7 @@ function game(lvl,nSub){
       //списываем одну торпеду
       techParam[nSub].rightTorpeds--;
       //делаем торпеду видимой
-      torped[2].visible = true;
+      torped[3].visible = true;
       document.getElementById('indRightTorpedText').innerText
         = techParam[nSub].rightTorpeds;
       //меняю цвет индикатора запуска торпеды
@@ -228,6 +306,7 @@ function game(lvl,nSub){
       return false;
     }
   }
+
 
 
 
@@ -240,22 +319,7 @@ function game(lvl,nSub){
 /////////////////////////////////////////////////////////
 
 
-    //рассчет полета торпед
-    for (var i = 0; i < 3; i++) {
-      //коэффиц. который зависит от удаленности торпеды (от 1 до 0.25)
-      torped[i].kof = 1-(800-torped[i].y)*0.0015;
-      //определяем размеры торпед в зависимости от удаленности
-      torped[i].width  = TORPED_WIDTH  * torped[i].kof;
-      torped[i].height = TORPED_HEIGHT * torped[i].kof;
-      //если торпеда выпущена перемещаем её
-      if (torped[i].y < 800) {torped[i].y = torped[i].y - torped[i].speed * torped[i].kof};
-      //возвращаем торпеду в торпедный аппарат при y<300
-      if (torped[i].y < 300) {torped[i].y = 800};
-      //если торпеда ушла за горизонт делаем её невидимой
-      if (torped[i].y < level[lvl].gorizontY) {torped[i].visible = false}
-      //если торпеда попала в цель делаем её невидимой
-      //---------------------------прописать
-    }
+
 
     //создание кораблей
     for (var i = 0; i<level[lvl].maxShips ;i++){
@@ -301,7 +365,7 @@ function game(lvl,nSub){
 
     //проверка на попадания
 
-    visualizationTorpeds()
+
     viuzalizationShips()
   },FRAME_RATE);
 
@@ -322,24 +386,7 @@ function game(lvl,nSub){
       leftTorped.style.width  = torped[0].width;
       leftTorped.style.height = torped[0].height;
     }
-    //визуализация центральной торпеды
-    if (torped[1].visible) {
-      //alert(torped[0].y);
-      centerTorped.style.top    = torped[1].y;
-      centerTorped.style.left   = torped[1].x - pozitionPeriscop +
-        (TORPED_WIDTH - torped[1].width) / 2;
-      centerTorped.style.width  = torped[1].width;
-      centerTorped.style.height = torped[1].height;
-    }
-    //визуализация правой торпеды
-    if (torped[2].visible) {
-      //alert(torped[0].y);
-      rightTorped.style.top    = torped[2].y;
-      rightTorped.style.left   = torped[2].x - pozitionPeriscop +
-        (TORPED_WIDTH - torped[2].width) / 2;
-      rightTorped.style.width  = torped[2].width;
-      rightTorped.style.height = torped[2].height;
-    }
+
 
   }
   function viuzalizationShips(){
