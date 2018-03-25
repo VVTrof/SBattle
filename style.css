@@ -1,67 +1,67 @@
 #titulPage {
   position: absolute;
-  WIDTH : 1000;
-  HEIGHT: 800;
+  width : 1000;
+  height: 800;
   visibility: visible;
 }
 #loading {
   position: absolute;
-  WIDTH   : 400;
-  HEIGHT  : 200;
+  width   : 400;
+  height  : 200;
   left    : 300;
   top     : 400;
   z-index : 10;
 }
 #fonTitulPage {
   position: absolute;
-  WIDTH : 1000;
-  HEIGHT: 800;
+  width : 1000;
+  height: 800;
   left  : 0;
   top   : 0;
 }
 #buttonStart {
   position: absolute;
-  WIDTH : 150;
-  HEIGHT: 150;
+  width : 150;
+  height: 150;
   cursor: pointer;
   left  : 550;
   top   : 650;
 }
 #buttonOff {
   position: absolute;
-  WIDTH : 140;
-  HEIGHT: 140;
+  width : 140;
+  height: 140;
   cursor: pointer;
   left  : 400;
   top   : 654;
 }
 #buttonUp {
   position: absolute;
-  WIDTH : 40;
-  HEIGHT: 40;
+  width : 40;
+  height: 40;
   cursor: pointer;
   left  : 910;
   top   : 705;
 }
 #buttonDown {
   position: absolute;
-  WIDTH : 40;
-  HEIGHT: 40;
+  width : 40;
+  height: 40;
   cursor: pointer;
   left  : 750;
   top   : 705;
 }
 #indLvlTitul {
   position: absolute;
-  WIDTH : 120;
-  HEIGHT: 38;
+  width : 120;
+  height: 38;
   left  : 790;
   top   : 706;
 }
 #beginLvl {
   position: absolute;
-  WIDTH : 100;
-  HEIGHT: 16;
+  width : 100;
+  height: 16;
   left  : 800;
   top   : 712;
   font-family:"Times New Roman",sans-serif;
@@ -72,8 +72,8 @@
 }
 #infoGame {
   position: absolute;
-  WIDTH : 370;
-  HEIGHT: 370;
+  width : 370;
+  height: 370;
   left  : 40;
   top   : 90;
   font-family:"Times New Roman",sans-serif;
@@ -89,16 +89,16 @@
 }
 #buttonRules {
   position: absolute;
-  WIDTH : 180;
-  HEIGHT: 40;
+  width : 180;
+  height: 40;
   cursor: pointer;
   left  : 40;
   top   : 40;
 }
 #buttonInfo {
   position: absolute;
-  WIDTH : 180;
-  HEIGHT: 40;
+  width : 180;
+  height: 40;
   cursor: pointer;
   left  : 230;
   top   : 40;
@@ -112,78 +112,78 @@
 
 #gamePage {
   position: absolute;
-  WIDTH : 1000;
-  HEIGHT: 800;
+  width : 1000;
+  height: 800;
   overflow : hidden;
   visibility: hidden;
 }
 #lid {
   position: absolute;
-  WIDTH : 800;
-  HEIGHT: 800;
+  width : 800;
+  height: 800;
   left  : 0;
   top   : 0;
   z-index: 1;
   }
 #sea1 {
   position: absolute;
-  WIDTH : 1500;
-  HEIGHT: 800;
+  width : 1500;
+  height: 800;
   left  : -300;
   top   : 0;
   z-index: 1;
 }
 #sea2 {
   position: absolute;
-  WIDTH : 1500;
-  HEIGHT: 900;
+  width : 1500;
+  height: 900;
   left  : -300;
   top   : -100;
   z-index: 1;
 }
 #sky {
   position: absolute;
-  WIDTH : 950;
-  HEIGHT: 300;
+  width : 950;
+  height: 300;
   left  : -100;
   top   : 0;
   z-index: 1;
 }
 #land {
   position: absolute;
-  WIDTH : 1100;
-  HEIGHT: 400;
+  width : 1100;
+  height: 400;
   left  : 4000;
   top   : 0;
   z-index: 1;
 }
 #periscop{
   position: absolute;
-  WIDTH : 800;
-  HEIGHT: 800;
+  width : 800;
+  height: 800;
   left  : 0;
   top   : 0;
   z-index: 1;
 }
 #crosshair{
   position: absolute;
-  WIDTH : 800;
-  HEIGHT: 800;
+  width : 800;
+  height: 800;
   left  : 0;
   top   : 0;
   z-index: 1;
 }
 #panel {
   position: absolute;
-  WIDTH : 200;
-  HEIGHT: 800;
+  width : 200;
+  height: 800;
   left  : 800;
   top   : 0;
 }
 #buttonPerLeft {
   position: absolute;
-  WIDTH : 100;
-  HEIGHT: 100;
+  width : 100;
+  height: 100;
   cursor: pointer;
   left  : 40;
   top   : 680;
@@ -191,8 +191,8 @@
 }
 #buttonPerRight {
   position: absolute;
-  WIDTH : 100;
-  HEIGHT: 100;
+  width : 100;
+  height: 100;
   cursor: pointer;
   left  : 660;
   top   : 680;
@@ -200,15 +200,15 @@
 }
 #indRotatePeriscop{
   position: absolute;
-  WIDTH : 120;
-  HEIGHT: 38;
+  width : 120;
+  height: 38;
   left  : 340;
   top   : 20;
 }
 #indRotatePerText {
   position: absolute;
-  WIDTH : 100;
-  HEIGHT: 16;
+  width : 100;
+  height: 16;
   left  : 350;
   top   : 26;
   font-family:"Times New Roman",sans-serif;
@@ -218,15 +218,15 @@
 }
 #indLeftTorped{
   position: absolute;
-  WIDTH : 40;
-  HEIGHT: 40;
+  width : 40;
+  height: 40;
   left  : 280;
   top   : 750;
 }
 #indLeftTorpedText {
   position: absolute;
-  WIDTH           : 30;
-  HEIGHT          : 30;
+  width           : 30;
+  height          : 30;
   left            : 285;
   top             : 755;
   font-family     :"Times New Roman",sans-serif;
@@ -239,15 +239,15 @@
 }
 #indCenterTorped{
   position: absolute;
-  WIDTH : 40;
-  HEIGHT: 40;
+  width : 40;
+  height: 40;
   left  : 381;
   top   : 750;
 }
 #indCenterTorpedText {
   position: absolute;
-  WIDTH : 30;
-  HEIGHT: 30;
+  width : 30;
+  height: 30;
   left  : 386;
   top   : 755;
   font-family:"Times New Roman",sans-serif;
@@ -260,15 +260,15 @@
 }
 #indRightTorped{
   position: absolute;
-  WIDTH : 40;
-  HEIGHT: 40;
+  width : 40;
+  height: 40;
   left  : 480;
   top   : 750;
 }
 #indRightTorpedText {
   position: absolute;
-  WIDTH : 30;
-  HEIGHT: 30;
+  width : 30;
+  height: 30;
   left  : 485;
   top   : 755;
   font-family:"Times New Roman",sans-serif;
@@ -280,8 +280,8 @@
 }
 #sonar {
   position: absolute;
-  WIDTH        : 200;
-  HEIGHT       : 200;
+  width        : 200;
+  height       : 200;
   left         : 800;
   top          : 0;
   z-index      : 1;
@@ -289,24 +289,24 @@
 }
 #radio {
   position: absolute;
-  WIDTH : 200;
-  HEIGHT: 120;
+  width : 200;
+  height: 120;
   left  : 800;
   top   : 450;
   z-index: 1;
 }
 #pribor {
   position: absolute;
-  WIDTH : 200;
-  HEIGHT: 160;
+  width : 200;
+  height: 160;
   left  : 800;
   top   : 640;
   z-index: 1;
 }
 #indikatorDos {
   position: absolute;
-  WIDTH : 200;
-  HEIGHT: 160;
+  width : 200;
+  height: 160;
   left  : 800;
   top   : 200;
   z-index: 1;
@@ -314,14 +314,14 @@
 .ships {
   position: absolute;
   z-index : 4;
-  WIDTH : 200;
-  HEIGHT: 100;
+  width : 200;
+  height: 100;
   left:-200;
   top :-200;
 }
 .torpeds {
   position: absolute;
   z-index : 1;
-  WIDTH   : 20;
-  HEIGHT  : 60;
+  width   : 20;
+  height  : 60;
 }
