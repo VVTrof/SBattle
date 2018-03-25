@@ -1,0 +1,98 @@
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <LINK rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <!-- iframe яндекс деньги чтобы запустить нужно поменять в константах
+    YANDEX_MONEY = true и убрать знаки коммент ниже-->
+    <!--
+    <iframe id = "money"
+      src="https://money.yandex.ru/quickpay/shop-widget?writer=seller&targets=%D0%B4%D0%BB%D1%8F%20%D1%80%D0%B0%D0%B7%D0%B2%D0%B8%D1%82%D0%B8%D1%8F%20%D0%B8%D0%B3%D1%80%D1%8B&targets-hint=&default-sum=&button-text=11&comment=on&hint=%D0%BD%D0%B0%D0%BF%D0%B8%D1%88%D0%B8%D1%82%D0%B5%20%D0%BF%D0%BE%D0%B6%D0%B5%D0%BB%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%BF%D0%BE%20%D1%83%D0%BB%D1%83%D1%87%D1%88%D0%B5%D0%BD%D0%B8%D1%8E%20%D0%B8%D0%B3%D1%80%D1%8B&successURL=&quickpay=shop&account=410016320646838"
+      width="450" height="247" frameborder="0" allowtransparency="true" scrolling="no">
+      </iframe>
+    -->
+
+    <!-- Создаём и загружаем объекты титульной страницы-->
+    <div id = titulPage>
+      <img src = "images/loading.gif"                id = "loading" >
+      <img src = "images/fonTitulPage.jpg"           id = "fonTitulPage" >
+      <img src = "images/buttons/buttonStart.png"    id = "buttonStart" >
+      <img src = "images/buttons/buttonOff.png"      id = "buttonOff" >
+      <img src = "images/buttons/buttonUp.png"       id = "buttonUp" >
+      <img src = "images/buttons/buttonDown.png"     id = "buttonDown" >
+      <img src = "images/buttons/buttonInfoOff.png"  id = "buttonInfo" >
+      <img src = "images/buttons/buttonRulesOff.png" id = "buttonRules" >
+      <img src = "images/indikator.png" id = "indLvlTitul" >
+      <div id  = "beginLvl">
+        1 level
+      </div>
+
+      <div id = "infoGame">
+      </div>
+    </div>
+
+    <!-- Создаём и загружаем объекты игровой страницы-->
+    <div id = gamePage>
+      <img src = "images/lid.png"         id = "lid" >
+      <img src = "images/sea/sea1.jpg"    id = "sea1" >
+      <img src = "images/sea/sea1.jpg"    id = "sea2" >
+      <img src = "images/sky/sky1.png"    id = "sky" >
+      <img src = "images/land/land3.png"  id = "land" >
+      <img src = "images/periscop.png"    id = "periscop" >
+      <img src = "images/crosshair.png"   id = "crosshair" >
+      <img src = "images/panel.png"       id = "panel" >
+      <img src = "images/indikatorDos.png"id = "indikatorDos" >
+
+      <img src = "images/ship_1/ship.png" id = "sh0"       class = "ships">
+      <img src = "images/ship_1/ship.png" id = "sh1"       class = "ships">
+      <img src = "images/ship_1/ship.png" id = "sh2"       class = "ships">
+      <img src = "images/ship_1/ship.png" id = "sh3"       class = "ships">
+      <img src = "images/ship_1/ship.png" id = "sh4"       class = "ships">
+      <img src = "images/ship_1/ship.png" id = "sh5"       class = "ships">
+
+      <img src = "images/torpeda.png"     id = "leftTorped"  class = "torpeds">
+      <img src = "images/torpeda.png"     id = "centerTorped"class = "torpeds">
+      <img src = "images/torpeda.png"     id = "rightTorped" class = "torpeds">
+
+      <img src = "images/buttons/buttonLeft2.png" id = "buttonPerLeft" >
+      <img src = "images/buttons/buttonRight2.png" id = "buttonPerRight" >
+      <img src = "images/indikator.png"   id = "indRotatePeriscop">
+      <img src = "images/indikator.png"   id = "indLeftTorped">
+      <img src = "images/indikator.png"   id = "indCenterTorped">
+      <img src = "images/indikator.png"   id = "indRightTorped">
+      <img src = "images/sonar.gif"       id = "sonar">
+
+      <img src = "images/radio.jpg"       id = "radio">
+      <img src = "images/buttonAngar.jpg" id = "pribor">
+      <div id  = "indRotatePerText">
+           0 °
+      </div>
+      <div id  = "indLeftTorpedText">
+      </div>
+      <div id  = "indCenterTorpedText">
+      </div>
+      <div id  = "indRightTorpedText">
+      </div>
+    </div>
+
+    <!-- инициализируем и загружаем начальные характеристики субмарин -->
+    <script src = "JS/data/dataSubmarine.js"> </script>
+    <!-- инициализируем и загружаем начальные глобальные переменные -->
+    <script src = "JS/data/dataVariable.js">  </script>
+    <!-- инициализируем и загружаем данные уровней -->
+    <script src = "JS/data/dataLevels.js">    </script>
+    <!-- Авторизация , загрузка данных пользователя-->
+    <script src = "JS/authorization.js">      </script>
+    <!-- инициализируем функции в скриптах для последующего их вызова-->
+    <script src = "JS/angar.js">     </script>
+    <script src = "JS/base.js">      </script>
+    <script src = "JS/map.js">       </script>
+    <script src = "JS/gamePage.js">  </script>
+    <!-- выполняем основной скрипт-->
+    <script src = "JS/coverPage.js"> </script>
+  </body>
+
+</html>
