@@ -1,6 +1,6 @@
 // глобальные переменные и константы
 var startLevel = 1,
-    FRAME_RATE = 20;
+    FRAME_RATE = 100;
 var TORPED_WIDTH = 20,
     TORPED_HEIGHT = 60;
 var SHIP_WIDTH = 200;

@@ -1,7 +1,9 @@
+"use strict";
 //вызов функции выполнения титульной страницы при первом запуске
 window.onload = function(){coverPage();}
 //функция выполнения титульной страницы
 function coverPage(){
+
   //для исключения повторного нажатия на кнопки buttonRules и buttonInfo
   var lastClick;
   visualCoverPage();
@@ -27,7 +29,7 @@ function coverPage(){
             " В Вашем распоряжении три торпедных аппарата и 300 торпед боекомплекта." +
             " Запуск торпед производится путём нажатия клавиш 'z' ''x' и 'c' "+
             " поворот перископа - клавиши 'left' и 'right'"
-          };
+        }
         infoGame.style.opacity = current_opacity;
       },10);
       lastClick = "rules";
