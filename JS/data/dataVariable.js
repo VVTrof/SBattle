@@ -1,12 +1,13 @@
 // глобальные переменные и константы
-var startLevel = 1,
-    FRAME_RATE = 100;
-var TORPED_WIDTH = 20,
-    TORPED_HEIGHT = 60;
-var SHIP_WIDTH = 200;
-    SHIP_HEIGHT = 100;
-var YANDEX_MONEY = false;
-
+var lvl = 1,  //выбранный уровень
+    nSub = 1, //выбранная ПЛ
+    FRAME_RATE = 40,
+    TORPED_WIDTH = 20,
+    TORPED_HEIGHT = 60,
+    SHIP_WIDTH = 200,
+    SHIP_HEIGHT = 100,
+    YANDEX_MONEY = false,
+    SHIP_TYPES = 10;
 
 // прототипы кораблей
 {var warShipProtoComments = {
@@ -34,7 +35,7 @@ var YANDEX_MONEY = false;
   reversSrc     : "images/ship_1/ship2.png",
   destroySrc    : "images/ship_1/ship.png",
   destroyRevSrc : "images/ship_1/ship2.png",
-  fireSrc       : "картинка повреждения корабля",
+  fireSrc       : "images/ship_1/ship2.png",
   health        : 10,
   identity      : false,
   type          : "simple",
@@ -47,5 +48,5 @@ var YANDEX_MONEY = false;
   speedIndivid  : 1,
   vectorLeft    : true
   }
- var warShip1Proto = [warShipProtoComments,warShip1Proto];
+ var warShipProto = [warShipProtoComments,warShip1Proto];
 }

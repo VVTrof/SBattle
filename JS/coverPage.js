@@ -1,9 +1,21 @@
-"use strict";
-//вызов функции выполнения титульной страницы при первом запуске
-window.onload = function(){coverPage();}
 //функция выполнения титульной страницы
 function coverPage(){
-
+// создаём список кэшируемых картинок
+var coverPageCache = [
+  "images/fonTitulPage.jpg",
+  "images/buttons/buttonStart.png",
+  "images/buttons/buttonOff.png",
+  "images/buttons/buttonUp.png",
+  "images/buttons/buttonDown.png",
+  "images/buttons/buttonInfoOff.png",
+  "images/buttons/buttonRulesOff.png",
+  "images/indikator.png"
+];
+//кэшируем картинки
+preload (coverPageCache, coverPageProcess);
+}
+//coverPageProcess();
+function coverPageProcess(){
   //для исключения повторного нажатия на кнопки buttonRules и buttonInfo
   var lastClick;
   visualCoverPage();
@@ -70,25 +82,25 @@ function coverPage(){
   }
 
   buttonUp.onclick    = function(){
-    if (startLevel<3) {startLevel++};
-    document.getElementById('beginLvl').innerText = startLevel + " level";
+    if (lvl<3) {lvl++};
+    document.getElementById('beginLvl').innerText = lvl + " level";
   }
 
   buttonDown.onclick  = function(){
-    if (startLevel>1) {startLevel--};
-    document.getElementById('beginLvl').innerText = startLevel+" level";
+    if (lvl>1) {lvl--};
+    document.getElementById('beginLvl').innerText = lvl+" level";
   }
 
   buttonStart.onclick = function(){
     hideCoverPage();
     // Будут направления: в ангар, на базу и на карту
-    game(startLevel,1);  //задаем миссию и номер пл
+    //задаем миссию и номер пл
+    game();
   }
 
   //визуализируем объекты титульной страницы и скрываем другие объекты
   function visualCoverPage(){
     titulPage.style.visibility = "visible";
-    loading.style.zIndex       = 1; loading.style.visibility   = "hidden";
     fonTitulPage.style.zIndex  = 1;
     buttonStart.style.zIndex   = 2;
     buttonOff.style.zIndex     = 2;

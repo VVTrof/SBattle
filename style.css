@@ -1,8 +1,15 @@
-#titulPage {
+#load {
   position: absolute;
-  width : 1000;
-  height: 800;
-  visibility: visible;
+  visibility: hidden;
+}
+#loadingPicture {
+  position: absolute;
+  width : 750;
+  height: 600;
+  left    : 125;
+  top     : 100;
+
+  z-index : 999;
 }
 #loading {
   position: absolute;
@@ -10,7 +17,15 @@
   height  : 200;
   left    : 300;
   top     : 400;
-  z-index : 10;
+  z-index : 1000;
+
+}
+
+#titulPage {
+  position: absolute;
+  width : 1000;
+  height: 800;
+  visibility: hidden;
 }
 #fonTitulPage {
   position: absolute;
@@ -314,10 +329,8 @@
 .ships {
   position: absolute;
   z-index : 4;
-  width : 200;
-  height: 100;
-  left:-200;
-  top :-200;
+  left: 0;
+  top : -1000;
 }
 .torpeds {
   position: absolute;

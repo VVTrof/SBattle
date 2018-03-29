@@ -1,5 +1,33 @@
+
 //функция выполнения игры
-function game(lvl,nSub){
+function game(){
+  load.style.visibility = "visible";
+  // кэш игровой страницы
+  var gameCache = [level[lvl].seaSrc,
+                   level[lvl].skySrc,
+                   level[lvl].landSrc];
+  //корабли
+  for (var i = 1; i <= SHIP_TYPES; i++){
+    if (level[lvl].warShip[i] > 0) {
+      gameCache[gameCache.length] = warShipProto[i].src;
+      gameCache[gameCache.length] = warShipProto[i].reversSrc;
+      gameCache[gameCache.length] = warShipProto[i].destroySrc;
+      gameCache[gameCache.length] = warShipProto[i].fireSrc;
+      gameCache[gameCache.length] = warShipProto[i].destroyRevSrc;
+    }
+  }
+  preload(gameCache,gameProcess);
+}
+// использует глобальные переменные lvl и nSub
+function gameProcess() {
+  //загружаем море, небо, землю
+  sea1.src = level[lvl].seaSrc;
+  sea2.src = level[lvl].seaSrc;
+  sky.src  = level[lvl].skySrc;
+  land.src = level[lvl].landSrc;
+
+
+
   var pozitionPeriscop  = 0,
       per_mouse_left    = false,        //используется в обработчике поворот перископа
       per_mouse_right   = false,        //используется в обработчике поворот перископа
@@ -8,7 +36,7 @@ function game(lvl,nSub){
       offset2           = -50,          //анимация моря
       direction_offset1 = "reduction",  //анимация моря
       direction_offset2 = "increase";   //анимация моря
-      // объекты "торпеды""
+  // объекты "торпеды"
   var torpedComments = {
       x :      "координата X (левый край торпеды)",
       y :      "координата Y (верхний край торпеды)",
@@ -46,15 +74,9 @@ function game(lvl,nSub){
     kof: 1
   };
   var torped = [torpedComments,lTorped, cTorped, rTorped];
-
+  var shipsDestroy = 0; //уничтожено кораблей
   //визуализируем объекты игровой страницы
   visualGamePage();
-  //загружаем море, небо, землю
-  sea1.src = level[lvl].seaSrc;
-  sea2.src = level[lvl].seaSrc;
-  sky.src  = level[lvl].skySrc;
-  land.src = level[lvl].landSrc;
-
 
   //поднимаем перископ
   lidMove(true);
@@ -62,6 +84,11 @@ function game(lvl,nSub){
   //игровой процес
   var timerGame = setInterval(function(){
     delayNewShip++
+
+    //делаем новый корабль
+    if (delayNewShip > level[lvl].delayNewShip - level[lvl].delayNewShipReduction * shipsDestroy){
+      //---------создаем корабль
+    }
     // Устанавливаем обработчик для событий клавиатуры
     document.onkeydown = selector;
     //обработчики событий мышки
@@ -90,10 +117,6 @@ function game(lvl,nSub){
       sea1.style.left = -techParam[nSub].maxRotatePeriscop + offset1/2 - pozitionPeriscop;
       sea2.style.left = -techParam[nSub].maxRotatePeriscop + offset2/2 - pozitionPeriscop;
     })();
-    //анимация неба
-    sky.style.left = -75 - pozitionPeriscop/6;
-    //анимация суши
-    land.style.left = -300 - pozitionPeriscop;
     //цвет индикаторов торпед
     if (torped[1].y == 800) {indLeftTorpedText.style.background   = "lightblue"}
     if (torped[2].y == 800) {indCenterTorpedText.style.background = "lightblue"}
@@ -103,19 +126,21 @@ function game(lvl,nSub){
     if (per_mouse_right) {rotatePeriscop ("right")}
     //рассчет полета торпед
     for (var i = 1; i <= 3; i++) {
-      //коэффиц. который зависит от удаленности торпеды (от 1 до 0.25)
-      torped[i].kof = 1-(800-torped[i].y)*0.0015;
-      //определяем размеры торпед в зависимости от удаленности
-      torped[i].width  = TORPED_WIDTH  * torped[i].kof;
-      torped[i].height = TORPED_HEIGHT * torped[i].kof;
-      //если торпеда выпущена перемещаем её
-      if (torped[i].y < 800) {torped[i].y = torped[i].y - torped[i].speed * torped[i].kof};
-      //возвращаем торпеду в торпедный аппарат при y<300
-      if (torped[i].y < 300) {torped[i].y = 800};
-      //если торпеда ушла за горизонт делаем её невидимой
-      if (torped[i].y < level[lvl].gorizontY) {torped[i].visible = false}
-      //если торпеда попала в цель делаем её невидимой
-      //---------------------------прописать
+      if (torped[i].visible) {
+        //коэффиц. который зависит от удаленности торпеды (от 1 до 0.25)
+        torped[i].kof = 1-(800-torped[i].y)*0.0015;
+        //определяем размеры торпед в зависимости от удаленности
+        torped[i].width  = TORPED_WIDTH  * torped[i].kof;
+        torped[i].height = TORPED_HEIGHT * torped[i].kof;
+        //если торпеда выпущена перемещаем её
+        if (torped[i].y < 800) {torped[i].y = torped[i].y - torped[i].speed * torped[i].kof};
+        //возвращаем торпеду в торпедный аппарат при y<300
+        if (torped[i].y < 300) {torped[i].y = 800};
+        //если торпеда ушла за горизонт делаем её невидимой
+        if (torped[i].y < level[lvl].gorizontY) {torped[i].visible = false}
+        //если торпеда попала в цель делаем её невидимой
+        //---------------------------прописать
+      }
     }
     //визуализация левой торпеды
 
@@ -180,7 +205,9 @@ function game(lvl,nSub){
     crosshair.style.zIndex         = 820;  crosshair.style.opacity        = 0.5;
     panel.style.zIndex             = 820;
     sky.style.zIndex               = 3;
+    sky.style.left                 = -75 - pozitionPeriscop/6;
     land.style.zIndex              = 5;
+    land.style.left                = -300 - pozitionPeriscop;
     indRotatePeriscop.style.zIndex = 821;
     indLeftTorped.style.zIndex     = 821;
     indCenterTorped.style.zIndex   = 821;
@@ -250,6 +277,10 @@ function game(lvl,nSub){
     // выводим значение поворота перископа
     document.getElementById('indRotatePerText').innerText
       = "   " + conversionPozPeriscop(pozitionPeriscop) + " °";
+      //анимация неба
+      sky.style.left = -75 - pozitionPeriscop/6;
+      //анимация суши
+      land.style.left = -300 - pozitionPeriscop;
     return false;
   }
   //преобразует данные о повороте перископа (от -300 до 300) в градусы (300-60)
@@ -306,10 +337,6 @@ function game(lvl,nSub){
       return false;
     }
   }
-
-
-
-
 }
 
 

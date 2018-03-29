@@ -14,10 +14,12 @@
       width="450" height="247" frameborder="0" allowtransparency="true" scrolling="no">
       </iframe>
     -->
-
+    <div id = load>
+      <img src = "images/loading.gif"              id = "loading" >
+      <img src = "images/fonTitulPage.jpg"         id = "loadingPicture" >
+    </div>
     <!-- Создаём и загружаем объекты титульной страницы-->
     <div id = titulPage>
-      <img src = "images/loading.gif"                id = "loading" >
       <img src = "images/fonTitulPage.jpg"           id = "fonTitulPage" >
       <img src = "images/buttons/buttonStart.png"    id = "buttonStart" >
       <img src = "images/buttons/buttonOff.png"      id = "buttonOff" >
@@ -46,13 +48,6 @@
       <img src = "images/panel.png"       id = "panel" >
       <img src = "images/indikatorDos.png"id = "indikatorDos" >
 
-      <img src = "images/ship_1/ship.png" id = "sh0"       class = "ships">
-      <img src = "images/ship_1/ship.png" id = "sh1"       class = "ships">
-      <img src = "images/ship_1/ship.png" id = "sh2"       class = "ships">
-      <img src = "images/ship_1/ship.png" id = "sh3"       class = "ships">
-      <img src = "images/ship_1/ship.png" id = "sh4"       class = "ships">
-      <img src = "images/ship_1/ship.png" id = "sh5"       class = "ships">
-
       <img src = "images/torpeda.png"     id = "leftTorped"  class = "torpeds">
       <img src = "images/torpeda.png"     id = "centerTorped"class = "torpeds">
       <img src = "images/torpeda.png"     id = "rightTorped" class = "torpeds">
@@ -76,23 +71,28 @@
       </div>
       <div id  = "indRightTorpedText">
       </div>
+      <div id = "divShips" class = "ships">
+      </div>
     </div>
-
+    <!-- инициализируем глобальные функции -->
+    <script src = "JS/globalFunctions.js"> </script>
     <!-- инициализируем и загружаем начальные характеристики субмарин -->
     <script src = "JS/data/dataSubmarine.js"> </script>
     <!-- инициализируем и загружаем начальные глобальные переменные -->
     <script src = "JS/data/dataVariable.js">  </script>
     <!-- инициализируем и загружаем данные уровней -->
     <script src = "JS/data/dataLevels.js">    </script>
-    <!-- Авторизация , загрузка данных пользователя-->
+
+    <script src = "JS/data/dataLevels.js">    </script>
     <script src = "JS/authorization.js">      </script>
     <!-- инициализируем функции в скриптах для последующего их вызова-->
-    <script src = "JS/angar.js">     </script>
-    <script src = "JS/base.js">      </script>
-    <script src = "JS/map.js">       </script>
+    <script src = "JS/angarPage.js">     </script>
+    <script src = "JS/basePage.js">      </script>
+    <script src = "JS/mapPage.js">       </script>
     <script src = "JS/gamePage.js">  </script>
-    <!-- выполняем основной скрипт-->
     <script src = "JS/coverPage.js"> </script>
+    <!-- выполняем скрипт запуска игры-->
+    <script src = "JS/start.js"> </script>
   </body>
 
 </html>
