@@ -87,8 +87,8 @@ function gameProcess() {
     delayNewShip++
 
     //делаем новый корабль
-    if (delayNewShip > level[lvl].delayNewShip - level[lvl].delayNewShipReduction * shipsDestroy)
-      && (shipsOnScreen < level[lvl].maxShips){
+    if ((delayNewShip > level[lvl].delayNewShip - level[lvl].delayNewShipReduction * shipsDestroy)&&
+        (shipsOnScreen < level[lvl].maxShips)){
       shipsOnScreen++;
       delayNewShip = 0;
 

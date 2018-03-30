@@ -1,7 +1,7 @@
 // глобальные переменные и константы
 var lvl = 1,  //выбранный уровень
     nSub = 1, //выбранная ПЛ
-    FRAME_RATE = 40,
+    FRAME_RATE = 20,
     TORPED_WIDTH = 20,
     TORPED_HEIGHT = 60,
     SHIP_WIDTH = 200,
