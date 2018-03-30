@@ -74,7 +74,8 @@ function gameProcess() {
     kof: 1
   };
   var torped = [torpedComments,lTorped, cTorped, rTorped];
-  var shipsDestroy = 0; //уничтожено кораблей
+  var shipsDestroy  = 0; //уничтожено кораблей
+  var shipsOnScreen = 0; //текущее количество кораблей на экране
   //визуализируем объекты игровой страницы
   visualGamePage();
 
@@ -86,7 +87,11 @@ function gameProcess() {
     delayNewShip++
 
     //делаем новый корабль
-    if (delayNewShip > level[lvl].delayNewShip - level[lvl].delayNewShipReduction * shipsDestroy){
+    if (delayNewShip > level[lvl].delayNewShip - level[lvl].delayNewShipReduction * shipsDestroy)
+      && (shipsOnScreen < level[lvl].maxShips){
+      shipsOnScreen++;
+      delayNewShip = 0;
+
       //---------создаем корабль
     }
     // Устанавливаем обработчик для событий клавиатуры
