@@ -4,11 +4,11 @@ var lvl = 1,  //выбранный уровень
     FRAME_RATE = 20,
     TORPED_WIDTH = 20,
     TORPED_HEIGHT = 60,
-    SHIP_WIDTH = 200,
-    SHIP_HEIGHT = 100,
     YANDEX_MONEY = false,
     SHIP_TYPES = 10;
-
+    X_MIN = -300;  //координата начала видимого пространства по  X
+    X_MAX = 1100;  //координата начала видимого пространства по  X
+    Y_MAX = 800;   //размер по вертикали игрового поля
 // прототипы кораблей
 {var warShipProtoComments = {
   name          : "название корабля",
@@ -25,10 +25,13 @@ var lvl = 1,  //выбранный уровень
   y             : "координата y (верхний край изображения)",
   width         : "длина корабля. рекомендовано 200",
   height        : "высота корабля. рекомендовано 100",
+  currentWidth  : "длина корабля c учётом дальности от ПЛ.",
+  currentHeight : "высота корабляc с учётом дальности от ПЛ.",
   speedX        : "горизонтальная скорость корабля",
   speedY        : "вертикальная скорость корабля",
   speedIndivid  : "коэфициент, определяющий скорость от максимальной в этом уровне (от 0.01 до 1 (100%))",
-  vectorLeft    : "'true' - если плывёт направо, 'false' - если плывёт налево"
+  vectorLeft    : "'true' - если плывёт направо, 'false' - если плывёт налево",
+  rangeFactor   : "коэффициент для расчета размера объекта в зависимости от его дальности от ПЛ (от 1 до 0.1)"
   }
  var warShip1Proto = {
   name          : "Крейсер",
@@ -47,7 +50,8 @@ var lvl = 1,  //выбранный уровень
   speedX        : 0,
   speedY        : 0,
   speedIndivid  : 1,
-  vectorLeft    : true
+  vectorLeft    : true,
+  rangeFactor   : 1
 }
 var warShip2Proto = {
  name          : "Танкер",
@@ -66,7 +70,8 @@ var warShip2Proto = {
  speedX        : 0,
  speedY        : 0,
  speedIndivid  : 1,
- vectorLeft    : true
+ vectorLeft    : true,
+ rangeFactor   : 1
  }
  var warShip3Proto = {
   name          : "Корабль снабжения",
@@ -85,7 +90,8 @@ var warShip2Proto = {
   speedX        : 0,
   speedY        : 0,
   speedIndivid  : 1,
-  vectorLeft    : true
+  vectorLeft    : true,
+  rangeFactor   : 1
   }
 
  var warShipProto = [warShipProtoComments,warShip1Proto,warShip2Proto,warShip3Proto];
