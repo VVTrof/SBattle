@@ -31,6 +31,45 @@ var lvl = 1,  //выбранный уровень
   vectorLeft    : "'true' - если плывёт направо, 'false' - если плывёт налево"
   }
  var warShip1Proto = {
+  name          : "Крейсер",
+  src           : "images/ship_1/ship.png",
+  reversSrc     : "images/ship_1/ship2.png",
+  destroySrc    : "images/ship_1/ship.png",
+  destroyRevSrc : "images/ship_1/ship2.png",
+  fireSrc       : "images/ship_1/ship2.png",
+  health        : 10,
+  identity      : false,
+  type          : "simple",
+  x             : 0,
+  y             : 800,
+  width         : 200,
+  height        : 100,
+  speedX        : 0,
+  speedY        : 0,
+  speedIndivid  : 1,
+  vectorLeft    : true
+}
+var warShip2Proto = {
+ name          : "Танкер",
+ src           : "images/ship_1/ship.png",
+ reversSrc     : "images/ship_1/ship2.png",
+ destroySrc    : "images/ship_1/ship.png",
+ destroyRevSrc : "images/ship_1/ship2.png",
+ fireSrc       : "images/ship_1/ship2.png",
+ health        : 10,
+ identity      : false,
+ type          : "simple",
+ x             : 0,
+ y             : 800,
+ width         : 200,
+ height        : 100,
+ speedX        : 0,
+ speedY        : 0,
+ speedIndivid  : 1,
+ vectorLeft    : true
+ }
+ var warShip3Proto = {
+  name          : "Корабль снабжения",
   src           : "images/ship_1/ship.png",
   reversSrc     : "images/ship_1/ship2.png",
   destroySrc    : "images/ship_1/ship.png",
@@ -48,5 +87,6 @@ var lvl = 1,  //выбранный уровень
   speedIndivid  : 1,
   vectorLeft    : true
   }
- var warShipProto = [warShipProtoComments,warShip1Proto];
+
+ var warShipProto = [warShipProtoComments,warShip1Proto,warShip2Proto,warShip3Proto];
 }

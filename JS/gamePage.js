@@ -20,14 +20,7 @@ function game(){
 }
 // использует глобальные переменные lvl и nSub
 function gameProcess() {
-  //загружаем море, небо, землю
-  sea1.src = level[lvl].seaSrc;
-  sea2.src = level[lvl].seaSrc;
-  sky.src  = level[lvl].skySrc;
-  land.src = level[lvl].landSrc;
-
-
-
+  var lvlGame = Object.create(level[lvl] );
   var pozitionPeriscop  = 0,
       per_mouse_left    = false,        //используется в обработчике поворот перископа
       per_mouse_right   = false,        //используется в обработчике поворот перископа
@@ -76,6 +69,11 @@ function gameProcess() {
   var torped = [torpedComments,lTorped, cTorped, rTorped];
   var shipsDestroy  = 0; //уничтожено кораблей
   var shipsOnScreen = 0; //текущее количество кораблей на экране
+  var sh = [];           //массив кораблей, отображенных на экране
+  sea1.src = lvlGame.seaSrc;
+  sea2.src = lvlGame.seaSrc;
+  sky.src  = lvlGame.skySrc;
+  land.src = lvlGame.landSrc;
   //визуализируем объекты игровой страницы
   visualGamePage();
 
@@ -84,51 +82,70 @@ function gameProcess() {
 
   //игровой процес
   var timerGame = setInterval(function(){
+    var changeShip = 0,     //временная переменная
+        changeTypeShip = 0;  //выбранный случайным образом тип корабля
+
     delayNewShip++
 
-    //делаем новый корабль
-    if ((delayNewShip > level[lvl].delayNewShip - level[lvl].delayNewShipReduction * shipsDestroy)&&
-        (shipsOnScreen < level[lvl].maxShips)){
+    //делаем новый корабль если пауза до появления следующего корабля соблюдена, кораблей на экране меньше,
+    //чем задано по уровню и если выплыли ещё не все корабли
+    if ((delayNewShip > lvlGame.delayNewShip - lvlGame.delayNewShipReduction * shipsDestroy) &&
+        (shipsOnScreen < lvlGame.maxShips) && (lvlGame.namberOfShips != 0)){
+      //увеличиваем значение счётчика кораблей на экране
       shipsOnScreen++;
+      //сбрасываем счётчик паузы до появления следующего корабля
       delayNewShip = 0;
+      //выбираем случайным образом тип корабля в зависимости от данных текущего уровня
+      var changeShip = getRandomInRange(1, +lvlGame.numberOfShips);
+      var changeTypeShip = 0;  //выбранный случайным образом тип корабля
+      //создаём корабль
+      for (var i = 1; i <= SHIP_TYPES; i++){
+        if ((lvlGame.warShip[i] >= changeShip)&&(changeTypeShip == 0)) {
+          changeTypeShip = i;
+          createShip(shipsOnScreen, changeTypeShip);
+        }
+        changeShip = changeShip - lvlGame.warShip[i];
+      }
 
-      //---------создаем корабль
     }
+
+
     // Устанавливаем обработчик для событий клавиатуры
     document.onkeydown = selector;
+
     //обработчики событий мышки
-    (function (){
-      sonar.onclick               = function(){pause()};
-      indRightTorpedText.onclick  = function(){startRightTorped ()};
-      indLeftTorpedText.onclick   = function(){startLeftTorped ()};
-      indCenterTorpedText.onclick = function(){startCenterTorped ()};
-      buttonPerLeft.onmousedown   = function(){per_mouse_left  = true};
-      buttonPerLeft.onmouseup     = function(){per_mouse_left  = false};
-      buttonPerLeft.onmouseout    = function(){per_mouse_left  = false};
-      buttonPerRight.onmousedown  = function(){per_mouse_right = true};
-      buttonPerRight.onmouseup    = function(){per_mouse_right = false};
-      buttonPerRight.onmouseout   = function(){per_mouse_right = false};
-    })();
+    sonar.onclick               = function(){pause()};
+    indRightTorpedText.onclick  = function(){startRightTorped ()};
+    indLeftTorpedText.onclick   = function(){startLeftTorped ()};
+    indCenterTorpedText.onclick = function(){startCenterTorped ()};
+    buttonPerLeft.onmousedown   = function(){per_mouse_left  = true};
+    buttonPerLeft.onmouseup     = function(){per_mouse_left  = false};
+    buttonPerLeft.onmouseout    = function(){per_mouse_left  = false};
+    buttonPerRight.onmousedown  = function(){per_mouse_right = true};
+    buttonPerRight.onmouseup    = function(){per_mouse_right = false};
+    buttonPerRight.onmouseout   = function(){per_mouse_right = false};
+
     //анимация моря
-    (function (){
-      if ((offset1 >= -50) && (direction_offset1 == "reduction")) {offset1 = offset1 - 0.1};
-      if ((offset1 <= 0)   && (direction_offset1 == "increase"))  {offset1 = offset1 + 0.1};
-      if (offset1  >= 0)   {direction_offset1 = "reduction"};
-      if (offset1  <= -50) {direction_offset1 = "increase"};
-      if ((offset2 >= -50) && (direction_offset2 == "reduction")) {offset2 = offset2 - 0.05};
-      if ((offset2 <= 0)   && (direction_offset2 == "increase"))  {offset2 = offset2 + 0.05};
-      if (offset2  >= 0)   {direction_offset2 = "reduction"};
-      if (offset2  <= -50) {direction_offset2 = "increase"};
-      sea1.style.left = -techParam[nSub].maxRotatePeriscop + offset1/2 - pozitionPeriscop;
-      sea2.style.left = -techParam[nSub].maxRotatePeriscop + offset2/2 - pozitionPeriscop;
-    })();
+    if ((offset1 >= -50) && (direction_offset1 == "reduction")) {offset1 = offset1 - 0.1};
+    if ((offset1 <= 0)   && (direction_offset1 == "increase"))  {offset1 = offset1 + 0.1};
+    if (offset1  >= 0)   {direction_offset1 = "reduction"};
+    if (offset1  <= -50) {direction_offset1 = "increase"};
+    if ((offset2 >= -50) && (direction_offset2 == "reduction")) {offset2 = offset2 - 0.05};
+    if ((offset2 <= 0)   && (direction_offset2 == "increase"))  {offset2 = offset2 + 0.05};
+    if (offset2  >= 0)   {direction_offset2 = "reduction"};
+    if (offset2  <= -50) {direction_offset2 = "increase"};
+    sea1.style.left = -techParam[nSub].maxRotatePeriscop + offset1/2 - pozitionPeriscop;
+    sea2.style.left = -techParam[nSub].maxRotatePeriscop + offset2/2 - pozitionPeriscop;
+
     //цвет индикаторов торпед
     if (torped[1].y == 800) {indLeftTorpedText.style.background   = "lightblue"}
     if (torped[2].y == 800) {indCenterTorpedText.style.background = "lightblue"}
     if (torped[3].y == 800) {indRightTorpedText.style.background  = "lightblue"}
+
     // движение перископа по нажатию мыши
     if (per_mouse_left)  {rotatePeriscop ("left")}
     if (per_mouse_right) {rotatePeriscop ("right")}
+
     //рассчет полета торпед
     for (var i = 1; i <= 3; i++) {
       if (torped[i].visible) {
@@ -142,13 +159,13 @@ function gameProcess() {
         //возвращаем торпеду в торпедный аппарат при y<300
         if (torped[i].y < 300) {torped[i].y = 800};
         //если торпеда ушла за горизонт делаем её невидимой
-        if (torped[i].y < level[lvl].gorizontY) {torped[i].visible = false}
+        if (torped[i].y < lvlGame.gorizontY) {torped[i].visible = false}
         //если торпеда попала в цель делаем её невидимой
         //---------------------------прописать
       }
     }
-    //визуализация левой торпеды
 
+    //визуализация левой торпеды
     if (torped[1].visible) {
       leftTorped.style.top    = torped[1].y;
       leftTorped.style.left   = torped[1].x - pozitionPeriscop + (TORPED_WIDTH - torped[1].width) / 2;
@@ -174,7 +191,15 @@ function gameProcess() {
 
     },FRAME_RATE);
 
+  //создание выплывающего корабля
+  function createShip(NShip , typeShip){
+  sh[NShip] = Object.create(warShipProto[typeShip]);
+  alert (sh[NShip].name);
 
+    //счетчик оставшихся кораблей
+    lvlGame.numberOfShips --;
+
+  }
   //получение объекта событие, поворот перископа, запуск торпед,
   function selector(e){
     e = e || window.event;

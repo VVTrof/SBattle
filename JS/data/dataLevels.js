@@ -33,12 +33,12 @@ var level1 = {
   prizeOil              : 10,
   prizeDetails          : 10,
   prizeMoney            : 100,
-  maxShips              : 2,
+  maxShips              : 30,
   target                : 5,
-  numberOfShips         : 10,
+  numberOfShips         : 30,
 
-  warShip                 : ["Comment",10, 0,0,0,0,0,0,0,0,0],
-  warShipPrizeMoney       : ["Comment",0.5,0,0,0,0,0,0,0,0,0],
+  warShip                 : ["Comment",10, 10,10,0,0,0,0,0,0,0],
+  warShipPrizeMoney       : ["Comment",0.5,1,0,0,0,0,0,0,0,0],
   warShipPrizeOil         : ["Comment",0,  0,0,0,0,0,0,0,0,0],
   warShipPrizeDetails     : ["Comment",0,  0,0,0,0,0,0,0,0,0],
 
