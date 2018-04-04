@@ -1,16 +1,24 @@
 // глобальные переменные и константы
-let lvl = 0;  //выбранный уровень
-let nSub = 1; //выбранная ПЛ
-const FRAME_RATE = 20,
-    TORPED_WIDTH = 20,
-    TORPED_HEIGHT = 60,
-    YANDEX_MONEY = false,
-    SHIP_TYPES = 10;
-    X_MIN = -300;  //координата начала видимого пространства по  X
-    X_MAX = 1100;  //координата начала видимого пространства по  X
-    Y_MAX = 800;   //размер по вертикали игрового поля
+
+// выбранный уровень
+export let lvl = 0;
+// выбранная ПЛ
+export let nSub = 1;
+
+export const FRAME_RATE = 20;
+export const TORPED_WIDTH = 20;
+export const TORPED_HEIGHT = 60;
+export const YANDEX_MONEY = false;
+export const SHIP_TYPES = 10;
+// координата начала видимого пространства по  X
+export const X_MIN = -300;
+// координата начала видимого пространства по  X
+export const X_MAX = 1100;
+// размер по вертикали игрового поля
+export const Y_MAX = 800;
+
 // прототипы кораблей
-{var warShipProtoComments = {
+var warShipProtoComments = {
   name          : "название корабля",
   src           : "картинка движения направо",
   reversSrc     : "картинка движения налево",
@@ -92,7 +100,7 @@ var warShip2Proto = {
   speedIndivid  : 1,
   vectorLeft    : true,
   rangeFactor   : 1
-  }
-
- var warShipProto = [warShipProtoComments,warShip1Proto,warShip2Proto,warShip3Proto];
 }
+
+export var warShipProto = [warShipProtoComments,warShip1Proto,warShip2Proto,warShip3Proto];
+

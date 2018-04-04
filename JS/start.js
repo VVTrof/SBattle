@@ -1,5 +1,4 @@
-/*eslint strict: ["error", "global"]*/
-'use strict';
+import { coverPage } from './coverPage.js';
 
 console.log('Запуск приложения');
 // loadingPicture.onload = function () {

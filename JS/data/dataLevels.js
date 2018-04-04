@@ -1,5 +1,5 @@
 // База данных уровней
-const level = [];
+export let level = [];
 const levelComments = {
   text: 'задачи миссии',
   prizeOil: 'количество призового топлива',
