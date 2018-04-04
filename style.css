@@ -328,7 +328,7 @@
 }
 .ships {
   position: absolute;
-  z-index : 0;
+  z-index : 500;
   left: 100;
   top : 100;
 }

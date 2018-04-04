@@ -12,10 +12,10 @@ var coverPageCache = [
   "images/indikator.png"
 ];
 //кэшируем картинки
-preload (coverPageCache, coverPageProcess);
+preload(coverPageCache, coverPageProcess);
 }
 //coverPageProcess();
-function coverPageProcess(){
+function coverPageProcess() {
   //для исключения повторного нажатия на кнопки buttonRules и buttonInfo
   var lastClick;
   visualCoverPage();
@@ -82,12 +82,12 @@ function coverPageProcess(){
   }
 
   buttonUp.onclick    = function(){
-    if (lvl<3) {lvl++};
+    if (lvl<2) {lvl++};
     document.getElementById('beginLvl').innerText = lvl + " level";
   }
 
   buttonDown.onclick  = function(){
-    if (lvl>1) {lvl--};
+    if (lvl>0) {lvl--};
     document.getElementById('beginLvl').innerText = lvl+" level";
   }
 
@@ -117,7 +117,7 @@ function coverPageProcess(){
   }
 
   //скрываем объекты титульной страницы
-  function hideCoverPage(){
+  function hideCoverPage() {
     titulPage.style.visibility = "hidden";
   }
 }

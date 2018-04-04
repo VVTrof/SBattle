@@ -1,13 +1,13 @@
-
-//функция выполнения игры
-function game(){
-  load.style.visibility = "visible";
+// функция выполнения игры
+function game() {
+  load.style.visibility = 'visible';
   // кэш игровой страницы
   var gameCache = [level[lvl].seaSrc,
-                   level[lvl].skySrc,
-                   level[lvl].landSrc];
+    level[lvl].skySrc,
+    level[lvl].landSrc
+  ];
   //корабли
-  for (var i = 1; i <= SHIP_TYPES; i++){
+  for (var i = 1; i <= SHIP_TYPES; i++) {
     if (level[lvl].warShip[i] > 0) {
       gameCache[gameCache.length] = warShipProto[i].src;
       gameCache[gameCache.length] = warShipProto[i].reversSrc;
@@ -16,44 +16,44 @@ function game(){
       gameCache[gameCache.length] = warShipProto[i].destroyRevSrc;
     }
   }
-  preload(gameCache,gameProcess);
+  preload(gameCache, gameProcess);
 }
 // использует глобальные переменные lvl и nSub
 function gameProcess() {
-  var lvlGame = Object.create(level[lvl] );
-  var pozitionPeriscop  = 0,
-      per_mouse_left    = false,        //используется в обработчике поворот перископа
-      per_mouse_right   = false,        //используется в обработчике поворот перископа
-      delayNewShip      = 0,            //счетчик задержки появления нового корабля
-      offset1           = 0,            //анимация моря
-      offset2           = -50,          //анимация моря
-      direction_offset1 = "reduction",  //анимация моря
-      direction_offset2 = "increase";   //анимация моря
+  var lvlGame = Object.create(level[lvl]);
+  let pozitionPeriscop = 0,
+    per_mouse_left = false, //используется в обработчике поворот перископа
+    per_mouse_right = false, // используется в обработчике поворот перископа
+    delayNewShip = 0, //счетчик задержки появления нового корабля
+    offset1 = 0, //анимация моря
+    offset2 = -50, //анимация моря
+    direction_offset1 = "reduction", //анимация моря
+    direction_offset2 = "increase"; //анимация моря
   // объекты "торпеды"
   var torpedComments = {
-      x :      "координата X (левый край торпеды)",
-      y :      "координата Y (верхний край торпеды)",
-      width :  "ширина торпеды",
-      height:  "длина торпеды",
-      speed:   "скорость торпеды",
-      visible: "видимость торпеды (true/false)",
-      rangeFactor: "коэффициент для расчета размера объекта в зависимости от его дальности от ПЛ (от 1 до 0.1)",
-      accelerator: "изменение скорости торпеды в зависимости от применения модулей улучшения 1 - 100%"
+    x: "координата X (левый край торпеды)",
+    y: "координата Y (верхний край торпеды)",
+    width: "ширина торпеды",
+    height: "длина торпеды",
+    speed: "скорость торпеды",
+    visible: "видимость торпеды (true/false)",
+    rangeFactor: "коэффициент для расчета размера объекта в зависимости от его дальности от ПЛ (от 1 до 0.1)",
+    accelerator: "изменение скорости торпеды в зависимости от применения модулей улучшения 1 - 100%"
   };
   var lTorped = {
-    x : techParam[nSub].leftTorpedsX,
-    y : 800,
-    width : TORPED_WIDTH,
+    x: techParam[nSub].leftTorpedsX,
+    y: 800,
+    width: TORPED_WIDTH,
     height: TORPED_HEIGHT,
     speed: techParam[nSub].leftTorpedSpeed,
     visible: false,
     rangeFactor: 1,
     accelerator: 1
-    };
+  };
   var cTorped = {
-    x : techParam[nSub].centerTorpedsX,
-    y : 800,
-    width : TORPED_WIDTH,
+    x: techParam[nSub].centerTorpedsX,
+    y: 800,
+    width: TORPED_WIDTH,
     height: TORPED_HEIGHT,
     speed: techParam[nSub].centerTorpedSpeed,
     visible: false,
@@ -61,22 +61,22 @@ function gameProcess() {
     accelerator: 1
   };
   var rTorped = {
-    x : techParam[nSub].rightTorpedsX,
-    y : 800,
-    width : TORPED_WIDTH,
+    x: techParam[nSub].rightTorpedsX,
+    y: 800,
+    width: TORPED_WIDTH,
     height: TORPED_HEIGHT,
     speed: techParam[nSub].rightTorpedSpeed,
     visible: false,
     rangeFactor: 1,
     accelerator: 1
   };
-  var torped = [torpedComments,lTorped, cTorped, rTorped];
-  var shipsDestroy  = 0; //уничтожено кораблей
+  var torped = [torpedComments, lTorped, cTorped, rTorped];
+  var shipsDestroy = 0; //уничтожено кораблей
   var shipsOnScreen = 0; //текущее количество кораблей на экране
-  var sh = [];           //массив кораблей, отображенных на экране
+  var sh = []; //массив кораблей, отображенных на экране
   sea1.src = lvlGame.seaSrc;
   sea2.src = lvlGame.seaSrc;
-  sky.src  = lvlGame.skySrc;
+  sky.src = lvlGame.skySrc;
   land.src = lvlGame.landSrc;
   //визуализируем объекты игровой страницы
   visualGamePage();
@@ -85,32 +85,29 @@ function gameProcess() {
   lidMove(true);
 
   //игровой процес
-  var timerGame = setInterval(function(){
-    var changeShip = 0,     //временная переменная
-        changeTypeShip = 0;  //выбранный случайным образом тип корабля
-
+  var timerGame = setInterval(function() {
+    var changeShip = 0; //временная переменная
+    var changeTypeShip = 0; //выбранный случайным образом тип корабля
     delayNewShip++
-
     //делаем новый корабль если пауза до появления следующего корабля соблюдена, кораблей на экране меньше,
     //чем задано по уровню и если выплыли ещё не все корабли
     if ((delayNewShip > lvlGame.delayNewShip - lvlGame.delayNewShipReduction * shipsDestroy) &&
-        (shipsOnScreen < lvlGame.maxShips) && (lvlGame.namberOfShips != 0)){
+      (shipsOnScreen < lvlGame.maxShips) && (lvlGame.namberOfShips != 0)) {
       //увеличиваем значение счётчика кораблей на экране
       shipsOnScreen++;
       //сбрасываем счётчик паузы до появления следующего корабля
       delayNewShip = 0;
       //выбираем случайным образом тип корабля в зависимости от данных текущего уровня
       var changeShip = getRandomInRange(1, +lvlGame.numberOfShips);
-      var changeTypeShip = 0;  //выбранный случайным образом тип корабля
+      var changeTypeShip = 0; //выбранный случайным образом тип корабля
       //создаём корабль
-      for (var i = 1; i <= SHIP_TYPES; i++){
-        if ((lvlGame.warShip[i] >= changeShip)&&(changeTypeShip == 0)) {
+      for (var i = 1; i <= SHIP_TYPES; i++) {
+        if ((lvlGame.warShip[i] >= changeShip) && (changeTypeShip == 0)) {
           changeTypeShip = i;
           createShip(shipsOnScreen, changeTypeShip);
         }
         changeShip = changeShip - lvlGame.warShip[i];
       }
-
     }
 
 
@@ -118,52 +115,104 @@ function gameProcess() {
     document.onkeydown = selector;
 
     //обработчики событий мышки
-    sonar.onclick               = function(){pause()};
-    indRightTorpedText.onclick  = function(){startRightTorped ()};
-    indLeftTorpedText.onclick   = function(){startLeftTorped ()};
-    indCenterTorpedText.onclick = function(){startCenterTorped ()};
-    buttonPerLeft.onmousedown   = function(){per_mouse_left  = true};
-    buttonPerLeft.onmouseup     = function(){per_mouse_left  = false};
-    buttonPerLeft.onmouseout    = function(){per_mouse_left  = false};
-    buttonPerRight.onmousedown  = function(){per_mouse_right = true};
-    buttonPerRight.onmouseup    = function(){per_mouse_right = false};
-    buttonPerRight.onmouseout   = function(){per_mouse_right = false};
+    sonar.onclick = function() {
+      pause()
+    };
+    indRightTorpedText.onclick = function() {
+      startRightTorped()
+    };
+    indLeftTorpedText.onclick = function() {
+      startLeftTorped()
+    };
+    indCenterTorpedText.onclick = function() {
+      startCenterTorped()
+    };
+    buttonPerLeft.onmousedown = function() {
+      per_mouse_left = true
+    };
+    buttonPerLeft.onmouseup = function() {
+      per_mouse_left = false
+    };
+    buttonPerLeft.onmouseout = function() {
+      per_mouse_left = false
+    };
+    buttonPerRight.onmousedown = function() {
+      per_mouse_right = true
+    };
+    buttonPerRight.onmouseup = function() {
+      per_mouse_right = false
+    };
+    buttonPerRight.onmouseout = function() {
+      per_mouse_right = false
+    };
 
     //анимация моря
-    if ((offset1 >= -50) && (direction_offset1 == "reduction")) {offset1 = offset1 - 0.1};
-    if ((offset1 <= 0)   && (direction_offset1 == "increase"))  {offset1 = offset1 + 0.1};
-    if (offset1  >= 0)   {direction_offset1 = "reduction"};
-    if (offset1  <= -50) {direction_offset1 = "increase"};
-    if ((offset2 >= -50) && (direction_offset2 == "reduction")) {offset2 = offset2 - 0.05};
-    if ((offset2 <= 0)   && (direction_offset2 == "increase"))  {offset2 = offset2 + 0.05};
-    if (offset2  >= 0)   {direction_offset2 = "reduction"};
-    if (offset2  <= -50) {direction_offset2 = "increase"};
-    sea1.style.left = -techParam[nSub].maxRotatePeriscop + offset1/2 - pozitionPeriscop;
-    sea2.style.left = -techParam[nSub].maxRotatePeriscop + offset2/2 - pozitionPeriscop;
+    if ((offset1 >= -50) && (direction_offset1 == "reduction")) {
+      offset1 = offset1 - 0.1
+    };
+    if ((offset1 <= 0) && (direction_offset1 == "increase")) {
+      offset1 = offset1 + 0.1
+    };
+    if (offset1 >= 0) {
+      direction_offset1 = "reduction"
+    };
+    if (offset1 <= -50) {
+      direction_offset1 = "increase"
+    };
+    if ((offset2 >= -50) && (direction_offset2 == "reduction")) {
+      offset2 = offset2 - 0.05
+    };
+    if ((offset2 <= 0) && (direction_offset2 == "increase")) {
+      offset2 = offset2 + 0.05
+    };
+    if (offset2 >= 0) {
+      direction_offset2 = "reduction"
+    };
+    if (offset2 <= -50) {
+      direction_offset2 = "increase"
+    };
+    sea1.style.left = -techParam[nSub].maxRotatePeriscop + offset1 / 2 - pozitionPeriscop;
+    sea2.style.left = -techParam[nSub].maxRotatePeriscop + offset2 / 2 - pozitionPeriscop;
 
     //цвет индикаторов торпед
-    if (torped[1].y == 800) {indLeftTorpedText.style.background   = "lightblue"}
-    if (torped[2].y == 800) {indCenterTorpedText.style.background = "lightblue"}
-    if (torped[3].y == 800) {indRightTorpedText.style.background  = "lightblue"}
+    if (torped[1].y == 800) {
+      indLeftTorpedText.style.background = "lightblue"
+    }
+    if (torped[2].y == 800) {
+      indCenterTorpedText.style.background = "lightblue"
+    }
+    if (torped[3].y == 800) {
+      indRightTorpedText.style.background = "lightblue"
+    }
 
     // движение перископа по нажатию мыши
-    if (per_mouse_left)  {rotatePeriscop ("left")}
-    if (per_mouse_right) {rotatePeriscop ("right")}
+    if (per_mouse_left) {
+      rotatePeriscop("left")
+    }
+    if (per_mouse_right) {
+      rotatePeriscop("right")
+    }
 
     //рассчет полета торпед
     for (var i = 1; i <= 3; i++) {
       if (torped[i].visible) {
         //коэффиц. который зависит от удаленности торпеды (от 1 до 0.25)
-        torped[i].rangeFactor = 1-(Y_MAX-torped[i].y)*0.0015;
+        torped[i].rangeFactor = 1 - (Y_MAX - torped[i].y) * 0.0015;
         //определяем размеры торпед в зависимости от удаленности
-        torped[i].width  = TORPED_WIDTH  * torped[i].rangeFactor;
+        torped[i].width = TORPED_WIDTH * torped[i].rangeFactor;
         torped[i].height = TORPED_HEIGHT * torped[i].rangeFactor;
         //если торпеда выпущена перемещаем её
-        if (torped[i].y < Y_MAX) {torped[i].y = torped[i].y - torped[i].speed * torped[i].rangeFactor};
+        if (torped[i].y < Y_MAX) {
+          torped[i].y = torped[i].y - torped[i].speed * torped[i].rangeFactor
+        };
         //возвращаем торпеду в торпедный аппарат при y<300
-        if (torped[i].y < 300) {torped[i].y = Y_MAX};
+        if (torped[i].y < 300) {
+          torped[i].y = Y_MAX
+        };
         //если торпеда ушла за горизонт делаем её невидимой
-        if (torped[i].y < lvlGame.gorizontY) {torped[i].visible = false}
+        if (torped[i].y < lvlGame.gorizontY) {
+          torped[i].visible = false
+        }
         //если торпеда попала в цель делаем её невидимой
         //---------------------------прописать
       }
@@ -171,104 +220,116 @@ function gameProcess() {
 
     //визуализация левой торпеды
     if (torped[1].visible) {
-      leftTorped.style.top    = torped[1].y;
-      leftTorped.style.left   = torped[1].x - pozitionPeriscop + (TORPED_WIDTH - torped[1].width) / 2;
-      leftTorped.style.width  = torped[1].width;
+      leftTorped.style.top = torped[1].y;
+      leftTorped.style.left = torped[1].x - pozitionPeriscop + (TORPED_WIDTH - torped[1].width) / 2;
+      leftTorped.style.width = torped[1].width;
       leftTorped.style.height = torped[1].height;
     }
     //визуализация центральной торпеды
     if (torped[2].visible) {
-      centerTorped.style.top    = torped[2].y;
-      centerTorped.style.left   = torped[2].x - pozitionPeriscop + (TORPED_WIDTH - torped[2].width) / 2;
-      centerTorped.style.width  = torped[2].width;
+      centerTorped.style.top = torped[2].y;
+      centerTorped.style.left = torped[2].x - pozitionPeriscop + (TORPED_WIDTH - torped[2].width) / 2;
+      centerTorped.style.width = torped[2].width;
       centerTorped.style.height = torped[2].height;
     }
     //визуализация правой торпеды
     if (torped[3].visible) {
       //alert(torped[0].y);
-      rightTorped.style.top    = torped[3].y;
-      rightTorped.style.left   = torped[3].x - pozitionPeriscop + (TORPED_WIDTH - torped[3].width) / 2;
-      rightTorped.style.width  = torped[3].width;
+      rightTorped.style.top = torped[3].y;
+      rightTorped.style.left = torped[3].x - pozitionPeriscop + (TORPED_WIDTH - torped[3].width) / 2;
+      rightTorped.style.width = torped[3].width;
       rightTorped.style.height = torped[3].height;
     }
 
 
-    },FRAME_RATE);
+  }, FRAME_RATE);
 
   //создание объекта выплывающего корабляпо прототипу корабля, создание элемента "корабль"
-  function createShip(NShip , typeShip){
+  function createShip(NShip, typeShip) {
     //создаём объект корабль
     sh[NShip] = Object.create(warShipProto[typeShip]);
     //создаём элемент корабль
-  //  var image = document.createElement("img");
-  //  image.src = "images/ship_1/ship.png";
-  //  image.id = "ship1";
-  //  var ship1 = getElementById('ship1');
+    //  var image = document.createElement("img");
+    //  image.src = "images/ship_1/ship.png";
+    //  image.id = "ship1";
+    //  var ship1 = getElementById('ship1');
 
-  //  ship1.style.left = 500;
+    //  ship1.style.left = 500;
     //image.style.zIndex = 500;
     //image.style.top = 100;
-  //  divShips.appendChild(image);
+    //  divShips.appendChild(image);
 
     //выбираем направление движения корабля
     if (getRandomInRange(0, 100) < lvlGame.directionShips) {
-      sh[NShip].vectorLeft = true} else
-       {sh[NShip].vectorLeft = false};
+      sh[NShip].vectorLeft = true
+    } else {
+      sh[NShip].vectorLeft = false
+    };
     //определяем координату Y
-    sh[NShip].y = getRandomInRange (lvlGame.shipMinY ,lvlGame.shipMaxY)
+    sh[NShip].y = getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY)
     //расчет коэффициента
-    sh[NShip].rangeFactor = 1-(Y_MAX-sh[NShip].y)*0.0015;
+    sh[NShip].rangeFactor = 1 - (Y_MAX - sh[NShip].y) * 0.0015;
     //расчет размеров корабля для визуализации
     sh[NShip].currentWidth = sh[NShip].width * sh[NShip].rangeFactor;
     sh[NShip].currentHeight = sh[NShip].height * sh[NShip].rangeFactor;
     //определяем координату X
     if (sh[NShip].vectorLeft) {
-         sh[NShip].x = X_MIN - sh[NShip].currentWidth;
-         // поставить SRC элементу
-       } else{
-           sh[NShip].x = X_MAX;
-           // поставить SRC элементу
-      }
+      sh[NShip].x = X_MIN - sh[NShip].currentWidth;
+      // поставить SRC элементу
+    } else {
+      sh[NShip].x = X_MAX;
+      // поставить SRC элементу
+    }
     //определяем координату Y
-    sh[NShip].y = getRandomInRange (lvlGame.shipMinY ,lvlGame.shipMaxY)
+    sh[NShip].y = getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY)
     //горизонтальная cкорость корабля (RND в пределах данных уровня умноженный на коэфицент выбранного корабля
-    sh[NShip].speedX = getRandomFloat(lvlGame.speedShipsMin , lvlGame.speedShipsMax) * sh[NShip].speedIndivid;
-    if (sh[NShip].vectorLeft == false) {sh[NShip].speedX = - sh[NShip].speedX}
+    sh[NShip].speedX = getRandomFloat(lvlGame.speedShipsMin, lvlGame.speedShipsMax) * sh[NShip].speedIndivid;
+    if (sh[NShip].vectorLeft == false) {
+      sh[NShip].speedX = -sh[NShip].speedX
+    }
     //вертикальная скорость корабля
-    sh[NShip].speedY = getRandomFloat(0 ,lvlGame.speedShipsMaxY);
-    if (rndTrue()) {sh[NShip].speedY = -sh[NShip].speedY};
+    sh[NShip].speedY = getRandomFloat(0, lvlGame.speedShipsMaxY);
+    if (rndTrue()) {
+      sh[NShip].speedY = -sh[NShip].speedY
+    };
     //определяем тип движения корабля
-    if (sh[NShip].speedY == 0) {sh[NShip].type = "simple"};
+    if (sh[NShip].speedY == 0) {
+      sh[NShip].type = "simple"
+    };
     if (sh[NShip].speedY != 0) {
-    if(rndTrue()) {sh[NShip].type = "zigzag"} else {sh[NShip].type = "diag"}
+      if (rndTrue()) {
+        sh[NShip].type = "zigzag"
+      } else {
+        sh[NShip].type = "diag"
+      }
     }
 
     //счетчик оставшихся кораблей
-    lvlGame.numberOfShips --;
+    lvlGame.numberOfShips--;
     //информация о корабле
-    alert ("Осталось кораблей : " + lvlGame.numberOfShips + "\n " +
-           warShipProtoComments.name +" = " + sh[NShip].name +"\n "+
-           warShipProtoComments.src +" = " + sh[NShip].src +"\n "+
-           warShipProtoComments.reversSrc +" = " + sh[NShip].reversSrc +"\n "+
-           warShipProtoComments.destroySrc +" = " + sh[NShip].destroySrc +"\n "+
-           warShipProtoComments.destroyRevSrc +" = " + sh[NShip].destroyRevSrc +"\n "+
-           warShipProtoComments.FireSrc +" = " + sh[NShip].FireSrc +"\n "+
-           warShipProtoComments.health +" = " + sh[NShip].health +"\n "+
-           warShipProtoComments.identity +" = " + sh[NShip].identity +"\n "+
-           warShipProtoComments.type +" = " + sh[NShip].type +"\n "+
-           warShipProtoComments.x +" = " + sh[NShip].x +"\n "+
-           warShipProtoComments.y +" = " + sh[NShip].y +"\n " +
-           warShipProtoComments.vectorLeft +" = " + sh[NShip].vectorLeft +"\n "+
-           warShipProtoComments.rangeFactor +" = " + sh[NShip].rangeFactor +"\n "+
-           warShipProtoComments.width +" = " + sh[NShip].width +"\n "+
-           warShipProtoComments.currentWidth +" = " + sh[NShip].currentWidth +"\n "+
-           warShipProtoComments.height +" = " + sh[NShip].height +"\n "+
-           warShipProtoComments.currentHeight +" = " + sh[NShip].currentHeight +"\n "+
-           warShipProtoComments.speedX +" = " + sh[NShip].speedX +"\n "+
-           warShipProtoComments.speedY +" = " + sh[NShip].speedY +"\n "+
-           warShipProtoComments.speedIndivid +" = " + sh[NShip].speedIndivid +" \n все данные. и так много. " );
-    
-    }
+    console.log("Осталось кораблей : " + lvlGame.numberOfShips + "\n " +
+      warShipProtoComments.name + " = " + sh[NShip].name + "\n " +
+      warShipProtoComments.src + " = " + sh[NShip].src + "\n " +
+      warShipProtoComments.reversSrc + " = " + sh[NShip].reversSrc + "\n " +
+      warShipProtoComments.destroySrc + " = " + sh[NShip].destroySrc + "\n " +
+      warShipProtoComments.destroyRevSrc + " = " + sh[NShip].destroyRevSrc + "\n " +
+      warShipProtoComments.FireSrc + " = " + sh[NShip].FireSrc + "\n " +
+      warShipProtoComments.health + " = " + sh[NShip].health + "\n " +
+      warShipProtoComments.identity + " = " + sh[NShip].identity + "\n " +
+      warShipProtoComments.type + " = " + sh[NShip].type + "\n " +
+      warShipProtoComments.x + " = " + sh[NShip].x + "\n " +
+      warShipProtoComments.y + " = " + sh[NShip].y + "\n " +
+      warShipProtoComments.vectorLeft + " = " + sh[NShip].vectorLeft + "\n " +
+      warShipProtoComments.rangeFactor + " = " + sh[NShip].rangeFactor + "\n " +
+      warShipProtoComments.width + " = " + sh[NShip].width + "\n " +
+      warShipProtoComments.currentWidth + " = " + sh[NShip].currentWidth + "\n " +
+      warShipProtoComments.height + " = " + sh[NShip].height + "\n " +
+      warShipProtoComments.currentHeight + " = " + sh[NShip].currentHeight + "\n " +
+      warShipProtoComments.speedX + " = " + sh[NShip].speedX + "\n " +
+      warShipProtoComments.speedY + " = " + sh[NShip].speedY + "\n " +
+      warShipProtoComments.speedIndivid + " = " + sh[NShip].speedIndivid + " \n все данные. и так много. ");
+
+  }
 
 
   /*  var warShip2Proto = {
@@ -295,22 +356,34 @@ function gameProcess() {
   }*/
 
   //получение объекта событие, поворот перископа, запуск торпед,
-  function selector(e){
+  function selector(e) {
     e = e || window.event;
     // Получаем keyCode:
     var keyCode = e.keyCode;
-    if (keyCode == 80) {pause()};
+    if (keyCode == 80) {
+      pause()
+    };
     //поворот перископа влево до значения -300
-    if (keyCode == 37) {rotatePeriscop ("left")}
+    if (keyCode == 37) {
+      rotatePeriscop("left")
+    }
     //поворот перископа вправо до значения 300
-    if (keyCode == 39) {rotatePeriscop ("right")}
+    if (keyCode == 39) {
+      rotatePeriscop("right")
+    }
     //запуск левой торпеды
     //запуск левой торпеды
-    if (keyCode == 90) {startLeftTorped()}
+    if (keyCode == 90) {
+      startLeftTorped()
+    }
     //запуск центральной торпеды
-    if (keyCode == 88) {startCenterTorped()}
+    if (keyCode == 88) {
+      startCenterTorped()
+    }
     //запуск правой торпеды
-    if (keyCode == 67) {startRightTorped()}
+    if (keyCode == 67) {
+      startRightTorped()
+    }
 
 
     // Отменяем действие по умолчанию:
@@ -320,39 +393,45 @@ function gameProcess() {
   }
 
   //визуализируем объекты игровой страницы
-  function visualGamePage(){
-    gamePage.style.visibility      = "visible";
-    lid.style.zIndex               = 819;
-    sea1.style.zIndex              = 2;   sea1.style.opacity              = 1;
-    sea2.style.zIndex              = 3;   sea2.style.opacity              = 0.5;
-    periscop.style.zIndex          = 820;
-    crosshair.style.zIndex         = 820;  crosshair.style.opacity        = 0.5;
-    panel.style.zIndex             = 820;
-    sky.style.zIndex               = 3;
-    sky.style.left                 = -75 - pozitionPeriscop/6;
-    land.style.zIndex              = 5;
-    land.style.left                = -300 - pozitionPeriscop;
+  function visualGamePage() {
+    gamePage.style.visibility = "visible";
+    lid.style.zIndex = 819;
+    sea1.style.zIndex = 2;
+    sea1.style.opacity = 1;
+    sea2.style.zIndex = 3;
+    sea2.style.opacity = 0.5;
+    periscop.style.zIndex = 820;
+    crosshair.style.zIndex = 820;
+    crosshair.style.opacity = 0.5;
+    panel.style.zIndex = 820;
+    sky.style.zIndex = 3;
+    sky.style.left = -75 - pozitionPeriscop / 6;
+    land.style.zIndex = 5;
+    land.style.left = -300 - pozitionPeriscop;
     indRotatePeriscop.style.zIndex = 821;
-    indLeftTorped.style.zIndex     = 821;
-    indCenterTorped.style.zIndex   = 821;
-    indRightTorped.style.zIndex    = 821;
+    indLeftTorped.style.zIndex = 821;
+    indCenterTorped.style.zIndex = 821;
+    indRightTorped.style.zIndex = 821;
     indLeftTorpedText.style.zIndex = 821;
-    indCenterTorpedText.style.zIndex=821;
-    indRightTorpedText.style.zIndex= 821;
-    indRotatePerText.style.zIndex  = 821;
-    leftTorped.style.zIndex        = 4;   leftTorped.style.opacity        = 0.6;
-    centerTorped.style.zIndex      = 4;   centerTorped.style.opacity      = 0.6;
-    rightTorped.style.zIndex       = 4;   rightTorped.style.opacity       = 0.6;
-    buttonPerLeft.style.zIndex     = 822;
-    buttonPerRight.style.zIndex    = 824;
-    sonar.style.zIndex             = 824;
-    radio.style.zIndex             = 824;
-    pribor.style.zIndex            = 824;
-    indikatorDos.style.zIndex      = 824;
+    indCenterTorpedText.style.zIndex = 821;
+    indRightTorpedText.style.zIndex = 821;
+    indRotatePerText.style.zIndex = 821;
+    leftTorped.style.zIndex = 4;
+    leftTorped.style.opacity = 0.6;
+    centerTorped.style.zIndex = 4;
+    centerTorped.style.opacity = 0.6;
+    rightTorped.style.zIndex = 4;
+    rightTorped.style.opacity = 0.6;
+    buttonPerLeft.style.zIndex = 822;
+    buttonPerRight.style.zIndex = 824;
+    sonar.style.zIndex = 824;
+    radio.style.zIndex = 824;
+    pribor.style.zIndex = 824;
+    indikatorDos.style.zIndex = 824;
 
-    document.getElementById('indLeftTorpedText').innerText   = techParam[nSub].leftTorpeds;
+    document.getElementById('indLeftTorpedText').innerText = techParam[nSub].leftTorpeds;
     document.getElementById('indCenterTorpedText').innerText = techParam[nSub].centerTorpeds;
-    document.getElementById('indRightTorpedText').innerText  = techParam[nSub].rightTorpeds;
+    document.getElementById('indRightTorpedText').innerText = techParam[nSub].rightTorpeds;
   };
   //возвращает целое число из выбранного диапозоза
   function getRandomInRange(min, max) {
@@ -367,55 +446,69 @@ function gameProcess() {
     return (Math.floor(Math.random() * 2) === 0);
   }
   //открытие и закрытие перископа
-  function lidMove (open) {
+  function lidMove(open) {
     var lid_y = lid.style.top;
-    var timer_lid = setInterval(function(){
-      if(open) {
-        if (lid_y >-700)  {lid_y = lid_y - 10} else {clearTimeout(timer_lid)};
-      }
-      else {
-        if (lid_y <-10)  {lid_y = lid_y + 10} else {clearTimeout(timer_lid)};
+    var timer_lid = setInterval(function() {
+      if (open) {
+        if (lid_y > -700) {
+          lid_y = lid_y - 10
+        } else {
+          clearTimeout(timer_lid)
+        };
+      } else {
+        if (lid_y < -10) {
+          lid_y = lid_y + 10
+        } else {
+          clearTimeout(timer_lid)
+        };
       }
       lid.style.top = lid_y;
-    },FRAME_RATE);
+    }, FRAME_RATE);
   }
   //пауза в игре
-  function pause (){
-     alert("игра приостановлена. продолжить?");
-     return false;
+  function pause() {
+    alert("игра приостановлена. продолжить?");
+    return false;
   }
   //функция поворота перископа
-  function rotatePeriscop (direction){
+  function rotatePeriscop(direction) {
     if (direction == "left") {
-      if (pozitionPeriscop > -300){
-        pozitionPeriscop = pozitionPeriscop - 1 *  techParam[nSub].speedRotatePeriscop;
-        if (pozitionPeriscop<-300) {pozitionPeriscop = -300}
+      if (pozitionPeriscop > -300) {
+        pozitionPeriscop = pozitionPeriscop - 1 * techParam[nSub].speedRotatePeriscop;
+        if (pozitionPeriscop < -300) {
+          pozitionPeriscop = -300
+        }
       };
     };
     if (direction == "right") {
-      if (pozitionPeriscop < 300){
-        pozitionPeriscop = pozitionPeriscop + 1 *  techParam[nSub].speedRotatePeriscop;
-        if (pozitionPeriscop>300) {pozitionPeriscop = 300}
+      if (pozitionPeriscop < 300) {
+        pozitionPeriscop = pozitionPeriscop + 1 * techParam[nSub].speedRotatePeriscop;
+        if (pozitionPeriscop > 300) {
+          pozitionPeriscop = 300
+        }
       };
     };
     // выводим значение поворота перископа
-    document.getElementById('indRotatePerText').innerText
-      = "   " + conversionPozPeriscop(pozitionPeriscop) + " °";
-      //анимация неба
-      sky.style.left = -75 - pozitionPeriscop/6;
-      //анимация суши
-      land.style.left = -300 - pozitionPeriscop;
+    document.getElementById('indRotatePerText').innerText = "   " + conversionPozPeriscop(pozitionPeriscop) + " °";
+    //анимация неба
+    sky.style.left = -75 - pozitionPeriscop / 6;
+    //анимация суши
+    land.style.left = -300 - pozitionPeriscop;
     return false;
   }
   //преобразует данные о повороте перископа (от -300 до 300) в градусы (300-60)
-  function conversionPozPeriscop(pozitionPeriscop){
+  function conversionPozPeriscop(pozitionPeriscop) {
     var poz_periscop_degree;
-    if (pozitionPeriscop >= 0) {poz_periscop_degree = pozitionPeriscop / 5};
-    if (pozitionPeriscop < 0) {poz_periscop_degree = 360 + pozitionPeriscop / 5};
+    if (pozitionPeriscop >= 0) {
+      poz_periscop_degree = pozitionPeriscop / 5
+    };
+    if (pozitionPeriscop < 0) {
+      poz_periscop_degree = 360 + pozitionPeriscop / 5
+    };
     return poz_periscop_degree;
   }
   //запуск торпед
-  function startLeftTorped () {
+  function startLeftTorped() {
     if ((torped[1].y == 800) && (techParam[nSub].leftTorpeds > 0)) {
       torped[1].y = 799;
       torped[1].x = techParam[nSub].leftTorpedsX + pozitionPeriscop;
@@ -424,14 +517,14 @@ function gameProcess() {
       //делаем торпеду видимой
       torped[1].visible = true;
       //вывожу на экран кол-во левых торпед
-      document.getElementById('indLeftTorpedText').innerText
-        = techParam[nSub].leftTorpeds;
+      document.getElementById('indLeftTorpedText').innerText = techParam[nSub].leftTorpeds;
       //меняю цвет индикатора запуска торпеды
       indLeftTorpedText.style.background = "red";
     }
     return false;
   }
-  function startCenterTorped () {
+
+  function startCenterTorped() {
     if ((torped[2].y == 800) && (techParam[nSub].centerTorpeds > 0)) {
       torped[2].y = 799;
       torped[2].x = techParam[nSub].centerTorpedsX + pozitionPeriscop;
@@ -439,14 +532,14 @@ function gameProcess() {
       techParam[nSub].centerTorpeds--;
       //делаем торпеду видимой
       torped[2].visible = true;
-      document.getElementById('indCenterTorpedText').innerText
-        = techParam[nSub].centerTorpeds;
+      document.getElementById('indCenterTorpedText').innerText = techParam[nSub].centerTorpeds;
       //меняю цвет индикатора запуска торпеды
       indCenterTorpedText.style.background = "red";
     };
     return false;
   }
-  function startRightTorped () {
+
+  function startRightTorped() {
     if ((torped[3].y == 800) && (techParam[nSub].rightTorpeds > 0)) {
       torped[3].y = 799;
       torped[3].x = techParam[nSub].rightTorpedsX + pozitionPeriscop;
@@ -454,8 +547,7 @@ function gameProcess() {
       techParam[nSub].rightTorpeds--;
       //делаем торпеду видимой
       torped[3].visible = true;
-      document.getElementById('indRightTorpedText').innerText
-        = techParam[nSub].rightTorpeds;
+      document.getElementById('indRightTorpedText').innerText = techParam[nSub].rightTorpeds;
       //меняю цвет индикатора запуска торпеды
       indRightTorpedText.style.background = "red";
       return false;
