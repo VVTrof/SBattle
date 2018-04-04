@@ -1,7 +1,7 @@
 // глобальные переменные и константы
-let lvl = 0,  //выбранный уровень
-    nSub = 1, //выбранная ПЛ
-    FRAME_RATE = 20,
+let lvl = 0;  //выбранный уровень
+let nSub = 1; //выбранная ПЛ
+const FRAME_RATE = 20,
     TORPED_WIDTH = 20,
     TORPED_HEIGHT = 60,
     YANDEX_MONEY = false,

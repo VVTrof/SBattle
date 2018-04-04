@@ -1,6 +1,8 @@
+// 'use strict';
+
+//export default function
 function preload(urls, onFinished) {
   load.style.visibility = 'visible';
-
   let counter = urls.length;
   const callback = function() {
     counter--;
@@ -11,7 +13,7 @@ function preload(urls, onFinished) {
     }
   }
   for (let i = 0; i < urls.length; i++) {
-    let img = new Image();
+    const img = new Image();
     img.onload = callback;
     console.log ('файлов для кэширования: ' + urls.length);
     img.onerror = function() {console.log('ошибка загрузки, попробуем ещё раз'); };

@@ -12,6 +12,7 @@ function coverPage() {
     "images/indikator.png"
   ];
   //кэшируем картинки
+  // import preload from './globalFunctions';
   preload(coverPageCache, coverPageProcess);
 }
 //coverPageProcess();
