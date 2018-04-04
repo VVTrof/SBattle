@@ -1,7 +1,4 @@
-'use strict';
-
-//export default function
-export default function preload(urls, onFinished) {
+export function preload(urls, onFinished) {
   load.style.visibility = 'visible';
   let counter = urls.length;
   const callback = function() {

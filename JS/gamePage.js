@@ -1,6 +1,9 @@
-'use strict'
+import { preload } from './globalFunctions.js';
+import { SHIP_TYPES, lvl, warShipProto } from './data/dataVariable.js';
+import { level } from './data/dataLevels.js';
+
 // функция выполнения игры
-function game() {
+export function game() {
   load.style.visibility = 'visible';
   // кэш игровой страницы
   var gameCache = [level[lvl].seaSrc,

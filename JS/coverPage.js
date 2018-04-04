@@ -1,6 +1,9 @@
-'use strict';
+import { preload } from './globalFunctions.js';
+import { YANDEX_MONEY } from './data/dataVariable.js';
+import { game } from './gamePage.js'
+
 //функция выполнения титульной страницы
-function coverPage() {
+export function coverPage() {
   // создаём список кэшируемых картинок
   var coverPageCache = [
     "images/fonTitulPage.jpg",
