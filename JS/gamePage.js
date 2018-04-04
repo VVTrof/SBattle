@@ -1,3 +1,4 @@
+'use strict'
 // функция выполнения игры
 function game() {
   load.style.visibility = 'visible';
@@ -16,6 +17,7 @@ function game() {
       gameCache[gameCache.length] = warShipProto[i].destroyRevSrc;
     }
   }
+  import preload from './globalFunctions.js';
   preload(gameCache, gameProcess);
 }
 // использует глобальные переменные lvl и nSub

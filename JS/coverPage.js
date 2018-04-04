@@ -1,3 +1,4 @@
+'use strict';
 //функция выполнения титульной страницы
 function coverPage() {
   // создаём список кэшируемых картинок
@@ -12,7 +13,7 @@ function coverPage() {
     "images/indikator.png"
   ];
   //кэшируем картинки
-  // import preload from './globalFunctions';
+  import preload from './globalFunctions.js';
   preload(coverPageCache, coverPageProcess);
 }
 //coverPageProcess();
