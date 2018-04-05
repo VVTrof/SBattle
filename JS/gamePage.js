@@ -1,7 +1,7 @@
 import { preload } from './globalFunctions.js';
-import { SHIP_TYPES, FRAME_RATE, warShipProto , TORPED_WIDTH ,
-TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX} from './data/dataVariable.js';
-import { lvl, nSub } from './data/dataVariable.js';
+import { SHIP_TYPES, FRAME_RATE, warShipProto,warShipProtoComments, TORPED_WIDTH,
+TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX } from './data/dataVariable.js';
+// import { lvl, nSub } from './data/dataVariable.js';
 import { techParam } from './data/dataSubmarine.js';
 import { level } from './data/dataLevels.js';
 
@@ -15,7 +15,7 @@ export function game() {
     level[lvl].landSrc
   ];
   //корабли
-  for (let i = 1; i <= SHIP_TYPES; i++) {
+  for (let i = 0; i < SHIP_TYPES; i++) {
     if (level[lvl].warShip[i] > 0) {
       gameCache[gameCache.length] = warShipProto[i].src;
       gameCache[gameCache.length] = warShipProto[i].reversSrc;
@@ -90,11 +90,11 @@ function gameProcess() {
   //визуализируем объекты игровой страницы
   visualGamePage();
 
-  //поднимаем перископ
+  // поднимаем перископ
   lidMove(true);
 
-  //игровой процес
-  var timerGame = setInterval(function() {
+  // игровой процесc
+  let timerGame = setInterval(function() {
     var changeShip = 0; //временная переменная
     var changeTypeShip = 0; //выбранный случайным образом тип корабля
     delayNewShip++
@@ -288,8 +288,6 @@ function gameProcess() {
     e.returnValue = false;
     return false;
   }
-
-}
   //создание объекта выплывающего корабляпо прототипу корабля, создание элемента "корабль"
   function createShip(NShip, typeShip) {
     //создаём объект корабль
@@ -563,7 +561,7 @@ function gameProcess() {
       return false;
     }
   }
-
+}
 
 
 

@@ -1,7 +1,7 @@
 import { preload } from './globalFunctions.js';
 import { YANDEX_MONEY } from './data/dataVariable.js';
 import { game } from './gamePage.js';
-import { lvl, nSub } from './data/dataVariable.js';
+// import { lvl, nSub } from './data/dataVariable.js';
 
 //функция выполнения титульной страницы
 export function coverPage() {
@@ -94,8 +94,6 @@ function coverPageProcess() {
   }
 
   buttonUp.onclick = function() {
-    alert (nSub);
-    alert (lvl);
     if (lvl < 2) {
       lvl++
     };

@@ -10,12 +10,14 @@ export const X_MIN = -300;
 export const X_MAX = 1100;
 // размер по вертикали игрового поля
 export const Y_MAX = 800;
+export const warShipProto = [];
 // выбранный уровень
-export let lvl = 1;
+// let lvl = 0;
 // выбранная ПЛ
-export let nSub = 1;
+// let nSub = 0;
+// alert ("hg");
 // прототипы кораблей
-var warShipProtoComments = {
+export const warShipProtoComments = {
   name          : "название корабля",
   src           : "картинка движения направо",
   reversSrc     : "картинка движения налево",
@@ -38,7 +40,7 @@ var warShipProtoComments = {
   vectorLeft    : "'true' - если плывёт направо, 'false' - если плывёт налево",
   rangeFactor   : "коэффициент для расчета размера объекта в зависимости от его дальности от ПЛ (от 1 до 0.1)"
   }
- var warShip1Proto = {
+warShipProto[0] = {
   name          : "Крейсер",
   src           : "images/ship_1/ship.png",
   reversSrc     : "images/ship_1/ship2.png",
@@ -58,7 +60,7 @@ var warShipProtoComments = {
   vectorLeft    : true,
   rangeFactor   : 1
 }
-var warShip2Proto = {
+warShipProto[1] = {
  name          : "Танкер",
  src           : "images/ship_1/ship.png",
  reversSrc     : "images/ship_1/ship2.png",
@@ -78,7 +80,7 @@ var warShip2Proto = {
  vectorLeft    : true,
  rangeFactor   : 1
  }
- var warShip3Proto = {
+ warShipProto[2] = {
   name          : "Корабль снабжения",
   src           : "images/ship_1/ship.png",
   reversSrc     : "images/ship_1/ship2.png",
@@ -98,5 +100,3 @@ var warShip2Proto = {
   vectorLeft    : true,
   rangeFactor   : 1
 }
-
-export var warShipProto = [warShipProtoComments,warShip1Proto,warShip2Proto,warShip3Proto];
