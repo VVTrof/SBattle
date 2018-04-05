@@ -1,7 +1,9 @@
 import { preload } from './globalFunctions.js';
-import { SHIP_TYPES, warShipProto } from './data/dataVariable.js';
-import { lvl, nSub } from './coverPage.js';
+import { SHIP_TYPES, FRAME_RATE, warShipProto , TORPED_WIDTH ,
+TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX} from './data/dataVariable.js';
+import { lvl, nSub } from './data/dataVariable.js';
 import { techParam } from './data/dataSubmarine.js';
+import { level } from './data/dataLevels.js';
 
 // функция выполнения игры
 export function game() {
@@ -25,7 +27,8 @@ export function game() {
   preload(gameCache, gameProcess);
 }
 function gameProcess() {
-  alert (nSub);
+  // alert (nSub);
+  // alert (lvl);
   var lvlGame = Object.create(level[lvl]);
   let pozitionPeriscop = 0,
     per_mouse_left = false, //используется в обработчике поворот перископа
@@ -193,10 +196,10 @@ function gameProcess() {
 
     // движение перископа по нажатию мыши
     if (per_mouse_left) {
-      rotatePeriscop("left")
+      pozitionPeriscop = rotatePeriscop("left", pozitionPeriscop);
     }
     if (per_mouse_right) {
-      rotatePeriscop("right")
+      pozitionPeriscop = rotatePeriscop("right", pozitionPeriscop);
     }
 
     //рассчет полета торпед
@@ -249,6 +252,43 @@ function gameProcess() {
 
 
   }, FRAME_RATE);
+  //получение объекта событие, поворот перископа, запуск торпед,
+  function selector(e) {
+    e = e || window.event;
+    // Получаем keyCode:
+    var keyCode = e.keyCode;
+    if (keyCode == 80) {
+      pause()
+    };
+    //поворот перископа влево до значения -300
+    if (keyCode == 37) {
+        pozitionPeriscop = rotatePeriscop("left", pozitionPeriscop)
+    }
+    //поворот перископа вправо до значения 300
+    if (keyCode == 39) {
+        pozitionPeriscop = rotatePeriscop("right", pozitionPeriscop)
+    }
+    //запуск левой торпеды
+    //запуск левой торпеды
+    if (keyCode == 90) {
+      startLeftTorped()
+    }
+    //запуск центральной торпеды
+    if (keyCode == 88) {
+      startCenterTorped()
+    }
+    //запуск правой торпеды
+    if (keyCode == 67) {
+      startRightTorped()
+    }
+
+
+    // Отменяем действие по умолчанию:
+    e.preventDefault();
+    e.returnValue = false;
+    return false;
+  }
+
 }
   //создание объекта выплывающего корабляпо прототипу корабля, создание элемента "корабль"
   function createShip(NShip, typeShip) {
@@ -361,42 +401,6 @@ function gameProcess() {
 
   }*/
 
-  //получение объекта событие, поворот перископа, запуск торпед,
-  function selector(e) {
-    e = e || window.event;
-    // Получаем keyCode:
-    var keyCode = e.keyCode;
-    if (keyCode == 80) {
-      pause()
-    };
-    //поворот перископа влево до значения -300
-    if (keyCode == 37) {
-      rotatePeriscop("left")
-    }
-    //поворот перископа вправо до значения 300
-    if (keyCode == 39) {
-      rotatePeriscop("right")
-    }
-    //запуск левой торпеды
-    //запуск левой торпеды
-    if (keyCode == 90) {
-      startLeftTorped()
-    }
-    //запуск центральной торпеды
-    if (keyCode == 88) {
-      startCenterTorped()
-    }
-    //запуск правой торпеды
-    if (keyCode == 67) {
-      startRightTorped()
-    }
-
-
-    // Отменяем действие по умолчанию:
-    e.preventDefault();
-    e.returnValue = false;
-    return false;
-  }
 
   //визуализируем объекты игровой страницы
   function visualGamePage() {
@@ -411,9 +415,9 @@ function gameProcess() {
     crosshair.style.opacity = 0.5;
     panel.style.zIndex = 820;
     sky.style.zIndex = 3;
-    sky.style.left = -75 - pozitionPeriscop / 6;
+    sky.style.left = -75 ;
     land.style.zIndex = 5;
-    land.style.left = -300 - pozitionPeriscop;
+    land.style.left = -300;
     indRotatePeriscop.style.zIndex = 821;
     indLeftTorped.style.zIndex = 821;
     indCenterTorped.style.zIndex = 821;
@@ -477,7 +481,7 @@ function gameProcess() {
     return false;
   }
   //функция поворота перископа
-  function rotatePeriscop(direction) {
+  function rotatePeriscop(direction, pozitionPeriscop) {
     if (direction == "left") {
       if (pozitionPeriscop > -300) {
         pozitionPeriscop = pozitionPeriscop - 1 * techParam[nSub].speedRotatePeriscop;
@@ -500,7 +504,7 @@ function gameProcess() {
     sky.style.left = -75 - pozitionPeriscop / 6;
     //анимация суши
     land.style.left = -300 - pozitionPeriscop;
-    return false;
+    return pozitionPeriscop;
   }
   //преобразует данные о повороте перископа (от -300 до 300) в градусы (300-60)
   function conversionPozPeriscop(pozitionPeriscop) {

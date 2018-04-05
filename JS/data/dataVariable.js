@@ -10,7 +10,10 @@ export const X_MIN = -300;
 export const X_MAX = 1100;
 // размер по вертикали игрового поля
 export const Y_MAX = 800;
-
+// выбранный уровень
+export let lvl = 1;
+// выбранная ПЛ
+export let nSub = 1;
 // прототипы кораблей
 var warShipProtoComments = {
   name          : "название корабля",

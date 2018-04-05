@@ -1,6 +1,7 @@
 import { preload } from './globalFunctions.js';
 import { YANDEX_MONEY } from './data/dataVariable.js';
-import { game } from './gamePage.js'
+import { game } from './gamePage.js';
+import { lvl, nSub } from './data/dataVariable.js';
 
 //функция выполнения титульной страницы
 export function coverPage() {
@@ -20,10 +21,6 @@ export function coverPage() {
 }
 //coverPageProcess();
 function coverPageProcess() {
-  // выбранный уровень
-  export let lvl = 0;
-  // выбранная ПЛ
-  export let nSub = 0;
   // создаём список кэшируемых картинок
   //для исключения повторного нажатия на кнопки buttonRules и buttonInfo
   var lastClick;
@@ -97,6 +94,8 @@ function coverPageProcess() {
   }
 
   buttonUp.onclick = function() {
+    alert (nSub);
+    alert (lvl);
     if (lvl < 2) {
       lvl++
     };
@@ -114,6 +113,8 @@ function coverPageProcess() {
     hideCoverPage();
     // Будут направления: в ангар, на базу и на карту
     //задаем миссию и номер пл
+    // будет в дальнейшем меняться
+    // nSub = 1;
     game();
   }
 
