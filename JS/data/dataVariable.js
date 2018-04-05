@@ -1,10 +1,4 @@
-// глобальные переменные и константы
-
-// выбранный уровень
-export let lvl = 0;
-// выбранная ПЛ
-export let nSub = 1;
-
+// глобальные переменные и констант
 export const FRAME_RATE = 20;
 export const TORPED_WIDTH = 20;
 export const TORPED_HEIGHT = 60;
@@ -103,4 +97,3 @@ var warShip2Proto = {
 }
 
 export var warShipProto = [warShipProtoComments,warShip1Proto,warShip2Proto,warShip3Proto];
-

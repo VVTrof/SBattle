@@ -4,23 +4,27 @@ import { game } from './gamePage.js'
 
 //функция выполнения титульной страницы
 export function coverPage() {
-  // создаём список кэшируемых картинок
-  var coverPageCache = [
-    "images/fonTitulPage.jpg",
-    "images/buttons/buttonStart.png",
+
+  let coverPageCache = [
+    'images/fonTitulPage.jpg',
+    'images/buttons/buttonStart.png',
     "images/buttons/buttonOff.png",
     "images/buttons/buttonUp.png",
-    "images/buttons/buttonDown.png",
-    "images/buttons/buttonInfoOff.png",
-    "images/buttons/buttonRulesOff.png",
-    "images/indikator.png"
+    'images/buttons/buttonDown.png',
+    'images/buttons/buttonInfoOff.png',
+    'images/buttons/buttonRulesOff.png',
+    "images/indikator.png",
   ];
-  //кэшируем картинки
-  import preload from './globalFunctions.js';
+  // кэшируем картинки
   preload(coverPageCache, coverPageProcess);
 }
 //coverPageProcess();
 function coverPageProcess() {
+  // выбранный уровень
+  export let lvl = 0;
+  // выбранная ПЛ
+  export let nSub = 0;
+  // создаём список кэшируемых картинок
   //для исключения повторного нажатия на кнопки buttonRules и buttonInfo
   var lastClick;
   visualCoverPage();

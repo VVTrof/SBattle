@@ -1,9 +1,11 @@
 import { preload } from './globalFunctions.js';
-import { SHIP_TYPES, lvl, warShipProto } from './data/dataVariable.js';
-import { level } from './data/dataLevels.js';
+import { SHIP_TYPES, warShipProto } from './data/dataVariable.js';
+import { lvl, nSub } from './coverPage.js';
+import { techParam } from './data/dataSubmarine.js';
 
 // функция выполнения игры
 export function game() {
+
   load.style.visibility = 'visible';
   // кэш игровой страницы
   var gameCache = [level[lvl].seaSrc,
@@ -11,7 +13,7 @@ export function game() {
     level[lvl].landSrc
   ];
   //корабли
-  for (var i = 1; i <= SHIP_TYPES; i++) {
+  for (let i = 1; i <= SHIP_TYPES; i++) {
     if (level[lvl].warShip[i] > 0) {
       gameCache[gameCache.length] = warShipProto[i].src;
       gameCache[gameCache.length] = warShipProto[i].reversSrc;
@@ -20,11 +22,10 @@ export function game() {
       gameCache[gameCache.length] = warShipProto[i].destroyRevSrc;
     }
   }
-  import preload from './globalFunctions.js';
   preload(gameCache, gameProcess);
 }
-// использует глобальные переменные lvl и nSub
 function gameProcess() {
+  alert (nSub);
   var lvlGame = Object.create(level[lvl]);
   let pozitionPeriscop = 0,
     per_mouse_left = false, //используется в обработчике поворот перископа
@@ -46,11 +47,11 @@ function gameProcess() {
     accelerator: "изменение скорости торпеды в зависимости от применения модулей улучшения 1 - 100%"
   };
   var lTorped = {
-    x: techParam[nSub].leftTorpedsX,
+    x: techParam[0].leftTorpedsX,
     y: 800,
     width: TORPED_WIDTH,
     height: TORPED_HEIGHT,
-    speed: techParam[nSub].leftTorpedSpeed,
+    speed: techParam[0].leftTorpedSpeed,
     visible: false,
     rangeFactor: 1,
     accelerator: 1
@@ -248,7 +249,7 @@ function gameProcess() {
 
 
   }, FRAME_RATE);
-
+}
   //создание объекта выплывающего корабляпо прототипу корабля, создание элемента "корабль"
   function createShip(NShip, typeShip) {
     //создаём объект корабль
@@ -558,105 +559,105 @@ function gameProcess() {
       return false;
     }
   }
-}
-
-
-
-
-/*
-/////////////////////////////////////////////////////////
 
 
 
 
 
-    //движение кораблей
-    for (var i = 0; i < level[lvl].maxShips ;i++){
-      ships[i].x = ships[i].x  + ships[i].speedX;
-      ships[i].y = ships[i].y  + ships[i].speedY;
-      ships[i].rangeFactor = 1-(800-ships[i].y)*0.0015;
-      ships[i].width = SHIP_WIDTH * ships[i].rangeFactor;
-      ships[i].height = SHIP_HEIGHT * ships[i].rangeFactor;
-      //проверка уход за край
-      if ((ships[i].x > 1100) || (ships[i].x < -400)) {ships[i].visible = false};
-      if ((ships[i].y > level[lvl].shipMaxY) || (ships[i].y < level[lvl].shipMinY)) {
-        if (ships[i].type == "zigzag") {ships[i].speedY = -ships[i].speedY}
-        else {ships[i].speedY = 0;}
+  /*
+  /////////////////////////////////////////////////////////
+
+
+
+
+
+      //движение кораблей
+      for (var i = 0; i < level[lvl].maxShips ;i++){
+        ships[i].x = ships[i].x  + ships[i].speedX;
+        ships[i].y = ships[i].y  + ships[i].speedY;
+        ships[i].rangeFactor = 1-(800-ships[i].y)*0.0015;
+        ships[i].width = SHIP_WIDTH * ships[i].rangeFactor;
+        ships[i].height = SHIP_HEIGHT * ships[i].rangeFactor;
+        //проверка уход за край
+        if ((ships[i].x > 1100) || (ships[i].x < -400)) {ships[i].visible = false};
+        if ((ships[i].y > level[lvl].shipMaxY) || (ships[i].y < level[lvl].shipMinY)) {
+          if (ships[i].type == "zigzag") {ships[i].speedY = -ships[i].speedY}
+          else {ships[i].speedY = 0;}
+        }
       }
-    }
 
-    //проверка на попадания
+      //проверка на попадания
 
 
-    viuzalizationShips()
-  },FRAME_RATE);
-
+      viuzalizationShips()
+    },FRAME_RATE);
 
 
 
-  }
 
-
-  //визуализация кораблей
-  function visualizationTorpeds() {
-    //визуализация левой торпеды
-    if (torped[0].visible) {
-      //alert(torped[0].y);
-      leftTorped.style.top    = torped[0].y;
-      leftTorped.style.left   = torped[0].x - pozitionPeriscop +
-        (TORPED_WIDTH - torped[0].width) / 2;
-      leftTorped.style.width  = torped[0].width;
-      leftTorped.style.height = torped[0].height;
     }
 
 
+    //визуализация кораблей
+    function visualizationTorpeds() {
+      //визуализация левой торпеды
+      if (torped[0].visible) {
+        //alert(torped[0].y);
+        leftTorped.style.top    = torped[0].y;
+        leftTorped.style.left   = torped[0].x - pozitionPeriscop +
+          (TORPED_WIDTH - torped[0].width) / 2;
+        leftTorped.style.width  = torped[0].width;
+        leftTorped.style.height = torped[0].height;
+      }
+
+
+    }
+    function viuzalizationShips(){
+
+      sh0.style.left = ships[0].x - pozitionPeriscop;
+      sh0.style.top = ships[0].y;
+      sh0.style.width = ships[0].width;
+      sh0.style.height = ships[0].height;
+      sh0.style.zIndex = Math.floor(ships[0].y);
+      sh0.src = ships[0].src;
+
+      sh1.style.left = ships[1].x - pozitionPeriscop;
+      sh1.style.top = ships[1].y;
+      sh1.style.width = ships[1].width;
+      sh1.style.height = ships[1].height;
+      sh1.style.zIndex = Math.floor(ships[1].y);
+      sh1.src = ships[1].src;
+
+      sh2.style.left = ships[2].x - pozitionPeriscop;
+      sh2.style.top = ships[2].y;
+      sh2.style.width = ships[2].width;
+      sh2.style.height = ships[2].height;
+      sh2.style.zIndex = Math.floor(ships[2].y);
+      sh2.src = ships[2].src;
+
+      sh3.style.left = ships[3].x - pozitionPeriscop;
+      sh3.style.top = ships[3].y;
+      sh3.style.width = ships[3].width;
+      sh3.style.height = ships[3].height;
+      sh3.style.zIndex = Math.floor(ships[3].y);
+      sh3.src = ships[3].src;
+
+      sh4.style.left = ships[4].x - pozitionPeriscop;
+      sh4.style.top = ships[4].y;
+      sh4.style.width = ships[4].width;
+      sh4.style.height = ships[4].height;
+      sh4.style.zIndex = Math.floor(ships[4].y);
+      sh4.src = ships[4].src;
+
+      sh5.style.left = ships[5].x - pozitionPeriscop;
+      sh5.style.top = ships[5].y;
+      sh5.style.width = ships[5].width;
+      sh5.style.height = ships[5].height;
+      sh5.style.zIndex = Math.floor(ships[5].y);
+      sh5.src = ships[5].src;
+    }
+
+
+
   }
-  function viuzalizationShips(){
-
-    sh0.style.left = ships[0].x - pozitionPeriscop;
-    sh0.style.top = ships[0].y;
-    sh0.style.width = ships[0].width;
-    sh0.style.height = ships[0].height;
-    sh0.style.zIndex = Math.floor(ships[0].y);
-    sh0.src = ships[0].src;
-
-    sh1.style.left = ships[1].x - pozitionPeriscop;
-    sh1.style.top = ships[1].y;
-    sh1.style.width = ships[1].width;
-    sh1.style.height = ships[1].height;
-    sh1.style.zIndex = Math.floor(ships[1].y);
-    sh1.src = ships[1].src;
-
-    sh2.style.left = ships[2].x - pozitionPeriscop;
-    sh2.style.top = ships[2].y;
-    sh2.style.width = ships[2].width;
-    sh2.style.height = ships[2].height;
-    sh2.style.zIndex = Math.floor(ships[2].y);
-    sh2.src = ships[2].src;
-
-    sh3.style.left = ships[3].x - pozitionPeriscop;
-    sh3.style.top = ships[3].y;
-    sh3.style.width = ships[3].width;
-    sh3.style.height = ships[3].height;
-    sh3.style.zIndex = Math.floor(ships[3].y);
-    sh3.src = ships[3].src;
-
-    sh4.style.left = ships[4].x - pozitionPeriscop;
-    sh4.style.top = ships[4].y;
-    sh4.style.width = ships[4].width;
-    sh4.style.height = ships[4].height;
-    sh4.style.zIndex = Math.floor(ships[4].y);
-    sh4.src = ships[4].src;
-
-    sh5.style.left = ships[5].x - pozitionPeriscop;
-    sh5.style.top = ships[5].y;
-    sh5.style.width = ships[5].width;
-    sh5.style.height = ships[5].height;
-    sh5.style.zIndex = Math.floor(ships[5].y);
-    sh5.src = ships[5].src;
-  }
-
-
-
-}
-*/
+  */
