@@ -11,6 +11,28 @@ export const X_MAX = 1100;
 // размер по вертикали игрового поля
 export const Y_MAX = 800;
 export const warShipProto = [];
+// Выбранная ПЛ
+let nSubCurrent = 0;
+// текущий уровень
+let lvlCurrent = 0;
+// функция изменения уровня
+export function lvlChange(){
+  let object_returned = {};
+  object_returned.up = function() {lvlCurrent++};
+  object_returned.down = function() {lvlCurrent--};
+  object_returned.current = lvlCurrent;
+  return object_returned;
+}
+// функция изменения выбранной ПЛ
+export function nSubChange(){
+  let object_returned = {};
+  object_returned.change = function(nSub) {nSubCurrent = nSub};
+  object_returned.down = function() {lvlCurrent--};
+  object_returned.current = lvlCurrent;
+  return object_returned;
+}
+
+
 // выбранный уровень
 // let lvl = 0;
 // выбранная ПЛ

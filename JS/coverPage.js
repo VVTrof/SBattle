@@ -1,7 +1,7 @@
 import { preload } from './globalFunctions.js';
 import { YANDEX_MONEY } from './data/dataVariable.js';
 import { game } from './gamePage.js';
-// import { lvl, nSub } from './data/dataVariable.js';
+import { lvlChange } from './data/dataVariable.js';
 
 //функция выполнения титульной страницы
 export function coverPage() {
@@ -94,17 +94,17 @@ function coverPageProcess() {
   }
 
   buttonUp.onclick = function() {
-    if (lvl < 2) {
-      lvl++
+    if (lvlChange().current < 2) {
+      lvlChange().up();
     };
-    document.getElementById('beginLvl').innerText = lvl + " level";
+    document.getElementById('beginLvl').innerText = lvlChange().current + " level";
   }
 
   buttonDown.onclick = function() {
-    if (lvl > 0) {
-      lvl--
+    if (lvlChange().current > 0) {
+      lvlChange().down();
     };
-    document.getElementById('beginLvl').innerText = lvl + " level";
+    document.getElementById('beginLvl').innerText = lvlChange().current + " level";
   }
 
   buttonStart.onclick = function() {

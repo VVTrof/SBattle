@@ -1,13 +1,14 @@
 import { preload } from './globalFunctions.js';
 import { SHIP_TYPES, FRAME_RATE, warShipProto,warShipProtoComments, TORPED_WIDTH,
-TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX } from './data/dataVariable.js';
+TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX , lvlChange, nSubChange} from './data/dataVariable.js';
 // import { lvl, nSub } from './data/dataVariable.js';
 import { techParam } from './data/dataSubmarine.js';
 import { level } from './data/dataLevels.js';
 
 // функция выполнения игры
 export function game() {
-
+  let lvl = lvlChange().current;
+  //alert (lvl);
   load.style.visibility = 'visible';
   // кэш игровой страницы
   var gameCache = [level[lvl].seaSrc,
@@ -28,7 +29,8 @@ export function game() {
 }
 function gameProcess() {
   // alert (nSub);
-  // alert (lvl);
+  const lvl = lvlChange().current;
+  const nSub = nSubChange().current;
   var lvlGame = Object.create(level[lvl]);
   let pozitionPeriscop = 0,
     per_mouse_left = false, //используется в обработчике поворот перископа
@@ -169,10 +171,10 @@ function gameProcess() {
       direction_offset1 = "increase"
     };
     if ((offset2 >= -50) && (direction_offset2 == "reduction")) {
-      offset2 = offset2 - 0.05
+      offset2 = offset2 - 0.1
     };
     if ((offset2 <= 0) && (direction_offset2 == "increase")) {
-      offset2 = offset2 + 0.05
+      offset2 = offset2 + 0.1
     };
     if (offset2 >= 0) {
       direction_offset2 = "reduction"
@@ -180,8 +182,8 @@ function gameProcess() {
     if (offset2 <= -50) {
       direction_offset2 = "increase"
     };
-    sea1.style.left = -techParam[nSub].maxRotatePeriscop + offset1 / 2 - pozitionPeriscop;
-    sea2.style.left = -techParam[nSub].maxRotatePeriscop + offset2 / 2 - pozitionPeriscop;
+    sea1.style.left = -techParam[nSub].maxRotatePeriscop + offset1 - pozitionPeriscop;
+    sea2.style.left = -techParam[nSub].maxRotatePeriscop + offset2 - pozitionPeriscop;
 
     //цвет индикаторов торпед
     if (torped[1].y == 800) {
@@ -499,7 +501,7 @@ function gameProcess() {
     // выводим значение поворота перископа
     document.getElementById('indRotatePerText').innerText = "   " + conversionPozPeriscop(pozitionPeriscop) + " °";
     //анимация неба
-    sky.style.left = -75 - pozitionPeriscop / 6;
+    sky.style.left = -100 - pozitionPeriscop / 3;
     //анимация суши
     land.style.left = -300 - pozitionPeriscop;
     return pozitionPeriscop;
