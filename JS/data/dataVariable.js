@@ -27,8 +27,8 @@ export function lvlChange(){
 export function nSubChange(){
   let object_returned = {};
   object_returned.change = function(nSub) {nSubCurrent = nSub};
-  object_returned.down = function() {lvlCurrent--};
-  object_returned.current = lvlCurrent;
+  object_returned.down = function() {nSubCurrent--};
+  object_returned.current = nSubCurrent;
   return object_returned;
 }
 
