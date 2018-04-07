@@ -124,12 +124,12 @@
   left  : 550;
   top   : 100;
 }
-
+/* --------------------------------------------------------------------------*/
 #gamePage {
   position: absolute;
   width : 1000;
   height: 800;
-  overflow : hidden;
+
   visibility: hidden;
 }
 #lid {
@@ -158,7 +158,7 @@
 }
 #sky {
   position: absolute;
-  width : 950;
+  width : 1000;
   height: 300;
   left  : -100;
   top   : 0;
@@ -326,11 +326,12 @@
   top   : 200;
   z-index: 1;
 }
+
+
 .ships {
   position: absolute;
-  z-index : 500;
-  left: 100;
-  top : 100;
+}
+
 }
 .torpeds {
   position: absolute;

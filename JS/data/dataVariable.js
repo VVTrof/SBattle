@@ -32,23 +32,18 @@ export function nSubChange(){
   return object_returned;
 }
 
-
-// выбранный уровень
-// let lvl = 0;
-// выбранная ПЛ
-// let nSub = 0;
-// alert ("hg");
 // прототипы кораблей
 export const warShipProtoComments = {
   name          : "название корабля",
-  src           : "картинка движения направо",
-  reversSrc     : "картинка движения налево",
+  numberProto   : "номер прототипа",
+  srcOnLeft     : "картинка движения направо",
+  srcOnRight    : "картинка движения налево",
   destroySrc    : "картинка уничтожения корабля",
   destroyRevSrc : "картинка уничтожения корабля, движущегося налево",
   fireSrc       : "картинка повреждения корабля",
   health        : "количество жизней корабля (1 до 20, торпеда бьет на 10)",
   identity      : "принадлежность корабля (true - свой, false - чужой)",
-  type          : "движение корабля 'simple' - горизонтально 'diag' -до края зоны и потом прямолинейно, 'zigzag' - "+
+  typeMooving          : "движение корабля 'simple' - горизонтально 'diag' -до края зоны и потом прямолинейно, 'zigzag' - "+
                   "значение скорости меняется на противоположный при соприкосновении с краем зоны",
   x             : "координата x (левый край изображения)",
   y             : "координата y (верхний край изображения)",
@@ -64,14 +59,15 @@ export const warShipProtoComments = {
   }
 warShipProto[0] = {
   name          : "Крейсер",
-  src           : "images/ship_1/ship.png",
-  reversSrc     : "images/ship_1/ship2.png",
+  numberProto   : 0,
+  srcOnLeft     : "images/ship_1/ship.png",
+  srcOnRight    : "images/ship_1/shipreverse.png",
   destroySrc    : "images/ship_1/ship.png",
   destroyRevSrc : "images/ship_1/ship2.png",
   fireSrc       : "images/ship_1/ship2.png",
   health        : 10,
   identity      : false,
-  type          : "simple",
+  typeMooving          : "simple",
   x             : 0,
   y             : 800,
   width         : 200,
@@ -84,14 +80,15 @@ warShipProto[0] = {
 }
 warShipProto[1] = {
  name          : "Танкер",
- src           : "images/ship_1/ship.png",
- reversSrc     : "images/ship_1/ship2.png",
+ numberProto   : 1,
+ srcOnLeft     : "images/ship_1/ship2.png",
+ srcOnRight    : "images/ship_1/ship2reverse.png",
  destroySrc    : "images/ship_1/ship.png",
  destroyRevSrc : "images/ship_1/ship2.png",
  fireSrc       : "images/ship_1/ship2.png",
  health        : 10,
  identity      : false,
- type          : "simple",
+ typeMooving   : "simple",
  x             : 0,
  y             : 800,
  width         : 200,
@@ -104,14 +101,15 @@ warShipProto[1] = {
  }
  warShipProto[2] = {
   name          : "Корабль снабжения",
-  src           : "images/ship_1/ship.png",
-  reversSrc     : "images/ship_1/ship2.png",
+  numberProto   : 2,
+  srcOnLeft     : "images/ship_1/ship.png",
+  srcOnRight    : "images/ship_1/ship2.png",
   destroySrc    : "images/ship_1/ship.png",
   destroyRevSrc : "images/ship_1/ship2.png",
   fireSrc       : "images/ship_1/ship2.png",
   health        : 10,
   identity      : false,
-  type          : "simple",
+  typeMooving   : "simple",
   x             : 0,
   y             : 800,
   width         : 200,

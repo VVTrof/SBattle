@@ -18,8 +18,8 @@ export function game() {
   //корабли
   for (let i = 0; i < SHIP_TYPES; i++) {
     if (level[lvl].warShip[i] > 0) {
-      gameCache[gameCache.length] = warShipProto[i].src;
-      gameCache[gameCache.length] = warShipProto[i].reversSrc;
+      gameCache[gameCache.length] = warShipProto[i].srcOnLeft;
+      gameCache[gameCache.length] = warShipProto[i].srcOnRight;
       gameCache[gameCache.length] = warShipProto[i].destroySrc;
       gameCache[gameCache.length] = warShipProto[i].fireSrc;
       gameCache[gameCache.length] = warShipProto[i].destroyRevSrc;
@@ -97,28 +97,38 @@ function gameProcess() {
 
   // игровой процесc
   let timerGame = setInterval(function() {
-    var changeShip = 0; //временная переменная
-    var changeTypeShip = 0; //выбранный случайным образом тип корабля
+    //let changeShip = 0; //временная переменная
+    //let changeTypeShip = 0; //выбранный случайным образом тип корабля
     delayNewShip++
     //делаем новый корабль если пауза до появления следующего корабля соблюдена, кораблей на экране меньше,
     //чем задано по уровню и если выплыли ещё не все корабли
     if ((delayNewShip > lvlGame.delayNewShip - lvlGame.delayNewShipReduction * shipsDestroy) &&
       (shipsOnScreen < lvlGame.maxShips) && (lvlGame.namberOfShips != 0)) {
+      //  console.log ("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+
+      //выбираем случайным образом тип корабля в зависимости от данных текущего уровня
+      let changeShip = getRandomInRange(1, lvlGame.numberOfShips);
+      //alert (changeShip);
+      let changeTypeShip = "empty"; //выбранный случайным образом тип корабля
+      //создаём корабль
+      for (var i = 0; i < SHIP_TYPES; i++) {//alert ("i="+i + " кораблей этого типа"+ lvlGame.warShip[i])
+        if ((lvlGame.warShip[i] >= changeShip) && (changeTypeShip == "empty")) {
+          changeTypeShip = i;// alert ("создал "+ changeTypeShip);
+        }
+        changeShip = changeShip - lvlGame.warShip[i];
+      }
+      // отнимаем корабль выбранного типа из базы уровня
+      lvlGame.warShip[changeTypeShip]--;
       //увеличиваем значение счётчика кораблей на экране
       shipsOnScreen++;
       //сбрасываем счётчик паузы до появления следующего корабля
       delayNewShip = 0;
-      //выбираем случайным образом тип корабля в зависимости от данных текущего уровня
-      var changeShip = getRandomInRange(1, +lvlGame.numberOfShips);
-      var changeTypeShip = 0; //выбранный случайным образом тип корабля
+      //счетчик оставшихся кораблей
+      lvlGame.numberOfShips--;
       //создаём корабль
-      for (var i = 1; i <= SHIP_TYPES; i++) {
-        if ((lvlGame.warShip[i] >= changeShip) && (changeTypeShip == 0)) {
-          changeTypeShip = i;
-          createShip(shipsOnScreen, changeTypeShip);
-        }
-        changeShip = changeShip - lvlGame.warShip[i];
-      }
+      // alert ("создал "+ changeTypeShip);
+      createShip(shipsOnScreen, changeTypeShip);
+
     }
 
 
@@ -251,8 +261,10 @@ function gameProcess() {
       rightTorped.style.width = torped[3].width;
       rightTorped.style.height = torped[3].height;
     }
-
-
+    // визуализация кораблей
+    for (let n_ship = 1 ; n_ship <= shipsOnScreen; n_ship++){
+      shipElementVisual(n_ship);
+    }
   }, FRAME_RATE);
   //получение объекта событие, поворот перископа, запуск торпед,
   function selector(e) {
@@ -283,27 +295,17 @@ function gameProcess() {
     if (keyCode == 67) {
       startRightTorped()
     }
-
-
     // Отменяем действие по умолчанию:
     e.preventDefault();
     e.returnValue = false;
     return false;
   }
-  //создание объекта выплывающего корабляпо прототипу корабля, создание элемента "корабль"
+  //создание объекта выплывающего корабля по прототипу корабля, создание элемента "корабль"
   function createShip(NShip, typeShip) {
     //создаём объект корабль
     sh[NShip] = Object.create(warShipProto[typeShip]);
-    //создаём элемент корабль
-    //  var image = document.createElement("img");
-    //  image.src = "images/ship_1/ship.png";
-    //  image.id = "ship1";
-    //  var ship1 = getElementById('ship1');
 
-    //  ship1.style.left = 500;
-    //image.style.zIndex = 500;
-    //image.style.top = 100;
-    //  divShips.appendChild(image);
+
 
     //выбираем направление движения корабля
     if (getRandomInRange(0, 100) < lvlGame.directionShips) {
@@ -313,21 +315,22 @@ function gameProcess() {
     };
     //определяем координату Y
     sh[NShip].y = getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY)
+    console.log ('sh[NShip].y = '+sh[NShip].y);
     //расчет коэффициента
     sh[NShip].rangeFactor = 1 - (Y_MAX - sh[NShip].y) * 0.0015;
     //расчет размеров корабля для визуализации
     sh[NShip].currentWidth = sh[NShip].width * sh[NShip].rangeFactor;
+    console.log (NShip+"    1 -("+Y_MAX +"-" + sh[NShip].y + ")*"+0.0015+ "="+sh[NShip].rangeFactor);
+    //alert (Y_MAX+" "+sh[NShip].width+'  '+sh[NShip].rangeFactor);
     sh[NShip].currentHeight = sh[NShip].height * sh[NShip].rangeFactor;
     //определяем координату X
     if (sh[NShip].vectorLeft) {
-      sh[NShip].x = X_MIN - sh[NShip].currentWidth;
-      // поставить SRC элементу
+      sh[NShip].x = X_MIN - sh[NShip].currentWidth+500;
+      sh[NShip].src = sh[NShip].srcOnLeft;
     } else {
-      sh[NShip].x = X_MAX;
-      // поставить SRC элементу
+      sh[NShip].x = X_MAX - 500;
+      sh[NShip].src = sh[NShip].srcOnRight;
     }
-    //определяем координату Y
-    sh[NShip].y = getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY)
     //горизонтальная cкорость корабля (RND в пределах данных уровня умноженный на коэфицент выбранного корабля
     sh[NShip].speedX = getRandomFloat(lvlGame.speedShipsMin, lvlGame.speedShipsMax) * sh[NShip].speedIndivid;
     if (sh[NShip].vectorLeft == false) {
@@ -340,66 +343,75 @@ function gameProcess() {
     };
     //определяем тип движения корабля
     if (sh[NShip].speedY == 0) {
-      sh[NShip].type = "simple"
+      sh[NShip].typeMooving = "simple"
     };
     if (sh[NShip].speedY != 0) {
       if (rndTrue()) {
-        sh[NShip].type = "zigzag"
+        sh[NShip].typeMooving = "zigzag"
       } else {
-        sh[NShip].type = "diag"
+        sh[NShip].typeMooving = "diag"
       }
     }
 
-    //счетчик оставшихся кораблей
-    lvlGame.numberOfShips--;
+
     //информация о корабле
     console.log("Осталось кораблей : " + lvlGame.numberOfShips + "\n " +
-      warShipProtoComments.name + " = " + sh[NShip].name + "\n " +
-      warShipProtoComments.src + " = " + sh[NShip].src + "\n " +
-      warShipProtoComments.reversSrc + " = " + sh[NShip].reversSrc + "\n " +
-      warShipProtoComments.destroySrc + " = " + sh[NShip].destroySrc + "\n " +
-      warShipProtoComments.destroyRevSrc + " = " + sh[NShip].destroyRevSrc + "\n " +
-      warShipProtoComments.FireSrc + " = " + sh[NShip].FireSrc + "\n " +
-      warShipProtoComments.health + " = " + sh[NShip].health + "\n " +
-      warShipProtoComments.identity + " = " + sh[NShip].identity + "\n " +
-      warShipProtoComments.type + " = " + sh[NShip].type + "\n " +
+    "кораблей на экране"+ shipsOnScreen +
+    warShipProtoComments.numberProto + " = " + sh[NShip].numberProto + "\n "+
+    //  warShipProtoComments.name + " = " + sh[NShip].name + "\n " +
+    //  warShipProtoComments.srcOnLeft + " = " + sh[NShip].srcOnLeft + "\n " +
+    //  warShipProtoComments.srcOnRight + " = " + sh[NShip].srcOnRight + "\n " +
+    //  warShipProtoComments.destroySrc + " = " + sh[NShip].destroySrc + "\n " +
+    //  warShipProtoComments.destroyRevSrc + " = " + sh[NShip].destroyRevSrc + "\n " +
+    //  warShipProtoComments.FireSrc + " = " + sh[NShip].FireSrc + "\n " +
+    //  warShipProtoComments.health + " = " + sh[NShip].health + "\n " +
+    //  warShipProtoComments.identity + " = " + sh[NShip].identity + "\n " +
+    //  warShipProtoComments.typeMooving + " = " + sh[NShip].typeMooving + "\n " +
       warShipProtoComments.x + " = " + sh[NShip].x + "\n " +
       warShipProtoComments.y + " = " + sh[NShip].y + "\n " +
-      warShipProtoComments.vectorLeft + " = " + sh[NShip].vectorLeft + "\n " +
-      warShipProtoComments.rangeFactor + " = " + sh[NShip].rangeFactor + "\n " +
-      warShipProtoComments.width + " = " + sh[NShip].width + "\n " +
-      warShipProtoComments.currentWidth + " = " + sh[NShip].currentWidth + "\n " +
-      warShipProtoComments.height + " = " + sh[NShip].height + "\n " +
-      warShipProtoComments.currentHeight + " = " + sh[NShip].currentHeight + "\n " +
-      warShipProtoComments.speedX + " = " + sh[NShip].speedX + "\n " +
-      warShipProtoComments.speedY + " = " + sh[NShip].speedY + "\n " +
-      warShipProtoComments.speedIndivid + " = " + sh[NShip].speedIndivid + " \n все данные. и так много. ");
+    //  warShipProtoComments.vectorLeft + " = " + sh[NShip].vectorLeft + "\n " +
+    //  warShipProtoComments.rangeFactor + " = " + sh[NShip].rangeFactor + "\n " +
+  //  warShipProtoComments.width + " = " + sh[NShip].width + "\n " +
+      warShipProtoComments.currentWidth + " = " + sh[NShip].currentWidth + "\n " );
+    //  warShipProtoComments.height + " = " + sh[NShip].height + "\n " +
+    //  warShipProtoComments.currentHeight + " = " + sh[NShip].currentHeight + "\n " +
+    ////  warShipProtoComments.speedX + " = " + sh[NShip].speedX + "\n " +
+    //  warShipProtoComments.speedY + " = " + sh[NShip].speedY + "\n " +
+    //  warShipProtoComments.speedIndivid + " = " + sh[NShip].speedIndivid + " \n все данные. и так много. ");
 
+      // задаём характеристики элементу
+      //создаём элемент корабль
+      let image = document.createElement("img");
+      image.className = "ships";
+      image.id = "ship" + NShip;
+      divShips.appendChild(image);
+
+      //document.getElementById(elementId).style.pozition = 'absolute';
+      //document.getElementById(elementId).style.zIndex = 1000;
+      //alert (image.id);
+      //document.getElementById(temp_id).style.opacity = 1;
+      //  var ship1 = getElementById('ship1');
+
+      //  ship1.style.left = 500;
+      //image.style.zIndex = 500;
+      //image.style.top = 100;
+      //divShips.appendChild(image);
   }
 
+  function shipElementVisual(n_ship) {
+    //console.log (n_ship);
+    let elementId = "ship" + n_ship;
+    let ship_element = document.getElementById(elementId);
+    //alert (ship_element.id);
+    document.getElementById(elementId).src = sh[n_ship].src;
 
-  /*  var warShip2Proto = {
-   name          : "Танкер",  ++
-   src           : "images/ship_1/ship.png",++
-   reversSrc     : "images/ship_1/ship2.png",++
-   destroySrc    : "images/ship_1/ship.png",++
-   destroyRevSrc : "images/ship_1/ship2.png",++
-   fireSrc       : "images/ship_1/ship2.png",++
-   health        : 10,++
-   identity      : false,++
-   type          : "simple",
-   x             : 0,
-   y             : 800,
-   width         : 200,
-   height        : 100,
-   speedX        : 0,
-   speedY        : 0,
-   speedIndivid  : 1,
-   vectorLeft    : true
-   }
+    document.getElementById(elementId).style.top = sh[n_ship].y ;
+    document.getElementById(elementId).style.left =  sh[n_ship].x - pozitionPeriscop;
+    document.getElementById(elementId).style.zIndex = sh[n_ship].y;
+    document.getElementById(elementId).style.width = sh[n_ship].currentWidth;
+    document.getElementById(elementId).style.height = sh[n_ship].currentHeight;
 
-
-  }*/
+  }
 
 
   //визуализируем объекты игровой страницы
