@@ -129,17 +129,25 @@
   position: absolute;
   width : 1000;
   height: 800;
-
+  overflow: hidden;
   visibility: hidden;
 }
 #lid {
   position: absolute;
   width : 800;
-  height: 800;
+  height: 400;
   left  : 0;
   top   : 0;
   z-index: 1;
   }
+#lid2 {
+    position: absolute;
+    width : 800;
+    height: 400;
+    left  : 0;
+    top   : 400;
+    z-index: 1;
+    }
 #sea1 {
   position: absolute;
   width : 1500;
@@ -159,7 +167,7 @@
 #sky {
   position: absolute;
   width : 1000;
-  height: 300;
+  height: 450;
   left  : -100;
   top   : 0;
   z-index: 1;
@@ -169,7 +177,7 @@
   width : 1100;
   height: 400;
   left  : 4000;
-  top   : 0;
+  top   : 150;
   z-index: 1;
 }
 #periscop{
@@ -326,12 +334,9 @@
   top   : 200;
   z-index: 1;
 }
-
-
 .ships {
   position: absolute;
-}
-
+  z-index : 1;
 }
 .torpeds {
   position: absolute;

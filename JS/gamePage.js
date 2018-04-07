@@ -8,7 +8,6 @@ import { level } from './data/dataLevels.js';
 // функция выполнения игры
 export function game() {
   let lvl = lvlChange().current;
-  //alert (lvl);
   load.style.visibility = 'visible';
   // кэш игровой страницы
   var gameCache = [level[lvl].seaSrc,
@@ -28,7 +27,6 @@ export function game() {
   preload(gameCache, gameProcess);
 }
 function gameProcess() {
-  // alert (nSub);
   const lvl = lvlChange().current;
   const nSub = nSubChange().current;
   var lvlGame = Object.create(level[lvl]);
@@ -97,15 +95,14 @@ function gameProcess() {
 
   // игровой процесc
   let timerGame = setInterval(function() {
-    //let changeShip = 0; //временная переменная
-    //let changeTypeShip = 0; //выбранный случайным образом тип корабля
     delayNewShip++
-    //делаем новый корабль если пауза до появления следующего корабля соблюдена, кораблей на экране меньше,
-    //чем задано по уровню и если выплыли ещё не все корабли
-    if ((delayNewShip > lvlGame.delayNewShip - lvlGame.delayNewShipReduction * shipsDestroy) &&
-      (shipsOnScreen < lvlGame.maxShips) && (lvlGame.namberOfShips != 0)) {
-      //  console.log ("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-
+    //делаем новый корабль если пауза до появления следующего корабля соблюдена,
+    // кораблей на экране меньше,
+    // чем задано по уровню и если выплыли ещё не все корабли
+    if ((delayNewShip > lvlGame.delayNewShip - lvlGame.delayNewShipReduction *
+       shipsDestroy) &&
+       (shipsOnScreen < lvlGame.maxShips) && (lvlGame.namberOfShips != 0)) {
+      let numberCreatingShip;
       //выбираем случайным образом тип корабля в зависимости от данных текущего уровня
       let changeShip = getRandomInRange(1, lvlGame.numberOfShips);
       //alert (changeShip);
@@ -126,8 +123,13 @@ function gameProcess() {
       //счетчик оставшихся кораблей
       lvlGame.numberOfShips--;
       //создаём корабль
-      // alert ("создал "+ changeTypeShip);
-      createShip(shipsOnScreen, changeTypeShip);
+      ////for (let i = lvlGame.maxShips ; i > 0; i--) {
+        //if (sh[i].numberProto  == undefined) {numberCreatingShip = i};
+      //}
+      //alert (numberCreatingShip);
+      //-----------------------------------------------------заменить, узнать как определить , что объект не существует
+      numberCreatingShip = shipsOnScreen;
+      createShip(numberCreatingShip, changeTypeShip);
 
     }
 
@@ -213,12 +215,15 @@ function gameProcess() {
     if (per_mouse_right) {
       pozitionPeriscop = rotatePeriscop("right", pozitionPeriscop);
     }
-
-    //рассчет полета торпед
+    // рассчет полета торпед
     for (var i = 1; i <= 3; i++) {
       if (torped[i].visible) {
         //коэффиц. который зависит от удаленности торпеды (от 1 до 0.25)
-        torped[i].rangeFactor = 1 - (Y_MAX - torped[i].y) * 0.0015;
+        torped[i].rangeFactor = 1 - (Y_MAX - torped[i].y) * 0.0025;
+        // если торпеда рядом с горизонтом - увеличиваем её прозрачность
+        if (torped[i].y < lvlGame.gorizontY - 80) {
+          torped[i].opacity = 0.4} else {torped[i].opacity = 0.8;
+        };
         //определяем размеры торпед в зависимости от удаленности
         torped[i].width = TORPED_WIDTH * torped[i].rangeFactor;
         torped[i].height = TORPED_HEIGHT * torped[i].rangeFactor;
@@ -226,18 +231,34 @@ function gameProcess() {
         if (torped[i].y < Y_MAX) {
           torped[i].y = torped[i].y - torped[i].speed * torped[i].rangeFactor
         };
-        //возвращаем торпеду в торпедный аппарат при y<300
-        if (torped[i].y < 300) {
+        //возвращаем торпеду в торпедный аппарат при y<450
+        if (torped[i].y < 450 - torped[i].height) {
           torped[i].y = Y_MAX
         };
         //если торпеда ушла за горизонт делаем её невидимой
-        if (torped[i].y < lvlGame.gorizontY) {
+        if (torped[i].y < lvlGame.gorizontY - torped[i].height) {
           torped[i].visible = false
         }
         //если торпеда попала в цель делаем её невидимой
         //---------------------------прописать
       }
     }
+    // рассчет движения кораблей
+    // < кораблей максимального количества кораблей в уровне с проверкой пустых объектов
+//    for (var i = 1; i <= shipsOnScreen ; i++){
+//      sh[i].x = sh[i].x  + sh[i].speedX;
+//      sh[i].y = sh[i].y  + sh[i].speedY;
+//      // расчет коэффициента размера кораблей
+//      sh[i].rangeFactor = 1 - (Y_MAX - sh[i].y) * 0.0025;
+//      sh[i].currentWidth = sh[i].width * sh[i].rangeFactor;
+//      sh[i].currentHeight = sh[i].height * sh[i].rangeFactor;
+      //проверка уход за край
+      //if ((ships[i].x > 1100) || (ships[i].x < -400)) {ships[i].visible = false};
+      //if ((ships[i].y > level[lvl].shipMaxY) || (ships[i].y < level[lvl].shipMinY)) {
+      //  if (ships[i].type == "zigzag") {ships[i].speedY = -ships[i].speedY}
+      //  else {ships[i].speedY = 0;}
+      //}
+//    }
 
     //визуализация левой торпеды
     if (torped[1].visible) {
@@ -255,7 +276,6 @@ function gameProcess() {
     }
     //визуализация правой торпеды
     if (torped[3].visible) {
-      //alert(torped[0].y);
       rightTorped.style.top = torped[3].y;
       rightTorped.style.left = torped[3].x - pozitionPeriscop + (TORPED_WIDTH - torped[3].width) / 2;
       rightTorped.style.width = torped[3].width;
@@ -265,6 +285,7 @@ function gameProcess() {
     for (let n_ship = 1 ; n_ship <= shipsOnScreen; n_ship++){
       shipElementVisual(n_ship);
     }
+
   }, FRAME_RATE);
   //получение объекта событие, поворот перископа, запуск торпед,
   function selector(e) {
@@ -304,11 +325,8 @@ function gameProcess() {
   function createShip(NShip, typeShip) {
     //создаём объект корабль
     sh[NShip] = Object.create(warShipProto[typeShip]);
-
-
-
     //выбираем направление движения корабля
-    if (getRandomInRange(0, 100) < lvlGame.directionShips) {
+    if (getRandomInRange(1, 100) <= lvlGame.directionShips) {
       sh[NShip].vectorLeft = true
     } else {
       sh[NShip].vectorLeft = false
@@ -316,23 +334,27 @@ function gameProcess() {
     //определяем координату Y
     sh[NShip].y = getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY)
     console.log ('sh[NShip].y = '+sh[NShip].y);
-    //расчет коэффициента
-    sh[NShip].rangeFactor = 1 - (Y_MAX - sh[NShip].y) * 0.0015;
+    //расчет коэффициента размера кораблей
+    sh[NShip].rangeFactor = 1 - (Y_MAX - sh[NShip].y) * 0.0025;
+    //расчет коэффициента скорости кораблей в зависимости от дальности
+    sh[NShip].speedFactor = 1 - (lvlGame.shipMaxY - sh[NShip].y) * 0.0025;
     //расчет размеров корабля для визуализации
     sh[NShip].currentWidth = sh[NShip].width * sh[NShip].rangeFactor;
-    console.log (NShip+"    1 -("+Y_MAX +"-" + sh[NShip].y + ")*"+0.0015+ "="+sh[NShip].rangeFactor);
-    //alert (Y_MAX+" "+sh[NShip].width+'  '+sh[NShip].rangeFactor);
     sh[NShip].currentHeight = sh[NShip].height * sh[NShip].rangeFactor;
     //определяем координату X
     if (sh[NShip].vectorLeft) {
       sh[NShip].x = X_MIN - sh[NShip].currentWidth+500;
       sh[NShip].src = sh[NShip].srcOnLeft;
+
     } else {
       sh[NShip].x = X_MAX - 500;
       sh[NShip].src = sh[NShip].srcOnRight;
     }
-    //горизонтальная cкорость корабля (RND в пределах данных уровня умноженный на коэфицент выбранного корабля
-    sh[NShip].speedX = getRandomFloat(lvlGame.speedShipsMin, lvlGame.speedShipsMax) * sh[NShip].speedIndivid;
+
+    // горизонтальная cкорость корабля (RND в пределах данных уровня умноженный
+    // на коэфицент выбранного корабля и на коф дальности)
+    sh[NShip].speedX = getRandomFloat(lvlGame.speedShipsMin,
+      lvlGame.speedShipsMax) * sh[NShip].speedIndivid * sh[NShip].speedFactor;
     if (sh[NShip].vectorLeft == false) {
       sh[NShip].speedX = -sh[NShip].speedX
     }
@@ -354,13 +376,14 @@ function gameProcess() {
     }
 
 
-    //информация о корабле
+    //информация о корабле (отладочный блок)
     console.log("Осталось кораблей : " + lvlGame.numberOfShips + "\n " +
     "кораблей на экране"+ shipsOnScreen +
     warShipProtoComments.numberProto + " = " + sh[NShip].numberProto + "\n "+
     //  warShipProtoComments.name + " = " + sh[NShip].name + "\n " +
-    //  warShipProtoComments.srcOnLeft + " = " + sh[NShip].srcOnLeft + "\n " +
-    //  warShipProtoComments.srcOnRight + " = " + sh[NShip].srcOnRight + "\n " +
+      warShipProtoComments.srcOnLeft + " = " + sh[NShip].srcOnLeft + "\n " +
+      warShipProtoComments.srcOnRight + " = " + sh[NShip].srcOnRight + "\n " +
+       + sh[NShip].src +
     //  warShipProtoComments.destroySrc + " = " + sh[NShip].destroySrc + "\n " +
     //  warShipProtoComments.destroyRevSrc + " = " + sh[NShip].destroyRevSrc + "\n " +
     //  warShipProtoComments.FireSrc + " = " + sh[NShip].FireSrc + "\n " +
@@ -371,11 +394,11 @@ function gameProcess() {
       warShipProtoComments.y + " = " + sh[NShip].y + "\n " +
     //  warShipProtoComments.vectorLeft + " = " + sh[NShip].vectorLeft + "\n " +
     //  warShipProtoComments.rangeFactor + " = " + sh[NShip].rangeFactor + "\n " +
-  //  warShipProtoComments.width + " = " + sh[NShip].width + "\n " +
+    //  warShipProtoComments.width + " = " + sh[NShip].width + "\n " +
       warShipProtoComments.currentWidth + " = " + sh[NShip].currentWidth + "\n " );
     //  warShipProtoComments.height + " = " + sh[NShip].height + "\n " +
     //  warShipProtoComments.currentHeight + " = " + sh[NShip].currentHeight + "\n " +
-    ////  warShipProtoComments.speedX + " = " + sh[NShip].speedX + "\n " +
+    //  warShipProtoComments.speedX + " = " + sh[NShip].speedX + "\n " +
     //  warShipProtoComments.speedY + " = " + sh[NShip].speedY + "\n " +
     //  warShipProtoComments.speedIndivid + " = " + sh[NShip].speedIndivid + " \n все данные. и так много. ");
 
@@ -384,7 +407,7 @@ function gameProcess() {
       let image = document.createElement("img");
       image.className = "ships";
       image.id = "ship" + NShip;
-      divShips.appendChild(image);
+      gamePage.appendChild(image);
 
       //document.getElementById(elementId).style.pozition = 'absolute';
       //document.getElementById(elementId).style.zIndex = 1000;
@@ -397,12 +420,11 @@ function gameProcess() {
       //image.style.top = 100;
       //divShips.appendChild(image);
   }
-
+  // визуализируем кораблики
   function shipElementVisual(n_ship) {
     //console.log (n_ship);
     let elementId = "ship" + n_ship;
     let ship_element = document.getElementById(elementId);
-    //alert (ship_element.id);
     document.getElementById(elementId).src = sh[n_ship].src;
 
     document.getElementById(elementId).style.top = sh[n_ship].y ;
@@ -412,12 +434,11 @@ function gameProcess() {
     document.getElementById(elementId).style.height = sh[n_ship].currentHeight;
 
   }
-
-
   //визуализируем объекты игровой страницы
   function visualGamePage() {
     gamePage.style.visibility = "visible";
     lid.style.zIndex = 819;
+    lid2.style.zIndex = 819;
     sea1.style.zIndex = 2;
     sea1.style.opacity = 1;
     sea2.style.zIndex = 3;
@@ -426,9 +447,9 @@ function gameProcess() {
     crosshair.style.zIndex = 820;
     crosshair.style.opacity = 0.5;
     panel.style.zIndex = 820;
-    sky.style.zIndex = 3;
+    sky.style.zIndex = 5;
     sky.style.left = -75 ;
-    land.style.zIndex = 5;
+    land.style.zIndex = 6;
     land.style.left = -300;
     indRotatePeriscop.style.zIndex = 821;
     indLeftTorped.style.zIndex = 821;
@@ -439,11 +460,11 @@ function gameProcess() {
     indRightTorpedText.style.zIndex = 821;
     indRotatePerText.style.zIndex = 821;
     leftTorped.style.zIndex = 4;
-    leftTorped.style.opacity = 0.6;
+    leftTorped.style.opacity = 0.8;
     centerTorped.style.zIndex = 4;
-    centerTorped.style.opacity = 0.6;
+    centerTorped.style.opacity = 0.8;
     rightTorped.style.zIndex = 4;
-    rightTorped.style.opacity = 0.6;
+    rightTorped.style.opacity = 0.8;
     buttonPerLeft.style.zIndex = 822;
     buttonPerRight.style.zIndex = 824;
     sonar.style.zIndex = 824;
@@ -469,23 +490,29 @@ function gameProcess() {
   }
   //открытие и закрытие перископа
   function lidMove(open) {
-    var lid_y = lid.style.top;
-    var timer_lid = setInterval(function() {
+    let lid_y, lid2_y;
+    if (open) {lid_y = 0, lid2_y = Y_MAX / 2} else {
+      lid_y = - Y_MAX * 0.375, lid2_y = Y_MAX * 0.875;
+    }
+    let timer_lid = setInterval(function() {
       if (open) {
-        if (lid_y > -700) {
-          lid_y = lid_y - 10
+        if (lid_y > - Y_MAX * 0.375 ) {
+          lid_y = lid_y - 2
+          lid2_y = lid2_y + 2
         } else {
           clearTimeout(timer_lid)
         };
       } else {
-        if (lid_y < -10) {
-          lid_y = lid_y + 10
+        if (lid_y > 0) {
+          lid_y = lid_y + 2
+          lid2_y = lid2_y - 2
         } else {
           clearTimeout(timer_lid)
         };
       }
       lid.style.top = lid_y;
-    }, FRAME_RATE);
+      lid2.style.top = lid2_y;
+    }, 10);
   }
   //пауза в игре
   function pause() {
@@ -587,20 +614,6 @@ function gameProcess() {
 
 
 
-      //движение кораблей
-      for (var i = 0; i < level[lvl].maxShips ;i++){
-        ships[i].x = ships[i].x  + ships[i].speedX;
-        ships[i].y = ships[i].y  + ships[i].speedY;
-        ships[i].rangeFactor = 1-(800-ships[i].y)*0.0015;
-        ships[i].width = SHIP_WIDTH * ships[i].rangeFactor;
-        ships[i].height = SHIP_HEIGHT * ships[i].rangeFactor;
-        //проверка уход за край
-        if ((ships[i].x > 1100) || (ships[i].x < -400)) {ships[i].visible = false};
-        if ((ships[i].y > level[lvl].shipMaxY) || (ships[i].y < level[lvl].shipMinY)) {
-          if (ships[i].type == "zigzag") {ships[i].speedY = -ships[i].speedY}
-          else {ships[i].speedY = 0;}
-        }
-      }
 
       //проверка на попадания
 
