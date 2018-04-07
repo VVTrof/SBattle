@@ -180,7 +180,7 @@
   top   : 150;
   z-index: 1;
 }
-#periscop{
+#periscope{
   position: absolute;
   width : 800;
   height: 800;
@@ -221,7 +221,7 @@
   top   : 680;
   z-index: 1;
 }
-#indRotatePeriscop{
+#indRotateperiscope{
   position: absolute;
   width : 120;
   height: 38;

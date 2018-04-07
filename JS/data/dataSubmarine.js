@@ -27,8 +27,8 @@
 // centerTorpedsX
 // maxFuel: 'вместимость топливного бака',
 // fuel: 'количество топлива в баке',
-// maxRotatePeriscop: 'максимальный поворот перископа. Не более 300',
-// speedRotatePeriscop: 'скорость поворота перископа' от 0 до 10,
+// maxRotateperiscope: 'максимальный поворот перископа. Не более 300',
+// speedRotateperiscope: 'скорость поворота перископа' от 0 до 10,
 
 // технические характеристики подводных лодок. ПЛ1.
 export let techParam = [];
@@ -50,8 +50,8 @@ techParam[0] = {
 
   maxFuel               : 100,
   fuel                  : 100,
-  maxRotatePeriscop     : 300,
-  speedRotatePeriscop   : 10,
+  maxRotateperiscope     : 300,
+  speedRotateperiscope   : 10,
 };
 // технические характеристики подводных лодок. ПЛ2.
 techParam[1] = {
@@ -72,8 +72,8 @@ techParam[1] = {
 
   maxFuel               : 100,
   fuel                  : 100,
-  maxRotatePeriscop     : 300,
-  speedRotatePeriscop   : 10,
+  maxRotateperiscope     : 300,
+  speedRotateperiscope   : 10,
 };
 // технические характеристики подводных лодок. ПЛ3.
 techParam[2] = {
@@ -94,7 +94,7 @@ techParam[2] = {
 
   maxFuel               : 100,
   fuel                  : 100,
-  maxRotatePeriscop     : 300,
-  speedRotatePeriscop   : 10,
+  maxRotateperiscope     : 300,
+  speedRotateperiscope   : 10,
 };
 // если авторизация пройдена успешно - загружаем данные о ангаре с сервера или локалхоста (поначалу)
