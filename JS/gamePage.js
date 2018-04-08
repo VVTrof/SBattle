@@ -267,7 +267,7 @@ function gameProcess() {
         }
         sh[i].y = sh[i].y + sh[i].speedY;
         //проверка уход за край дописать
-        //if ((sh[i].x > 1100) || (sh[i].x < -400)) {sh[i].visible = false};
+        if ((sh[i].x > X_MAX) || (sh[i].x < X_MIN - sh[i].currentWidth)) {deleteObj(i)};
         if ((sh[i].y > level[lvl].shipMaxY) || (sh[i].y < level[lvl].shipMinY)) {
           if (sh[i].type == "zigzag") {sh[i].speedY = -sh[i].speedY}
           else {sh[i].speedY = 0;
@@ -314,6 +314,17 @@ function gameProcess() {
       if (typeof sh[n_ship] == 'object') {shipElementVisual(n_ship)}
     }
   }, FRAME_RATE);
+  //удаление объекта и элемента img
+  function deleteObj(index) {
+    let deleteName = "ship"+ index;
+    let elem = document.getElementById("gamePage");
+
+    elem.parentNode.removeChild(deleteName);
+
+    delete sh[index];
+
+    
+  }
   //получение объекта событие, поворот перископа, запуск торпед,
   function selector(e) {
     e = e || window.event;
