@@ -363,7 +363,7 @@ function gameProcess() {
       //  if (ships_on_line.[i])
       }
       // alert (ships_on_line[0]);
-       // console.log (ships_on_line[0],ships_on_line[1]);
+      // console.log (ships_on_line[0],ships_on_line[1]);
       //--------------------------------------------------------------------------------------------
 
       sh[NShip].y = random_y
