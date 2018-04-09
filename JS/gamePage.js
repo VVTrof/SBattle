@@ -1,7 +1,7 @@
 import { preload } from './globalFunctions.js';
 import { SHIP_TYPES, FRAME_RATE, warShipProto,warShipProtoComments, TORPED_WIDTH,
-TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX , lvlChange, nSubChange} from './data/dataVariable.js';
-// import { lvl, nSub } from './data/dataVariable.js';
+  TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX , lvlChange,
+  nSubChange} from './data/dataVariable.js';
 import { techParam } from './data/dataSubmarine.js';
 import { level } from './data/dataLevels.js';
 
@@ -95,6 +95,8 @@ function gameProcess() {
 
   // игровой процесc
   let timerGame = setInterval(function() {
+    let a = shipsOnLine(499);
+    if (a[0] > 0) { console.log(a.length)}
     delayNewShip++
     //делаем новый корабль если пауза до появления следующего корабля соблюдена,
     // кораблей на экране меньше,
@@ -107,9 +109,10 @@ function gameProcess() {
       let changeShip = getRandomInRange(1, lvlGame.numberOfShips);
       let changeTypeShip = "empty"; //выбранный случайным образом тип корабля
       //создаём корабль
-      for (var i = 0; i < SHIP_TYPES; i++) {//alert ("i="+i + " кораблей этого типа"+ lvlGame.warShip[i])
+      // выбираем тип корабля из оставшихся в данном уровне
+      for (var i = 0; i < SHIP_TYPES; i++) {
         if ((lvlGame.warShip[i] >= changeShip) && (changeTypeShip == "empty")) {
-          changeTypeShip = i;// alert ("создал "+ changeTypeShip);
+          changeTypeShip = i;
         }
         changeShip = changeShip - lvlGame.warShip[i];
       }
@@ -125,11 +128,10 @@ function gameProcess() {
       for (let i = lvlGame.maxShips ; i > 0; i--) {
         if (typeof sh[i]  != 'object') {numberCreatingShip = i};
       }
-      console.log (lvlGame.numberOfShips);
+      // console.log (lvlGame.numberOfShips);
       // создаём корабль
       createShip(numberCreatingShip, changeTypeShip);
     }
-
 
     // Устанавливаем обработчик для событий клавиатуры
     document.onkeydown = selector;
@@ -263,9 +265,9 @@ function gameProcess() {
         sh[i].y = sh[i].y + sh[i].speedY;
         // поведение корабля
         if ((sh[i].y > lvlGame.shipMaxY) || (sh[i].y < lvlGame.shipMinY)) {
-          if (sh[i].type == "zigzag") {sh[i].speedY = -sh[i].speedY}
-          else {sh[i].speedY = 0;
-          }
+          if (sh[i].typeMooving == "zigzag") {sh[i].speedY = -sh[i].speedY}
+          //else {sh[i].speedY = 0;
+          //}
         }
         //проверка уход за край
         if ((sh[i].x > X_MAX) || (sh[i].x < X_MIN - sh[i].currentWidth)) {deleteObj(i)};
@@ -342,6 +344,8 @@ function gameProcess() {
   }
   //создание объекта и элемента выплывающего корабля по прототипу корабля
   function createShip(NShip, typeShip) {
+    //индикатор (true - найдена подходящая координата 'y' для нового корабля)
+    let y_ok = false;
     //создаём объект корабль
     sh[NShip] = Object.create(warShipProto[typeShip]);
     //выбираем направление движения корабля
@@ -351,7 +355,18 @@ function gameProcess() {
       sh[NShip].vectorLeft = false
     };
     //определяем координату Y
-    sh[NShip].y = getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY)
+    while (y_ok != true) {
+      let random_y = getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY);
+      let ships_on_line = shipsOnLine(random_y);
+      if (ships_on_line[0] === undefined) {y_ok = true}
+      //alert (ships_on_line[0]);
+       // console.log (ships_on_line[0],ships_on_line[1]);
+      //--------------------------------------------------------------------------------------------
+
+      sh[NShip].y = random_y
+      y_ok = true;
+    }
+
     //console.log ('sh[NShip].y = '+sh[NShip].y);
     //расчет коэффициента размера кораблей
     sh[NShip].rangeFactor = 1 - (Y_MAX - sh[NShip].y) * 0.0025;
@@ -381,12 +396,14 @@ function gameProcess() {
     if (sh[NShip].speedY == 0) {
       sh[NShip].typeMooving = "simple"
     };
+    // пока оставил только zigzag
     if (sh[NShip].speedY != 0) {
-      if (rndTrue()) {
-        sh[NShip].typeMooving = "zigzag";
-      } else {
-        sh[NShip].typeMooving = "diag";
-      }
+      sh[NShip].typeMooving = "zigzag";
+    //  if (rndTrue()) {
+    //    sh[NShip].typeMooving = "zigzag";
+    //  } else {
+      //  sh[NShip].typeMooving = "diag";
+      //}
     }
     // задаём характеристики элементу
     //создаём элемент корабль
@@ -421,20 +438,15 @@ function gameProcess() {
     //  warShipProtoComments.speedX + " = " + sh[NShip].speedX + "\n " +
     //  warShipProtoComments.speedY + " = " + sh[NShip].speedY + "\n " +
     //  warShipProtoComments.speedIndivid + " = " + sh[NShip].speedIndivid + " \n все данные. и так много. ");
-
-
-
   // визуализируем кораблики
   function shipElementVisual(n_ship) {
     //console.log (n_ship);
     let elementId = "ship" + n_ship;
     let ship_element = document.getElementById(elementId);
-    //let x = Math.floor(sh[n_ship].x) - pozitionPeriscope;
-    // let y = Math.floorsh[n_ship].y
     if (document.getElementById(elementId).src != sh[n_ship].src) {
       document.getElementById(elementId).src = sh[n_ship].src
     };
-    //console.log ("tktvtyn"+ Math.floor(sh[n_ship].y));
+
 
     document.getElementById(elementId).style.top = sh[n_ship].y;
     document.getElementById(elementId).style.left = sh[n_ship].x - pozitionPeriscope;
@@ -610,5 +622,23 @@ function gameProcess() {
       indRightTorpedText.style.background = "red";
       return false;
     }
+  }
+  // функция определения существующих кораблей с данной координатой y
+  function shipsOnLine (validation_y) {
+    let ships_on_line = [];
+    for (let i = 1 ; i <= lvlGame.maxShips ; i++) {
+      //console.log (i);
+      //console.log(Math.floor(validation_y)+"\n");
+
+      if (typeof sh[i]  == 'object') {
+        //console.log("ships=" + Math.floor(sh[i].y));
+        if (Math.floor(sh[i].y) == Math.floor(validation_y)) {
+          ships_on_line.push(i)
+        };
+      //console.log (i+" " + typeof sh[i] + (Math.floor(sh[i].y) == Math.floor(validation_y)));
+      //if (typeof ships_on_line[0] == 'object') {alert(ships_on_line[0])}
+      }
+    }
+    return ships_on_line;
   }
 }

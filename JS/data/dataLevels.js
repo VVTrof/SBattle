@@ -45,7 +45,7 @@ level[0] = {
   gorizontY: 450,
   speedShipsMin: 0.1,
   speedShipsMax: 0.4,
-  speedShipsMaxY: 3,
+  speedShipsMaxY: 0.1,
   speedShipsMaxIncrease: 0.01,
   delayNewShip: 10,
   delayNewShipReduction: 1,
