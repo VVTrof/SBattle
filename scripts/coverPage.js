@@ -8,12 +8,12 @@ export function coverPage() {
   let coverPageCache = [
     'images/fonTitulPage.jpg',
     'images/buttons/buttonStart.png',
-    "images/buttons/buttonOff.png",
-    "images/buttons/buttonUp.png",
+    'images/buttons/buttonOff.png',
+    'images/buttons/buttonUp.png',
     'images/buttons/buttonDown.png',
     'images/buttons/buttonInfoOff.png',
     'images/buttons/buttonRulesOff.png',
-    "images/indikator.png",
+    'images/indikator.png',
   ];
   // кэшируем картинки
   preload(coverPageCache, coverPageProcess);
@@ -22,73 +22,75 @@ export function coverPage() {
 function coverPageProcess() {
   // создаём список кэшируемых картинок
   // для исключения повторного нажатия на кнопки buttonRules и buttonInfo
-  var lastClick;
+  let lastClick;
   visualCoverPage();
 
   // функции-обработчики кнопок
   buttonRules.onclick = function() {
-    var current_opacity = +infoGame.style.opacity,
-      direction_opacity = "reduction";
-    if (lastClick != "rules") {
-      buttonRules.src = "images/buttons/buttonRulesOn.png";
-      buttonInfo.src = "images/buttons/buttonInfoOff.png";
+    let current_opacity = +infoGame.style.opacity;
+    let direction_opacity = 'reduction';
+    if (lastClick != 'rules') {
+      buttonRules.src = 'images/buttons/buttonRulesOn.png';
+      buttonInfo.src = 'images/buttons/buttonInfoOff.png';
       // плавно убирает и выводит окно infoGame
       var timer = setInterval(function() {
-        if (current_opacity > 0 && direction_opacity == "reduction") {
+        if (current_opacity > 0 && direction_opacity == 'reduction') {
           current_opacity = current_opacity - 0.01
         };
-        if (current_opacity < 0.7 && direction_opacity == "increase") {
+        if (current_opacity < 0.7 && direction_opacity == 'increase') {
           current_opacity = current_opacity + 0.01
         };
-        if (current_opacity >= 0.7 && direction_opacity == "increase") {
+        if (current_opacity >= 0.7 && direction_opacity == 'increase') {
           clearInterval(timer)
         };
-        if (current_opacity <= 0.01 && direction_opacity == "reduction") {
-          direction_opacity = "increase";
-          document.getElementById('infoGame').innerText = "Вы управляете подводной лодкой." +
-            " В Вашем распоряжении три торпедных аппарата и 300 торпед боекомплекта." +
-            " Запуск торпед производится путём нажатия клавиш 'z' ''x' и 'c' " +
-            " поворот перископа - клавиши 'left' и 'right'"
+        if (current_opacity <= 0.01 && direction_opacity == 'reduction') {
+          direction_opacity ='increase';
+          document.getElementById('infoGame').innerText =
+            'Вы управляете подводной лодкой. ' +
+            'В Вашем распоряжении три торпедных аппарата и 300 торпед ' +
+            'боекомплекта. ' +
+            'Запуск торпед производится путём нажатия клавиш "z", "x" и "c" ' +
+            'поворот перископа - клавиши "left"  и "right"'
         }
         infoGame.style.opacity = current_opacity;
       }, 10);
-      lastClick = "rules";
+      lastClick = 'rules';
     }
   }
 
   buttonInfo.onclick = function() {
     var current_opacity = +infoGame.style.opacity,
-      direction_opacity = "reduction";
-    if (lastClick != "info") {
-      buttonRules.src = "images/buttons/buttonRulesOff.png";
-      buttonInfo.src = "images/buttons/buttonInfoOn.png";
+      direction_opacity ='reduction';
+    if (lastClick !='info') {
+      buttonRules.src ='images/buttons/buttonRulesOff.png';
+      buttonInfo.src ='images/buttons/buttonInfoOn.png';
       // плавно убирает и выводит окно infoGame
       var timer = setInterval(function() {
-        if (current_opacity > 0 && direction_opacity == "reduction") {
+        if (current_opacity > 0 && direction_opacity =='reduction') {
           current_opacity = current_opacity - 0.01
         };
-        if (current_opacity < 0.7 && direction_opacity == "increase") {
+        if (current_opacity < 0.7 && direction_opacity =='increase') {
           current_opacity = current_opacity + 0.01
         };
-        if (current_opacity >= 0.7 && direction_opacity == "increase") {
+        if (current_opacity >= 0.7 && direction_opacity =='increase') {
           clearInterval(timer)
         };
-        if (current_opacity <= 0.01 && direction_opacity == "reduction") {
-          direction_opacity = "increase";
-          document.getElementById('infoGame').innerText = "последние изменения:" +
-            "три торпедных аппарата, количество кораблей до шести (можно " +
-            "увеличить) \n сейчас работаю над: алгоритм проверки попадания," +
-            "вывод кораблей на модуль сонар. \n предложения и пожелания можно " +
-            "отправить на почту: vvtrof@gmail.com"
+        if (current_opacity <= 0.01 && direction_opacity =='reduction') {
+          direction_opacity ='increase';
+          document.getElementById('infoGame').innerText ='последние изменения:' +
+           'три торпедных аппарата, количество кораблей до шести (можно' +
+           'увеличить) \n сейчас работаю над: алгоритм проверки попадания,' +
+           'вывод кораблей на модуль сонар. \n предложения и пожелания можно' +
+           'отправить на почту: vvtrof@gmail.com'
         };
         infoGame.style.opacity = current_opacity;
       }, 10);
-      lastClick = "info";
+      lastClick ='info';
     }
   }
 
   buttonOff.onclick = function() {
-    var result = confirm("Вы хотите покинуть игру?");
+    var result = confirm('Вы хотите покинуть игру?');
     if (result == true) window.close();
   }
 
@@ -96,14 +98,14 @@ function coverPageProcess() {
     if (lvlChange().current < 2) {
       lvlChange().up();
     };
-    document.getElementById('beginLvl').innerText = lvlChange().current + " level";
+    document.getElementById('beginLvl').innerText = lvlChange().current +' level';
   }
 
   buttonDown.onclick = function() {
     if (lvlChange().current > 0) {
       lvlChange().down();
     };
-    document.getElementById('beginLvl').innerText = lvlChange().current + " level";
+    document.getElementById('beginLvl').innerText = lvlChange().current +' level';
   }
 
   buttonStart.onclick = function() {
@@ -117,7 +119,7 @@ function coverPageProcess() {
 
   // визуализируем объекты титульной страницы и скрываем другие объекты
   function visualCoverPage() {
-    titulPage.style.visibility = "visible";
+    titulPage.style.visibility ='visible';
     fonTitulPage.style.zIndex = 1;
     buttonStart.style.zIndex = 2;
     buttonOff.style.zIndex = 2;
@@ -137,6 +139,6 @@ function coverPageProcess() {
 
   // скрываем объекты титульной страницы
   function hideCoverPage() {
-    titulPage.style.visibility = "hidden";
+    titulPage.style.visibility ='hidden';
   }
 }
