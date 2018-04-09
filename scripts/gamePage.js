@@ -300,6 +300,7 @@ function gameProcess() {
       if (typeof sh[n_ship] == 'object') {shipElementVisual(n_ship)}
     }
   }, FRAME_RATE);
+
   // удаление объекта и элемента img
   function deleteObj(index) {
     let deleting_element = document.getElementById('ship'+index);
@@ -407,14 +408,14 @@ function gameProcess() {
     //  } else {
       //  sh[NShip].typeMooving = "diag";
       // }
-    }
+    
     // задаём характеристики элементу
     // создаём элемент корабль
     let image = document.createElement("img");
     image.className = "ships";
     image.id = "ship" + NShip;
     gamePage.appendChild(image);
-    }
+  }
 
     // информация о корабле (отладочный блок)
     // console.log("Осталось кораблей : " + lvlGame.numberOfShips + "\n " +
