@@ -3,9 +3,8 @@ import { YANDEX_MONEY } from './data/dataVariable.js';
 import { game } from './gamePage.js';
 import { lvlChange } from './data/dataVariable.js';
 
-//функция выполнения титульной страницы
+// функция выполнения титульной страницы
 export function coverPage() {
-
   let coverPageCache = [
     'images/fonTitulPage.jpg',
     'images/buttons/buttonStart.png',
@@ -19,21 +18,21 @@ export function coverPage() {
   // кэшируем картинки
   preload(coverPageCache, coverPageProcess);
 }
-//coverPageProcess();
+// coverPageProcess();
 function coverPageProcess() {
   // создаём список кэшируемых картинок
-  //для исключения повторного нажатия на кнопки buttonRules и buttonInfo
+  // для исключения повторного нажатия на кнопки buttonRules и buttonInfo
   var lastClick;
   visualCoverPage();
 
-  //  функции-обработчики кнопок
+  // функции-обработчики кнопок
   buttonRules.onclick = function() {
     var current_opacity = +infoGame.style.opacity,
       direction_opacity = "reduction";
     if (lastClick != "rules") {
       buttonRules.src = "images/buttons/buttonRulesOn.png";
       buttonInfo.src = "images/buttons/buttonInfoOff.png";
-      //плавно убирает и выводит окно infoGame
+      // плавно убирает и выводит окно infoGame
       var timer = setInterval(function() {
         if (current_opacity > 0 && direction_opacity == "reduction") {
           current_opacity = current_opacity - 0.01
@@ -63,7 +62,7 @@ function coverPageProcess() {
     if (lastClick != "info") {
       buttonRules.src = "images/buttons/buttonRulesOff.png";
       buttonInfo.src = "images/buttons/buttonInfoOn.png";
-      //плавно убирает и выводит окно infoGame
+      // плавно убирает и выводит окно infoGame
       var timer = setInterval(function() {
         if (current_opacity > 0 && direction_opacity == "reduction") {
           current_opacity = current_opacity - 0.01
@@ -110,13 +109,13 @@ function coverPageProcess() {
   buttonStart.onclick = function() {
     hideCoverPage();
     // Будут направления: в ангар, на базу и на карту
-    //задаем миссию и номер пл
+    // задаем миссию и номер пл
     // будет в дальнейшем меняться
     // nSub = 1;
     game();
   }
 
-  //визуализируем объекты титульной страницы и скрываем другие объекты
+  // визуализируем объекты титульной страницы и скрываем другие объекты
   function visualCoverPage() {
     titulPage.style.visibility = "visible";
     fonTitulPage.style.zIndex = 1;
@@ -136,7 +135,7 @@ function coverPageProcess() {
     }
   }
 
-  //скрываем объекты титульной страницы
+  // скрываем объекты титульной страницы
   function hideCoverPage() {
     titulPage.style.visibility = "hidden";
   }
