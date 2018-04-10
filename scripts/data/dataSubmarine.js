@@ -33,65 +33,80 @@
 // технические характеристики подводных лодок. ПЛ1.
 export let techParam = [];
 techParam[0] = {
-  leftTorpedMax         : 10,
-  leftTorpedSpeed       : 2,
-  leftTorpeds           : 99,
-  leftTorpedsX          : 190,
-
-  rightTorpedMax        : 10,
-  rightTorpedSpeed      : 2,
-  rightTorpeds          : 99,
-  rightTorpedsX         : 590,
-
-  centerTorpedMax       : 10,
-  centerTorpedSpeed     : 3,
-  centerTorpeds         : 99,
-  centerTorpedsX        : 390,
-
+  tubes: [
+    {
+      max: 10,
+      speed: 2,
+      torpeds: 99,
+      torpedsX: 190,
+    },
+    {
+      max: 10,
+      speed: 5,
+      torpeds: 99,
+      torpedsX: 390,
+    },
+    {
+      max: 10,
+      speed: 2,
+      torpeds: 99,
+      torpedsX: 590,
+    }
+  ],
   maxFuel               : 100,
   fuel                  : 100,
   maxRotateperiscope     : 300,
   speedRotateperiscope   : 10,
 };
 // технические характеристики подводных лодок. ПЛ2.
-techParam[1] = {
-  leftTorpedMax         : 10,
-  leftTorpedSpeed       : 2,
-  leftTorpeds           : 99,
-  leftTorpedsX          : 190,
-
-  rightTorpedMax        : 10,
-  rightTorpedSpeed      : 2,
-  rightTorpeds          : 99,
-  rightTorpedsX         : 590,
-
-  centerTorpedMax       : 10,
-  centerTorpedSpeed     : 3,
-  centerTorpeds         : 99,
-  centerTorpedsX        : 390,
-
+techParam[0] = {
+  tubes: [
+    {
+      max: 10,
+      speed: 2,
+      torpeds: 99,
+      torpedsX: 190,
+    },
+    {
+      max: 10,
+      speed: 5,
+      torpeds: 99,
+      torpedsX: 390,
+    },
+    {
+      max: 10,
+      speed: 2,
+      torpeds: 99,
+      torpedsX: 590,
+    }
+  ],
   maxFuel               : 100,
   fuel                  : 100,
   maxRotateperiscope     : 300,
   speedRotateperiscope   : 10,
 };
 // технические характеристики подводных лодок. ПЛ3.
-techParam[2] = {
-  leftTorpedMax         : 10,
-  leftTorpedSpeed       : 2,
-  leftTorpeds           : 99,
-  leftTorpedsX          : 190,
-
-  rightTorpedMax        : 10,
-  rightTorpedSpeed      : 2,
-  rightTorpeds          : 99,
-  rightTorpedsX         : 590,
-
-  centerTorpedMax       : 10,
-  centerTorpedSpeed     : 3,
-  centerTorpeds         : 99,
-  centerTorpedsX        : 390,
-
+techParam[0] = {
+  tubes: [
+    {
+      max: 10,
+      speed: 2,
+      torpeds: 99,
+      torpedsX: 190,
+    },
+    {
+      max: 10,
+      speed: 5,
+      torpeds: 99,
+      torpedsX: 390,
+    },
+    {
+      max: 10,
+      speed: 2,
+      torpeds: 99,
+      torpedsX: 590,
+    }
+  ],
   maxFuel               : 100,
   fuel                  : 100,
   maxRotateperiscope     : 300,

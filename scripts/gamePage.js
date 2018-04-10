@@ -49,31 +49,31 @@ function gameProcess() {
   //  accelerator: "изменение скорости торпеды в зависимости от применения модулей улучшения 1 - 100%"
 
   var lTorped = {
-    x: techParam[0].leftTorpedsX,
+    x: techParam[nSub].tubes[0].x,
     y: 800,
     width: TORPED_WIDTH,
     height: TORPED_HEIGHT,
-    speed: techParam[0].leftTorpedSpeed,
+    speed: techParam[0].tubes[0].speed,
     visible: false,
     rangeFactor: 1,
     accelerator: 1
   };
   var cTorped = {
-    x: techParam[nSub].centerTorpedsX,
+    x: techParam[nSub].tubes[1].x,
     y: 800,
     width: TORPED_WIDTH,
     height: TORPED_HEIGHT,
-    speed: techParam[nSub].centerTorpedSpeed,
+    speed: techParam[nSub].tubes[1].speed,
     visible: false,
     rangeFactor: 1,
     accelerator: 1
   };
   var rTorped = {
-    x: techParam[nSub].rightTorpedsX,
+    x: techParam[nSub].tubes[2].x,
     y: 800,
     width: TORPED_WIDTH,
     height: TORPED_HEIGHT,
-    speed: techParam[nSub].rightTorpedSpeed,
+    speed: techParam[nSub].tubes[2].speed,
     visible: false,
     rangeFactor: 1,
     accelerator: 1
@@ -94,8 +94,8 @@ function gameProcess() {
 
   // игровой процесc
   let timerGame = setInterval(function() {
-    let a = shipsOnLine(499);
-    if (a[0] > 0) { console.log(a.length)}
+    // let a = shipsOnLine(499);
+    // if (a[0] > 0) { console.log(a.length)}
     delayNewShip++
     // делаем новый корабль если пауза до появления следующего корабля соблюдена,
     // кораблей на экране меньше,
@@ -140,13 +140,13 @@ function gameProcess() {
       pause()
     };
     indRightTorpedText.onclick = function() {
-      startRightTorped()
+      startTorpedo(2)
     };
     indLeftTorpedText.onclick = function() {
-      startLeftTorped()
+      startTorpedo(0)
     };
     indCenterTorpedText.onclick = function() {
-      startCenterTorped()
+      startTorpedo(1)
     };
     buttonPerLeft.onmousedown = function() {
       per_mouse_left = true
@@ -327,15 +327,15 @@ function gameProcess() {
     // запуск левой торпеды
     // запуск левой торпеды
     if (keyCode == 90) {
-      startLeftTorped()
+      startTorpedo(0);
     }
     // запуск центральной торпеды
     if (keyCode == 88) {
-      startCenterTorped()
+      startTorpedo(1)
     }
     // запуск правой торпеды
     if (keyCode == 67) {
-      startRightTorped()
+      startTorpedo(2)
     }
     // Отменяем действие по умолчанию:
     e.preventDefault();
@@ -490,9 +490,9 @@ function gameProcess() {
     pribor.style.zIndex = 824;
     indikatorDos.style.zIndex = 824;
 
-    document.getElementById('indLeftTorpedText').innerText = techParam[nSub].leftTorpeds;
-    document.getElementById('indCenterTorpedText').innerText = techParam[nSub].centerTorpeds;
-    document.getElementById('indRightTorpedText').innerText = techParam[nSub].rightTorpeds;
+    document.getElementById('indLeftTorpedText').innerText = techParam[nSub].tubes[0].torpeds;
+    document.getElementById('indCenterTorpedText').innerText = techParam[nSub].tubes[1].torpeds;
+    document.getElementById('indRightTorpedText').innerText = techParam[nSub].tubes[2].torpeds;
   };
   // возвращает целое число из выбранного диапозоза
   function getRandomInRange(min, max) {
@@ -575,51 +575,27 @@ function gameProcess() {
     return poz_periscope_degree;
   }
   // запуск торпед
-  function startLeftTorped() {
-    if ((torped[0].y == 800) && (techParam[nSub].leftTorpeds > 0)) {
-      torped[0].y = 799;
-      torped[0].x = techParam[nSub].leftTorpedsX + pozitionPeriscope;
+  function startTorpedo(n_tube){
+    let tube = techParam[nSub].tubes[n_tube];
+    let torpedo = torped[n_tube];
+    const indTubeId =
+      ['indLeftTorpedText', 'indCenterTorpedText', 'indRightTorpedText'][n_tube];
+    const indTube = document.getElementById(indTubeId);
+    if ((torpedo.y == 800) && (tube.torpeds > 0)) {
+      torpedo.y = 799;
+      torpedo.x = tube.x + pozitionPeriscope;
       // списываем одну торпеду
-      techParam[nSub].leftTorpeds--;
+      tube.torpeds--;
       // делаем торпеду видимой
-      torped[0].visible = true;
-      // вывожу на экран кол-во левых торпед
-      document.getElementById('indLeftTorpedText').innerText = techParam[nSub].leftTorpeds;
+      torpedo.visible = true;
+      // вывожу на экран кол-во торпед
+      indTube.innerText = tube.torpeds;
       // меняю цвет индикатора запуска торпеды
-      indLeftTorpedText.style.background = "red";
+      indTube.style.background = "red";
     }
-    return false;
+    console.log(torpedo);
   }
 
-  function startCenterTorped() {
-    if ((torped[1].y == 800) && (techParam[nSub].centerTorpeds > 0)) {
-      torped[1].y = 799;
-      torped[1].x = techParam[nSub].centerTorpedsX + pozitionPeriscope;
-      // списываем одну торпеду
-      techParam[nSub].centerTorpeds--;
-      // делаем торпеду видимой
-      torped[1].visible = true;
-      document.getElementById('indCenterTorpedText').innerText = techParam[nSub].centerTorpeds;
-      // меняю цвет индикатора запуска торпеды
-      indCenterTorpedText.style.background = "red";
-    };
-    return false;
-  }
-
-  function startRightTorped() {
-    if ((torped[2].y == 800) && (techParam[nSub].rightTorpeds > 0)) {
-      torped[2].y = 799;
-      torped[2].x = techParam[nSub].rightTorpedsX + pozitionPeriscope;
-      // списываем одну торпеду
-      techParam[nSub].rightTorpeds--;
-      // делаем торпеду видимой
-      torped[2].visible = true;
-      document.getElementById('indRightTorpedText').innerText = techParam[nSub].rightTorpeds;
-      // меняю цвет индикатора запуска торпеды
-      indRightTorpedText.style.background = "red";
-      return false;
-    }
-  }
   // функция определения существующих кораблей с данной координатой y
   function shipsOnLine (validation_y) {
     let ships_on_line = [];
