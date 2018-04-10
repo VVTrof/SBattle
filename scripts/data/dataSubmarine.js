@@ -38,19 +38,19 @@ techParam[0] = {
       max: 10,
       speed: 2,
       torpeds: 99,
-      torpedsX: 190,
+      x: 190,
     },
     {
       max: 10,
       speed: 5,
       torpeds: 99,
-      torpedsX: 390,
+      x: 390,
     },
     {
       max: 10,
       speed: 2,
       torpeds: 99,
-      torpedsX: 590,
+      x: 590,
     }
   ],
   maxFuel               : 100,
@@ -59,25 +59,25 @@ techParam[0] = {
   speedRotateperiscope   : 10,
 };
 // технические характеристики подводных лодок. ПЛ2.
-techParam[0] = {
+techParam[1] = {
   tubes: [
     {
       max: 10,
       speed: 2,
       torpeds: 99,
-      torpedsX: 190,
+      x: 190,
     },
     {
       max: 10,
       speed: 5,
       torpeds: 99,
-      torpedsX: 390,
+      x: 390,
     },
     {
       max: 10,
       speed: 2,
       torpeds: 99,
-      torpedsX: 590,
+      x: 590,
     }
   ],
   maxFuel               : 100,
@@ -86,25 +86,25 @@ techParam[0] = {
   speedRotateperiscope   : 10,
 };
 // технические характеристики подводных лодок. ПЛ3.
-techParam[0] = {
+techParam[2] = {
   tubes: [
     {
       max: 10,
       speed: 2,
       torpeds: 99,
-      torpedsX: 190,
+      x: 190,
     },
     {
       max: 10,
       speed: 5,
       torpeds: 99,
-      torpedsX: 390,
+      x: 390,
     },
     {
       max: 10,
       speed: 2,
       torpeds: 99,
-      torpedsX: 590,
+      x: 590,
     }
   ],
   maxFuel               : 100,
