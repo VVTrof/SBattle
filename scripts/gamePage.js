@@ -77,8 +77,6 @@ function gameProcess() {
 
   // игровой процесc
   let timerGame = setInterval(function() {
-    // let a = shipsOnLine(499);
-    // if (a[0] > 0) { console.log(a.length)}
     delayNewShip++
     // делаем новый корабль если пауза до появления следующего корабля соблюдена,
     // кораблей на экране меньше,
@@ -92,12 +90,12 @@ function gameProcess() {
       let changeTypeShip = "empty"; // выбранный случайным образом тип корабля
       // создаём корабль
       // выбираем тип корабля из оставшихся в данном уровне
-      for (var i = 0; i < SHIP_TYPES; i++) {
-        if ((lvlGame.warShip[i] >= changeShip) && (changeTypeShip == "empty")) {
-          changeTypeShip = i;
+      lvlGame.warShip.forEach( function(ships, ship_type){
+        if ((ships >= changeShip) && (changeTypeShip == "empty")){
+          changeTypeShip = ship_type;
         }
-        changeShip = changeShip - lvlGame.warShip[i];
-      }
+        changeShip = changeShip - ships;
+      });
       // отнимаем корабль выбранного типа из базы уровня
       lvlGame.warShip[changeTypeShip]--;
       // увеличиваем значение счётчика кораблей на экране
@@ -110,14 +108,13 @@ function gameProcess() {
       for (let i = lvlGame.maxShips ; i > 0; i--) {
         if (typeof sh[i]  != 'object') {numberCreatingShip = i};
       }
-      // console.log (lvlGame.numberOfShips);
       // создаём корабль
       createShip(numberCreatingShip, changeTypeShip);
+      console.log('созданный корабль' + sh[numberCreatingShip]);
     }
 
     // Устанавливаем обработчик для событий клавиатуры
     document.onkeydown = selector;
-
     // обработчики событий мышки
     sonar.onclick = function() {
       pause()
@@ -198,7 +195,7 @@ function gameProcess() {
     if (per_mouse_right) {
       pozitionPeriscope = rotateperiscope("right", pozitionPeriscope);
     }
-    // рассчет полета торпед
+    // рассчет полета торпед, визуализация торпед
     torped.forEach(function(torpedo) {
       if (torpedo.visible) {
         // коэффиц. который зависит от удаленности торпеды (от 1 до 0.25)
@@ -224,50 +221,46 @@ function gameProcess() {
         }
         // если торпеда попала в цель делаем её невидимой
         // ---------------------------прописать
+        // вызов функции визуализации торпед
+        if (torpedo.visible) {torpedsElementVisual()};
       }
     })
-    // рассчет движения кораблей
-    for (let i = 1; i <= lvlGame.maxShips ; i++){
-        // console.log (i+""+ typeof sh[i]);
-      if (typeof sh[i] == 'object') {
+    // рассчет движения кораблей, визуализация кораблей
+    sh.forEach( function(ship, n_ship_on_screen){
+      if (typeof ship == 'object') {
         // расчет коэффициента размера кораблей
-        sh[i].rangeFactor = 1 - (Y_MAX - sh[i].y) * 0.0025;
+        ship.rangeFactor = 1 - (Y_MAX - ship.y) * 0.0025;
         // расчет коэффициента скорости кораблей в зависимости от дальности
-        sh[i].speedFactor = 1 - (lvlGame.shipMaxY - sh[i].y) * 0.0025;
+        ship.speedFactor = 1 - (lvlGame.shipMaxY - ship.y) * 0.0025;
         // расчет размеров корабля для визуализации
-        sh[i].currentWidth = sh[i].width * sh[i].rangeFactor;
-        sh[i].currentHeight = sh[i].height * sh[i].rangeFactor;
+        ship.currentWidth = ship.width * ship.rangeFactor;
+        ship.currentHeight = ship.height * ship.rangeFactor;
         // скорость кораблей с учётом ускорения от подбитых целей
-        if (sh[i].vectorLeft) {
-          sh[i].x = sh[i].x + sh[i].speedX *
-            (1+lvlGame.speedShipsMaxIncrease * shipsDestroy) * sh[i].speedFactor;
-          } else {sh[i].x = sh[i].x - sh[i].speedX *
-            (1+lvlGame.speedShipsMaxIncrease * shipsDestroy) * sh[i].speedFactor;
+        if (ship.vectorLeft) {
+          ship.x = ship.x + ship.speedX *
+            (1+lvlGame.speedShipsMaxIncrease * shipsDestroy) * ship.speedFactor;
+          } else {ship.x = ship.x - ship.speedX *
+            (1+lvlGame.speedShipsMaxIncrease * shipsDestroy) * ship.speedFactor;
         }
-        sh[i].y = sh[i].y + sh[i].speedY;
+        ship.y = ship.y + ship.speedY;
         // поведение корабля
-        if ((sh[i].y > lvlGame.shipMaxY) || (sh[i].y < lvlGame.shipMinY)) {
-          if (sh[i].typeMooving == "zigzag") {sh[i].speedY = -sh[i].speedY}
-          // else {sh[i].speedY = 0;
+        if ((ship.y > lvlGame.shipMaxY) || (ship.y < lvlGame.shipMinY)) {
+          if (ship.typeMooving == "zigzag") {ship.speedY = -ship.speedY}
+          // else {ship.speedY = 0;
           // }
         }
-        // проверка уход за край
-        if ((sh[i].x > X_MAX) || (sh[i].x < X_MIN - sh[i].currentWidth)) {deleteObj(i)};
-
+        // вызов функции визуализации кораблей
+        shipElementVisual(n_ship_on_screen)
+        // проверка уход за край, удаление объекта если он вне видимости ПЛ,
+        if ((ship.x > X_MAX) || (ship.x < X_MIN - ship.currentWidth)) {
+          deleteObj(n_ship_on_screen);
+        }
       }
-    }
-    // вызов функции визуализации торпед
-    torpedsElementVisual();
-
-    // вызов функции визуализации кораблей
-    // (определяем , какие корабли нужно визуализировать).
-    for (let n_ship = 1 ; n_ship <= lvlGame.maxShips; n_ship++){
-      if (typeof sh[n_ship] == 'object') {shipElementVisual(n_ship)}
-    }
+    });
   }, FRAME_RATE);
 
   // удаление объекта и элемента img
-  function deleteObj(index) {
+  function deleteObj(index) {console.log (sh[index]);
     let deleting_element = document.getElementById('ship'+index);
     gamePage.removeChild(deleting_element);
     // уменьшаем  счётчик кораблей на экране
@@ -394,7 +387,7 @@ function gameProcess() {
     let elementId = "ship" + n_ship;
     let ship_element = document.getElementById(elementId);
     if (ship_element.src != sh[n_ship].src) {
-      document.getElementById(elementId).src = sh[n_ship].src
+      ship_element.src = sh[n_ship].src
     };
     ship_element.style.top = sh[n_ship].y;
     ship_element.style.left = sh[n_ship].x - pozitionPeriscope;
@@ -546,23 +539,14 @@ function gameProcess() {
     }
     console.log(torpedo);
   }
-
   // функция определения существующих кораблей с данной координатой y
   function shipsOnLine (validation_y) {
     let ships_on_line = [];
-    for (let i = 1 ; i <= lvlGame.maxShips ; i++) {
-      // console.log (i);
-      // console.log(Math.floor(validation_y)+"\n");
-
-      if (typeof sh[i]  == 'object') {
-        // console.log("ships=" + Math.floor(sh[i].y));
-        if (Math.floor(sh[i].y) == Math.floor(validation_y)) {
-          ships_on_line.push(i)
-        };
-      // console.log (i+" " + typeof sh[i] + (Math.floor(sh[i].y) == Math.floor(validation_y)));
-      // if (typeof ships_on_line[0] == 'object') {alert(ships_on_line[0])}
+    sh.forEach( function(ship, n_ship_on_screen) {
+      if (Math.floor(ship.y) == Math.floor(validation_y)) {
+        ships_on_line.push(n_ship_on_screen);
       }
-    }
+    });
     return ships_on_line;
   }
 }
