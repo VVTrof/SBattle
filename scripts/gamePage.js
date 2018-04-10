@@ -14,16 +14,18 @@ export function game() {
     level[lvl].skySrc,
     level[lvl].landSrc
   ];
-  // корабли
-  for (let i = 0; i < SHIP_TYPES; i++) {
-    if (level[lvl].warShip[i] > 0) {
-      gameCache[gameCache.length] = warShipProto[i].srcOnLeft;
-      gameCache[gameCache.length] = warShipProto[i].srcOnRight;
-      gameCache[gameCache.length] = warShipProto[i].destroySrc;
-      gameCache[gameCache.length] = warShipProto[i].fireSrc;
-      gameCache[gameCache.length] = warShipProto[i].destroyRevSrc;
+  // добавляем в кэш изображения кораблей
+  level[lvl].warShip.forEach( function(ships, index){
+    let data_src = warShipProto[index];
+    if (ships > 0) {
+      gameCache.push(data_src.srcOnLeft);
+      gameCache.push(data_src.srcOnLeft);
+      gameCache.push(data_src.destroySrc);
+      gameCache.push(data_src.fireSrc);
+      gameCache.push(data_src.destroyRevSrc);
     }
-  }
+  })
+  //запуск функции кэширования изображений
   preload(gameCache, gameProcess);
 }
 function gameProcess() {
@@ -50,17 +52,16 @@ function gameProcess() {
   //  rangeFactor: "коэффициент для расчета размера объекта в зависимости от его дальности от ПЛ (от 1 до 0.1)",
   //  accelerator: "изменение скорости торпеды в зависимости от применения модулей улучшения 1 - 100%"
 
-  var torped =
-    subParam.tubes.map(tube => ({
-        x: tube.x,
-        y: TORPEDO_START_Y,
-        width: TORPED_WIDTH,
-        height: TORPED_HEIGHT,
-        speed: tube.speed,
-        visible: false,
-        rangeFactor: 1,
-        accelerator: 1,
-    }))
+  var torped = subParam.tubes.map(tube => ({
+    x: tube.x,
+    y: TORPEDO_START_Y,
+    width: TORPED_WIDTH,
+    height: TORPED_HEIGHT,
+    speed: tube.speed,
+    visible: false,
+    rangeFactor: 1,
+    accelerator: 1,
+  }))
   var shipsDestroy = 0; // уничтожено кораблей в этом уровне
   var shipsOnScreen = 0; // текущее количество кораблей на экране
   var sh = []; // массив кораблей, отображенных на экране
@@ -392,14 +393,14 @@ function gameProcess() {
     // console.log (n_ship);
     let elementId = "ship" + n_ship;
     let ship_element = document.getElementById(elementId);
-    if (document.getElementById(elementId).src != sh[n_ship].src) {
+    if (ship_element.src != sh[n_ship].src) {
       document.getElementById(elementId).src = sh[n_ship].src
     };
-    document.getElementById(elementId).style.top = sh[n_ship].y;
-    document.getElementById(elementId).style.left = sh[n_ship].x - pozitionPeriscope;
-    document.getElementById(elementId).style.zIndex = Math.floor(sh[n_ship].y);
-    document.getElementById(elementId).style.width = sh[n_ship].currentWidth;
-    document.getElementById(elementId).style.height = sh[n_ship].currentHeight;
+    ship_element.style.top = sh[n_ship].y;
+    ship_element.style.left = sh[n_ship].x - pozitionPeriscope;
+    ship_element.style.zIndex = Math.floor(sh[n_ship].y);
+    ship_element.style.width = sh[n_ship].currentWidth;
+    ship_element.style.height = sh[n_ship].currentHeight;
 
   }
   // визуализируем объекты игровой страницы

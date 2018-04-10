@@ -1,7 +1,7 @@
 // глобальные переменные и констант
 export const FRAME_RATE = 20;
-export const TORPED_WIDTH = 20;
-export const TORPED_HEIGHT = 60;
+export const TORPED_WIDTH = 10;
+export const TORPED_HEIGHT = 30;
 export const YANDEX_MONEY = false;
 export const SHIP_TYPES = 10;
 // координата начала видимого пространства по  X
