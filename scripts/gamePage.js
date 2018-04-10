@@ -1,6 +1,6 @@
 import { preload } from './globalFunctions.js';
 import { SHIP_TYPES, FRAME_RATE, warShipProto,warShipProtoComments, TORPED_WIDTH,
-  TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX , lvlChange,
+  TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX , lvlChange, TORPEDO_START_Y,
   nSubChange} from './data/dataVariable.js';
 import { techParam } from './data/dataSubmarine.js';
 import { level } from './data/dataLevels.js';
@@ -30,6 +30,7 @@ function gameProcess() {
   const lvl = lvlChange().current;
   const nSub = nSubChange().current;
   var lvlGame = Object.create(level[lvl]);
+  let subParam = techParam[nSub];
   let pozitionPeriscope = 0,
     per_mouse_left = false, // используется в обработчике поворот перископа
     per_mouse_right = false, // используется в обработчике поворот перископа
@@ -38,6 +39,7 @@ function gameProcess() {
     offset2 = -50, // анимация моря
     direction_offset1 = "reduction", // анимация моря
     direction_offset2 = "increase"; // анимация моря
+
   // объекты "торпеды"
   // x: "координата X (левый край торпеды)",
   // y: "координата Y (верхний край торпеды)",
@@ -48,37 +50,17 @@ function gameProcess() {
   //  rangeFactor: "коэффициент для расчета размера объекта в зависимости от его дальности от ПЛ (от 1 до 0.1)",
   //  accelerator: "изменение скорости торпеды в зависимости от применения модулей улучшения 1 - 100%"
 
-  var lTorped = {
-    x: techParam[nSub].tubes[0].x,
-    y: 800,
-    width: TORPED_WIDTH,
-    height: TORPED_HEIGHT,
-    speed: techParam[0].tubes[0].speed,
-    visible: false,
-    rangeFactor: 1,
-    accelerator: 1
-  };
-  var cTorped = {
-    x: techParam[nSub].tubes[1].x,
-    y: 800,
-    width: TORPED_WIDTH,
-    height: TORPED_HEIGHT,
-    speed: techParam[nSub].tubes[1].speed,
-    visible: false,
-    rangeFactor: 1,
-    accelerator: 1
-  };
-  var rTorped = {
-    x: techParam[nSub].tubes[2].x,
-    y: 800,
-    width: TORPED_WIDTH,
-    height: TORPED_HEIGHT,
-    speed: techParam[nSub].tubes[2].speed,
-    visible: false,
-    rangeFactor: 1,
-    accelerator: 1
-  };
-  var torped = [lTorped, cTorped, rTorped];
+  var torped =
+    subParam.tubes.map(tube => ({
+        x: tube.x,
+        y: TORPEDO_START_Y,
+        width: TORPED_WIDTH,
+        height: TORPED_HEIGHT,
+        speed: tube.speed,
+        visible: false,
+        rangeFactor: 1,
+        accelerator: 1,
+    }))
   var shipsDestroy = 0; // уничтожено кораблей в этом уровне
   var shipsOnScreen = 0; // текущее количество кораблей на экране
   var sh = []; // массив кораблей, отображенных на экране
@@ -192,19 +174,19 @@ function gameProcess() {
     if (offset2 <= -50) {
       direction_offset2 = "increase"
     };
-    sea1.style.left = -techParam[nSub].maxRotateperiscope + offset1
+    sea1.style.left = -subParam.maxRotateperiscope + offset1
       - pozitionPeriscope;
-    sea2.style.left = -techParam[nSub].maxRotateperiscope + offset2
+    sea2.style.left = -subParam.maxRotateperiscope + offset2
       - pozitionPeriscope;
 
     // цвет индикаторов торпед
-    if (torped[0].y == 800) {
+    if (torped[0].y == TORPEDO_START_Y) {
       indLeftTorpedText.style.background = "lightblue"
     }
-    if (torped[1].y == 800) {
+    if (torped[1].y == TORPEDO_START_Y) {
       indCenterTorpedText.style.background = "lightblue"
     }
-    if (torped[2].y == 800) {
+    if (torped[2].y == TORPEDO_START_Y) {
       indRightTorpedText.style.background = "lightblue"
     }
 
@@ -216,33 +198,33 @@ function gameProcess() {
       pozitionPeriscope = rotateperiscope("right", pozitionPeriscope);
     }
     // рассчет полета торпед
-    for (let i = 0; i < 3; i++) {
-      if (torped[i].visible) {
+    torped.forEach(function(torpedo) {
+      if (torpedo.visible) {
         // коэффиц. который зависит от удаленности торпеды (от 1 до 0.25)
-        torped[i].rangeFactor = 1 - (Y_MAX - torped[i].y) * 0.0025;
+        torpedo.rangeFactor = 1 - (TORPEDO_START_Y - torpedo.y) * 0.0025;
         // если торпеда рядом с горизонтом - увеличиваем её прозрачность
-        if (torped[i].y < lvlGame.gorizontY - 80) {
-          torped[i].opacity = 0.4} else {torped[i].opacity = 0.8;
+        if (torpedo.y < lvlGame.gorizontY - 80) {
+          torpedo.opacity = 0.4} else {torpedo.opacity = 0.8;
         };
         // определяем размеры торпед в зависимости от удаленности
-        torped[i].width = TORPED_WIDTH * torped[i].rangeFactor;
-        torped[i].height = TORPED_HEIGHT * torped[i].rangeFactor;
+        torpedo.width = TORPED_WIDTH * torpedo.rangeFactor;
+        torpedo.height = TORPED_HEIGHT * torpedo.rangeFactor;
         // если торпеда выпущена перемещаем её
-        if (torped[i].y < Y_MAX) {
-          torped[i].y = torped[i].y - torped[i].speed * torped[i].rangeFactor
+        if (torpedo.y < TORPEDO_START_Y) {
+          torpedo.y = torpedo.y - torpedo.speed * torpedo.rangeFactor
         };
         // возвращаем торпеду в торпедный аппарат при y<450
-        if (torped[i].y < 450 - torped[i].height) {
-          torped[i].y = Y_MAX
+        if (torpedo.y < 450 - torpedo.height) {
+          torpedo.y = TORPEDO_START_Y
         };
         // если торпеда ушла за горизонт делаем её невидимой
-        if (torped[i].y < lvlGame.gorizontY - torped[i].height) {
-          torped[i].visible = false
+        if (torpedo.y < lvlGame.gorizontY - torpedo.height) {
+          torpedo.visible = false
         }
         // если торпеда попала в цель делаем её невидимой
         // ---------------------------прописать
       }
-    }
+    })
     // рассчет движения кораблей
     for (let i = 1; i <= lvlGame.maxShips ; i++){
         // console.log (i+""+ typeof sh[i]);
@@ -273,28 +255,11 @@ function gameProcess() {
 
       }
     }
-    // визуализация левой торпеды
-    if (torped[0].visible) {
-      leftTorped.style.top = torped[0].y;
-      leftTorped.style.left = torped[0].x - pozitionPeriscope + (TORPED_WIDTH - torped[0].width) / 2;
-      leftTorped.style.width = torped[0].width;
-      leftTorped.style.height = torped[0].height;
-    }
-    // визуализация центральной торпеды
-    if (torped[1].visible) {
-      centerTorped.style.top = torped[1].y;
-      centerTorped.style.left = torped[1].x - pozitionPeriscope + (TORPED_WIDTH - torped[1].width) / 2;
-      centerTorped.style.width = torped[1].width;
-      centerTorped.style.height = torped[1].height;
-    }
-    // визуализация правой торпеды
-    if (torped[2].visible) {
-      rightTorped.style.top = torped[2].y;
-      rightTorped.style.left = torped[2].x - pozitionPeriscope + (TORPED_WIDTH - torped[2].width) / 2;
-      rightTorped.style.width = torped[2].width;
-      rightTorped.style.height = torped[2].height;
-    }
-    // вызов функции визуализации кораблей.
+    // вызов функции визуализации торпед
+    torpedsElementVisual();
+
+    // вызов функции визуализации кораблей
+    // (определяем , какие корабли нужно визуализировать).
     for (let n_ship = 1 ; n_ship <= lvlGame.maxShips; n_ship++){
       if (typeof sh[n_ship] == 'object') {shipElementVisual(n_ship)}
     }
@@ -308,7 +273,7 @@ function gameProcess() {
     shipsOnScreen--;
     delete sh[index];
   }
-  // получение объекта событие, поворот перископа, запуск торпед,
+  // получение объекта событие, поворот перископа, запуск торпед.
   function selector(e) {
     e = e || window.event;
     // Получаем keyCode:
@@ -324,7 +289,6 @@ function gameProcess() {
     if (keyCode == 39) {
         pozitionPeriscope = rotateperiscope("right", pozitionPeriscope)
     }
-    // запуск левой торпеды
     // запуск левой торпеды
     if (keyCode == 90) {
       startTorpedo(0);
@@ -410,31 +374,19 @@ function gameProcess() {
     gamePage.appendChild(image);
   }
 
-    // информация о корабле (отладочный блок)
-    // console.log("Осталось кораблей : " + lvlGame.numberOfShips + "\n " +
-    //  "кораблей на экране"+ shipsOnScreen +
-    //  warShipProtoComments.numberProto + " = " + sh[NShip].numberProto + "\n "+
-    //  warShipProtoComments.name + " = " + sh[NShip].name + "\n " +
-    //  warShipProtoComments.srcOnLeft + " = " + sh[NShip].srcOnLeft + "\n " +
-    //  warShipProtoComments.srcOnRight + " = " + sh[NShip].srcOnRight + "\n " +
-    //   + sh[NShip].src +
-    //  warShipProtoComments.destroySrc + " = " + sh[NShip].destroySrc + "\n " +
-    //  warShipProtoComments.destroyRevSrc + " = " + sh[NShip].destroyRevSrc + "\n " +
-    //  warShipProtoComments.FireSrc + " = " + sh[NShip].FireSrc + "\n " +
-    //  warShipProtoComments.health + " = " + sh[NShip].health + "\n " +
-    //  warShipProtoComments.identity + " = " + sh[NShip].identity + "\n " +
-    //  warShipProtoComments.typeMooving + " = " + sh[NShip].typeMooving + "\n " +
-    //  warShipProtoComments.x + " = " + sh[NShip].x + "\n " +
-    //  warShipProtoComments.y + " = " + sh[NShip].y + "\n " +
-    //  warShipProtoComments.vectorLeft + " = " + sh[NShip].vectorLeft + "\n " +
-    //  warShipProtoComments.rangeFactor + " = " + sh[NShip].rangeFactor + "\n " +
-    //  warShipProtoComments.width + " = " + sh[NShip].width + "\n " +
-    //  warShipProtoComments.currentWidth + " = " + sh[NShip].currentWidth + "\n " );
-    //  warShipProtoComments.height + " = " + sh[NShip].height + "\n " +
-    //  warShipProtoComments.currentHeight + " = " + sh[NShip].currentHeight + "\n " +
-    //  warShipProtoComments.speedX + " = " + sh[NShip].speedX + "\n " +
-    //  warShipProtoComments.speedY + " = " + sh[NShip].speedY + "\n " +
-    //  warShipProtoComments.speedIndivid + " = " + sh[NShip].speedIndivid + " \n все данные. и так много. ");
+  // визуализируем торпеды
+  function torpedsElementVisual() {
+    let torpedsImg = [leftTorped, centerTorped, rightTorped];
+    torpedsImg.forEach( function(torpedo_img, n_torped_obj) {
+      if (torped[n_torped_obj].visible) {
+        torpedo_img.style.top =  torped[n_torped_obj].y;
+        torpedo_img.style.left = torped[n_torped_obj].x - pozitionPeriscope +
+          (TORPED_WIDTH - torped[n_torped_obj].width) / 2;
+        torpedo_img.style.width =  torped[n_torped_obj].width;
+        torpedo_img.style.height =  torped[n_torped_obj].height;
+      }
+    });
+  }
   // визуализируем кораблики
   function shipElementVisual(n_ship) {
     // console.log (n_ship);
@@ -443,8 +395,6 @@ function gameProcess() {
     if (document.getElementById(elementId).src != sh[n_ship].src) {
       document.getElementById(elementId).src = sh[n_ship].src
     };
-
-
     document.getElementById(elementId).style.top = sh[n_ship].y;
     document.getElementById(elementId).style.left = sh[n_ship].x - pozitionPeriscope;
     document.getElementById(elementId).style.zIndex = Math.floor(sh[n_ship].y);
@@ -490,9 +440,9 @@ function gameProcess() {
     pribor.style.zIndex = 824;
     indikatorDos.style.zIndex = 824;
 
-    document.getElementById('indLeftTorpedText').innerText = techParam[nSub].tubes[0].torpeds;
-    document.getElementById('indCenterTorpedText').innerText = techParam[nSub].tubes[1].torpeds;
-    document.getElementById('indRightTorpedText').innerText = techParam[nSub].tubes[2].torpeds;
+    document.getElementById('indLeftTorpedText').innerText = subParam.tubes[0].torpeds;
+    document.getElementById('indCenterTorpedText').innerText = subParam.tubes[1].torpeds;
+    document.getElementById('indRightTorpedText').innerText = subParam.tubes[2].torpeds;
   };
   // возвращает целое число из выбранного диапозоза
   function getRandomInRange(min, max) {
@@ -541,7 +491,7 @@ function gameProcess() {
   function rotateperiscope(direction, pozitionPeriscope) {
     if (direction == "left") {
       if (pozitionPeriscope > -300) {
-        pozitionPeriscope = pozitionPeriscope - 1 * techParam[nSub].speedRotateperiscope;
+        pozitionPeriscope = pozitionPeriscope - 1 * subParam.speedRotateperiscope;
         if (pozitionPeriscope < -300) {
           pozitionPeriscope = -300
         }
@@ -549,7 +499,7 @@ function gameProcess() {
     };
     if (direction == "right") {
       if (pozitionPeriscope < 300) {
-        pozitionPeriscope = pozitionPeriscope + 1 * techParam[nSub].speedRotateperiscope;
+        pozitionPeriscope = pozitionPeriscope + 1 * subParam.speedRotateperiscope;
         if (pozitionPeriscope > 300) {
           pozitionPeriscope = 300
         }
@@ -576,13 +526,13 @@ function gameProcess() {
   }
   // запуск торпед
   function startTorpedo(n_tube){
-    let tube = techParam[nSub].tubes[n_tube];
+    let tube = subParam.tubes[n_tube];
     let torpedo = torped[n_tube];
     const indTubeId =
       ['indLeftTorpedText', 'indCenterTorpedText', 'indRightTorpedText'][n_tube];
     const indTube = document.getElementById(indTubeId);
-    if ((torpedo.y == 800) && (tube.torpeds > 0)) {
-      torpedo.y = 799;
+    if ((torpedo.y == TORPEDO_START_Y) && (tube.torpeds > 0)) {
+      torpedo.y = TORPEDO_START_Y - 1;
       torpedo.x = tube.x + pozitionPeriscope;
       // списываем одну торпеду
       tube.torpeds--;

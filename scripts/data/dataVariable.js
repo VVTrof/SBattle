@@ -11,11 +11,13 @@ export const X_MAX = 1100;
 // размер по вертикали игрового поля
 export const Y_MAX = 800;
 export const warShipProto = [];
+export const TORPEDO_START_Y = 750;
 // Выбранная ПЛ
 let nSubCurrent = 0;
 // текущий уровень
 let lvlCurrent = 0;
 // функция изменения уровня
+
 export function lvlChange(){
   let object_returned = {};
   object_returned.up = function() {lvlCurrent++};
