@@ -1,5 +1,5 @@
 // глобальные переменные и констант
-export const FRAME_RATE = 20;
+export const FRAME_RATE = 40;
 export const TORPED_WIDTH = 10;
 export const TORPED_HEIGHT = 30;
 export const YANDEX_MONEY = false;

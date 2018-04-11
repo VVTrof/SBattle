@@ -10,7 +10,7 @@ export function game() {
   let lvl = lvlChange().current;
   load.style.visibility = 'visible';
   // кэш игровой страницы
-  var gameCache = [level[lvl].seaSrc,
+  let gameCache = [level[lvl].seaSrc,
     level[lvl].skySrc,
     level[lvl].landSrc
   ];
@@ -31,7 +31,7 @@ export function game() {
 function gameProcess() {
   const lvl = lvlChange().current;
   const nSub = nSubChange().current;
-  var lvlGame = Object.create(level[lvl]);
+  let lvlGame = Object.create(level[lvl]);
   let subParam = techParam[nSub];
   let pozitionPeriscope = 0,
     per_mouse_left = false, // используется в обработчике поворот перископа
@@ -52,7 +52,7 @@ function gameProcess() {
   //  rangeFactor: "коэффициент для расчета размера объекта в зависимости от его дальности от ПЛ (от 1 до 0.1)",
   //  accelerator: "изменение скорости торпеды в зависимости от применения модулей улучшения 1 - 100%"
 
-  var torped = subParam.tubes.map(tube => ({
+  let torped = subParam.tubes.map(tube => ({
     x: tube.x,
     y: TORPEDO_START_Y,
     width: TORPED_WIDTH,
@@ -62,9 +62,9 @@ function gameProcess() {
     rangeFactor: 1,
     accelerator: 1,
   }))
-  var shipsDestroy = 0; // уничтожено кораблей в этом уровне
-  var shipsOnScreen = 0; // текущее количество кораблей на экране
-  var sh = []; // массив кораблей, отображенных на экране
+  let shipsDestroy = 0; // уничтожено кораблей в этом уровне
+  let shipsOnScreen = 0; // текущее количество кораблей на экране
+  let sh = []; // массив кораблей, отображенных на экране
   sea1.src = lvlGame.seaSrc;
   sea2.src = lvlGame.seaSrc;
   sky.src = lvlGame.skySrc;
@@ -96,16 +96,8 @@ function gameProcess() {
         }
         changeShip = changeShip - ships;
       });
-      // отнимаем корабль выбранного типа из базы уровня
-      lvlGame.warShip[changeTypeShip]--;
-      // увеличиваем значение счётчика кораблей на экране
-      shipsOnScreen++;
-      // сбрасываем счётчик паузы до появления следующего корабля
-      delayNewShip = 0;
-      // счетчик оставшихся кораблей
-      lvlGame.numberOfShips--;
       // ищем 'свободное место' для корабля от 1-го до lvlGame.maxShips
-      for (let i = lvlGame.maxShips ; i > 0; i--) {
+      for (let i = lvlGame.maxShips-1 ; i >= 0; i--) {
         if (typeof sh[i]  != 'object') {numberCreatingShip = i};
       }
       // создаём корабль
@@ -271,7 +263,7 @@ function gameProcess() {
   function selector(e) {
     e = e || window.event;
     // Получаем keyCode:
-    var keyCode = e.keyCode;
+    let keyCode = e.keyCode;
     if (keyCode == 80) {
       pause()
     };
@@ -360,6 +352,14 @@ function gameProcess() {
       //  sh[NShip].typeMooving = "diag";
       // }
     }
+    // отнимаем корабль выбранного типа из базы уровня
+    lvlGame.warShip[typeShip]--;
+    // увеличиваем значение счётчика кораблей на экране
+    shipsOnScreen++;
+    // сбрасываем счётчик паузы до появления следующего корабля
+    delayNewShip = 0;
+    // счетчик оставшихся кораблей
+    lvlGame.numberOfShips--;
     // задаём характеристики элементу
     // создаём элемент корабль
     let image = document.createElement("img");
@@ -509,7 +509,7 @@ function gameProcess() {
   }
   // преобразует данные о повороте перископа (от -300 до 300) в градусы (300-60)
   function conversionPozperiscope(pozitionPeriscope) {
-    var poz_periscope_degree;
+    let poz_periscope_degree;
     if (pozitionPeriscope >= 0) {
       poz_periscope_degree = pozitionPeriscope / 5
     };

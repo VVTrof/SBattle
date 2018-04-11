@@ -33,7 +33,7 @@ function coverPageProcess() {
       buttonRules.src = 'images/buttons/buttonRulesOn.png';
       buttonInfo.src = 'images/buttons/buttonInfoOff.png';
       // плавно убирает и выводит окно infoGame
-      var timer = setInterval(function() {
+      let timer = setInterval(function() {
         if (current_opacity > 0 && direction_opacity == 'reduction') {
           current_opacity = current_opacity - 0.01
         };
@@ -59,13 +59,13 @@ function coverPageProcess() {
   }
 
   buttonInfo.onclick = function() {
-    var current_opacity = +infoGame.style.opacity,
+    let current_opacity = +infoGame.style.opacity,
       direction_opacity ='reduction';
     if (lastClick !='info') {
       buttonRules.src ='images/buttons/buttonRulesOff.png';
       buttonInfo.src ='images/buttons/buttonInfoOn.png';
       // плавно убирает и выводит окно infoGame
-      var timer = setInterval(function() {
+      let timer = setInterval(function() {
         if (current_opacity > 0 && direction_opacity =='reduction') {
           current_opacity = current_opacity - 0.01
         };
@@ -90,7 +90,7 @@ function coverPageProcess() {
   }
 
   buttonOff.onclick = function() {
-    var result = confirm('Вы хотите покинуть игру?');
+    let result = confirm('Вы хотите покинуть игру?');
     if (result == true) window.close();
   }
 
