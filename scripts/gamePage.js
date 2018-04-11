@@ -2,7 +2,7 @@ import { preload } from './globalFunctions.js';
 import { SHIP_TYPES, FRAME_RATE, warShipProto,warShipProtoComments, TORPED_WIDTH,
   TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX , lvlChange, TORPEDO_START_Y,
   nSubChange} from './data/dataVariable.js';
-import { techParam } from './data/dataSubmarine.js';
+import techParam from './data/dataSubmarine.js';
 import level from './data/dataLevels.js';
 
 // функция выполнения игры
