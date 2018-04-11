@@ -1,5 +1,6 @@
 // База данных уровней
-export const level = [];
+const level = [];
+export default level;
 
 // text: 'задачи миссии',
 // prizeOil: 'количество призового топлива',
