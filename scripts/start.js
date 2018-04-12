@@ -1,3 +1,3 @@
-import { coverPage } from './coverPage';
+import { coverPage } from './coverPage.js';
 
 coverPage()
