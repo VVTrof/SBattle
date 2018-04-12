@@ -1,7 +1,7 @@
-import { preload } from './globalFunctions';
-import { YANDEX_MONEY } from './data/dataVariable';
-import { game } from './gamePage';
-import { lvlChange } from './data/dataVariable';
+import { preload } from './globalFunctions.js';
+import { YANDEX_MONEY } from './data/dataVariable.js';
+import { game } from './gamePage.js';
+import { lvlChange } from './data/dataVariable.js';
 
 // функция выполнения титульной страницы
 export function coverPage() {
