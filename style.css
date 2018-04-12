@@ -118,12 +118,6 @@
   left  : 230;
   top   : 40;
 }
-#money{
-  position: absolute;
-  cursor: pointer;
-  left  : 550;
-  top   : 100;
-}
 /* --------------------------------------------------------------------------*/
 #gamePage {
   position: absolute;

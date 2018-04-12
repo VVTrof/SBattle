@@ -2,7 +2,6 @@
 export const FRAME_RATE = 40;
 export const TORPED_WIDTH = 10;
 export const TORPED_HEIGHT = 30;
-export const YANDEX_MONEY = false;
 export const SHIP_TYPES = 10;
 // координата начала видимого пространства по  X
 export const X_MIN = -300;
@@ -20,16 +19,16 @@ let lvlCurrent = 0;
 
 export function lvlChange() {
   const objectRetunred = {};
-  objectRetunred.up = function up() { lvlCurrent += 1; };
-  objectRetunred.down = function down() { lvlCurrent -= 1; };
+  objectRetunred.up = function () { lvlCurrent += 1; };
+  objectRetunred.down = function () { lvlCurrent -= 1; };
   objectRetunred.current = lvlCurrent;
   return objectRetunred;
 }
 // функция изменения выбранной ПЛ
 export function nSubChange() {
   const objectRetunred = {};
-  objectRetunred.change = function change(nSub) { nSubCurrent = nSub; };
-  objectRetunred.down = function down() { nSubCurrent -= 1; };
+  objectRetunred.change = function (nSub) { nSubCurrent = nSub; };
+  objectRetunred.down = function () { nSubCurrent -= 1; };
   objectRetunred.current = nSubCurrent;
   return objectRetunred;
 }
