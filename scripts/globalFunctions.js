@@ -14,7 +14,10 @@ export function preload(urls, onFinished) {
   for (let i = 0; i < urls.length; i += 1) {
     const img = new Image();
     img.onload = callback;
-    img.onerror = function () { console.error(`error loading ${urls[i]}`); };
+    img.onerror = function () {
+      console.error(`error loading ${urls[i]}`);
+      preload(urls, onFinished);
+    };
     img.src = urls[i];
   }
 }

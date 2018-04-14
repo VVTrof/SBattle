@@ -1,6 +1,6 @@
 import { preload, elem } from './globalFunctions.js';
 import { lvlChange } from './data/dataVariable.js';
-import { game } from './gamePage.js';
+import game from './gamePage.js';
 // функции:
 // визуализирует объекты титульной страницы
 function visualCoverPage() {
