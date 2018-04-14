@@ -5,12 +5,13 @@ export const TORPED_HEIGHT = 30;
 export const SHIP_TYPES = 10;
 // координата начала видимого пространства по  X
 export const X_MIN = -300;
-// координата начала видимого пространства по  X
+// координата конца видимого пространства по  X
 export const X_MAX = 1100;
 // размер по вертикали игрового поля
 export const Y_MAX = 800;
 export const warShipProto = [];
 export const TORPEDO_START_Y = 750;
+export const SPEED_LID = 10;
 // Выбранная ПЛ
 let nSubCurrent = 0;
 // текущий уровень

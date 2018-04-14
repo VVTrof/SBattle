@@ -2,7 +2,7 @@ import { preload, elem } from './globalFunctions.js';
 import {
   FRAME_RATE, warShipProto, TORPED_WIDTH,
   TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX, lvlChange, TORPEDO_START_Y,
-  nSubChange,
+  nSubChange, SPEED_LID,
 } from './data/dataVariable.js';
 import techParam from './data/dataSubmarine.js';
 import level from './data/dataLevels.js';
@@ -171,8 +171,20 @@ function createShip(NShip, typeShip) {
   while (suitableY !== true) {
     const randomY = getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY);
     const ships = shipsOnLine(randomY);
-    if (ships.length === 0) { suitableY = true; } else { suitableY = false; }
-    sh[NShip].y = randomY;
+    let concurrences = false;
+    // проверяем существует ли уже корабль на выбранной координате
+    ships.forEach((numberShip) => {
+      const newShip = sh[NShip];
+      const checkedShip = sh[numberShip];
+      if (newShip.vectorLeft && checkedShip.x < X_MIN) { concurrences = true; }
+      if ((newShip.vectorLeft === false) &&
+        (checkedShip.x + checkedShip.currentWidth > X_MAX)) {
+        concurrences = true;console.log(randomY); console.log(newShip);
+      }
+    });
+    if (concurrences === false) {
+      suitableY = true; sh[NShip].y = randomY;
+    } else { suitableY = false; }
   }
   // расчет коэффициента размера кораблей
   sh[NShip].rangeFactor = 1 - ((Y_MAX - sh[NShip].y) * 0.0025);
@@ -318,7 +330,7 @@ function lidMove(open) {
     }
     elem('lid').style.top = lidY;
     elem('lid2').style.top = lid2Y;
-  }, 10);
+  }, SPEED_LID);
 }
 
 // функция игрового процесса
