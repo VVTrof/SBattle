@@ -161,6 +161,8 @@ function selector(e) {
 function createShip(NShip, typeShip) {
   // индикатор (true - найдена подходящая координата 'y' для нового корабля)
   let suitableY = false;
+  // временная переменная
+  const tempRnd = getRandomInRange(0, 100);
   // создаём объект корабль
   sh[NShip] = Object.create(warShipProto[typeShip]);
   // выбираем направление движения корабля
@@ -179,7 +181,7 @@ function createShip(NShip, typeShip) {
       if (newShip.vectorLeft && checkedShip.x < X_MIN) { concurrences = true; }
       if ((newShip.vectorLeft === false) &&
         (checkedShip.x + checkedShip.currentWidth > X_MAX)) {
-        concurrences = true;console.log(randomY); console.log(newShip);
+        concurrences = true;
       }
     });
     if (concurrences === false) {
@@ -206,16 +208,25 @@ function createShip(NShip, typeShip) {
   sh[NShip].speedX =
     getRandomFloat(lvlGame.speedShipsMin, lvlGame.speedShipsMax);
   // вертикальная скорость корабля
-  sh[NShip].speedY = getRandomFloat(0, lvlGame.speedShipsMaxY);
+  sh[NShip].speedY =
+      getRandomFloat(lvlGame.speedShipsMinY, lvlGame.speedShipsMaxY);
   if (rndTrue()) { sh[NShip].speedY = -sh[NShip].speedY; }
   // определяем тип движения корабля
-  if (sh[NShip].speedY === 0) {
+  if (tempRnd <= lvlGame.shipsType[0]) {
     sh[NShip].typeMooving = 'simple';
+    sh[NShip].speedY = 0;
   }
-  // пока оставил только zigzag
-  if (sh[NShip].speedY !== 0) {
+  if ((tempRnd > lvlGame.shipsType[0]) && (tempRnd <= lvlGame.shipsType[1])) {
     sh[NShip].typeMooving = 'zigzag';
   }
+  if ((tempRnd > lvlGame.shipsType[1]) && (tempRnd <= lvlGame.shipsType[2])) {
+    sh[NShip].typeMooving = 'hard';
+    // выбор любимой линии корабля
+    sh[NShip].favoriteLine =
+      getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY);
+  }
+  console.log(tempRnd);
+  console.log(sh[NShip].typeMooving);
   // отнимаем корабль выбранного типа из базы уровня
   lvlGame.warShip[typeShip] -= 1;
   // увеличиваем значение счётчика кораблей на экране
@@ -258,7 +269,8 @@ function shipElementVisual(nShip) {
   }
   shipElement.style.top = sh[nShip].y;
   shipElement.style.left = sh[nShip].x - pozitionPeriscope;
-  shipElement.style.zIndex = Math.floor(sh[nShip].y);
+  shipElement.style.zIndex =
+    Math.floor((sh[nShip].y) + sh[nShip].currentHeight);
   shipElement.style.width = sh[nShip].currentWidth;
   shipElement.style.height = sh[nShip].currentHeight;
 }
@@ -469,6 +481,18 @@ function gameProcess() {
         // расчет размеров корабля для визуализации
         ship.currentWidth = ship.width * ship.rangeFactor;
         ship.currentHeight = ship.height * ship.rangeFactor;
+        // поведение корабля
+        // достижение края зоны по Y
+        if ((ship.y > lvlGame.shipMaxY) || (ship.y < lvlGame.shipMinY)) {
+          ship.speedY = -ship.speedY;
+        }
+        if ((ship.typeMooving === 'hard') &&
+          (ship.favoriteLine === Math.floor(ship.y))) {
+          ship.timeVariationSpeedY = 0;
+          if (getRandomFloat(0, 100) < lvlGame.hardLetsGo) {
+            ship.timeVariationSpeedY = 1;
+          }
+        }
         // скорость кораблей с учётом ускорения от подбитых целей
         if (ship.vectorLeft) {
           ship.x += ship.speedX * (1 + (lvlGame.speedShipsMaxIncrease *
@@ -477,13 +501,7 @@ function gameProcess() {
           ship.x -= ship.speedX * (1 + (lvlGame.speedShipsMaxIncrease *
             shipsDestroy)) * ship.speedFactor;
         }
-        ship.y += ship.speedY;
-        // поведение корабля
-        if ((ship.y > lvlGame.shipMaxY) || (ship.y < lvlGame.shipMinY)) {
-          if (ship.typeMooving === 'zigzag') { ship.speedY = -ship.speedY; }
-          // else {ship.speedY = 0;
-          // }
-        }
+        ship.y += ship.speedY * ship.timeVariationSpeedY;
         // вызов функции визуализации кораблей
         shipElementVisual(nShipOnScreen);
         // проверка уход за край, удаление объекта если он вне видимости ПЛ,
