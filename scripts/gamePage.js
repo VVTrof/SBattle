@@ -53,6 +53,32 @@ function shipsOnLine(validationY) {
   });
   return shipsOnLineReturn;
 }
+// функция проверки на столкновения кораблей. аргументами задаются: проверяемый
+// корабль, предполагаемое смещение по X и по Y
+function validation(vShip, vShiftX, vShiftY) {
+  // кол-во кораблей на предполагаемой новой линии
+  const interference = shipsOnLine(vShip.y + vShiftY);
+  // результат проверки
+  let result = false;
+  // перебираем все корабли на этой линии
+  interference.forEach((vSh2) => {
+    let safetyDistance;
+    // определяем безопасную дистанцию (ширина большего из кораблей + 10%)
+    if (vShip.currentWidth > sh[vSh2].currentWidth) {
+      safetyDistance = vShip.currentWidth * 1.1;
+    } else {
+      safetyDistance = sh[vSh2].currentWidth * 1.1;
+    }
+    // проверка для всех кораблей на линии кроме себя самого с собой
+    if (vShip !== sh[vSh2]) {
+      if (Math.abs((vShip.x + vShiftX) - sh[vSh2].x) < safetyDistance) {
+        result = true; console.log("boom!");
+        console.log(vShip);console.log(sh[vSh2]);
+      }
+    }
+  });
+  return result;
+}
 // запуск торпед
 function startTorpedo(nTube) {
   const tube = subParam.tubes[nTube];
@@ -207,6 +233,7 @@ function createShip(NShip, typeShip) {
   // на коэфицент выбранного корабля и на коф дальности)
   sh[NShip].speedX =
     getRandomFloat(lvlGame.speedShipsMin, lvlGame.speedShipsMax);
+  if (sh[NShip].vectorLeft === false) { sh[NShip].speedX = -sh[NShip].speedX; }
   // вертикальная скорость корабля
   sh[NShip].speedY =
       getRandomFloat(lvlGame.speedShipsMinY, lvlGame.speedShipsMaxY);
@@ -264,13 +291,12 @@ function shipElementVisual(nShip) {
   // console.log (nShip);
   const elementId = `ship${nShip}`;
   const shipElement = document.getElementById(elementId);
-  if (shipElement.src !== sh[nShip].src) {
-    shipElement.src = sh[nShip].src;
-  }
-  shipElement.style.top = sh[nShip].y;
+  // const y = Math.floor(sh[nShip].y);
+  shipElement.src = sh[nShip].src;
+  shipElement.style.top = Math.floor(sh[nShip].y);
   shipElement.style.left = sh[nShip].x - pozitionPeriscope;
   shipElement.style.zIndex =
-    Math.floor((sh[nShip].y) + sh[nShip].currentHeight);
+    Math.floor(sh[nShip].y) + Math.floor(sh[nShip].currentHeight);
   shipElement.style.width = sh[nShip].currentWidth;
   shipElement.style.height = sh[nShip].currentHeight;
 }
@@ -474,18 +500,23 @@ function gameProcess() {
     // рассчет движения кораблей, визуализация кораблей
     sh.forEach((ship, nShipOnScreen) => {
       if (typeof ship === 'object') {
+        let shiftX; // изменение координат по x
+        let shiftY; // изменение координат по y
+        let resultOfChecking = false; // результат проверки на столкновения
         // расчет коэффициента размера кораблей
         ship.rangeFactor = 1 - ((Y_MAX - ship.y) * 0.0025);
-        // расчет коэффициента скорости кораблей в зависимости от дальности
-        ship.speedFactor = 1 - ((lvlGame.shipMaxY - ship.y) * 0.0025);
         // расчет размеров корабля для визуализации
         ship.currentWidth = ship.width * ship.rangeFactor;
         ship.currentHeight = ship.height * ship.rangeFactor;
+        // расчет коэффициента скорости кораблей в зависимости от дальности
+        ship.speedFactor = 1 - ((lvlGame.shipMaxY - ship.y) * 0.0025);
         // поведение корабля
         // достижение края зоны по Y
         if ((ship.y > lvlGame.shipMaxY) || (ship.y < lvlGame.shipMinY)) {
           ship.speedY = -ship.speedY;
         }
+        // если тип движения hard и достигнута любимая линия, то скорость Y
+        // временно будет равно 0
         if ((ship.typeMooving === 'hard') &&
           (ship.favoriteLine === Math.floor(ship.y))) {
           ship.timeVariationSpeedY = 0;
@@ -493,15 +524,43 @@ function gameProcess() {
             ship.timeVariationSpeedY = 1;
           }
         }
-        // скорость кораблей с учётом ускорения от подбитых целей
-        if (ship.vectorLeft) {
-          ship.x += ship.speedX * (1 + (lvlGame.speedShipsMaxIncrease *
-            shipsDestroy)) * ship.speedFactor;
-        } else {
-          ship.x -= ship.speedX * (1 + (lvlGame.speedShipsMaxIncrease *
-            shipsDestroy)) * ship.speedFactor;
+        // предполагаемое смещение кораблей учётом ускорения от подбитых целей
+
+        // проверка на столкновения при 1-ом сценарии (движение по маршруту)
+        shiftX = ship.speedX * (1 + (lvlGame.speedShipsMaxIncrease *
+          shipsDestroy)) * ship.speedFactor * ship.timeVariationSpeedX;
+        shiftY = ship.speedY * ship.timeVariationSpeedY;
+        resultOfChecking = validation(ship, shiftX, shiftY);
+        // если возможно столкновение проверяем 2-ой сценари
+        // меняем вертикальную скорость на противоположную
+        if (resultOfChecking) {
+          shiftY = -shiftY;
+          resultOfChecking = validation(ship, shiftX, shiftY);
+          if (resultOfChecking === false) { ship.speedY = -ship.speedY; }
         }
-        ship.y += ship.speedY * ship.timeVariationSpeedY;
+        // если возможно столкновение проверяем 3-ий сценарий
+        // (прекращаем движение по вертикали)
+        if (resultOfChecking) {
+          shiftY = 0;
+          resultOfChecking = validation(ship, shiftX, shiftY);
+        }
+        // (если движение по вертикали не было пробуем изменить Y на 1)
+        // вариант, когда корабли идут на таран или догоняют друг друга
+        if (resultOfChecking) {
+          // пробуем оплыть по низу
+          shiftY = 1;
+          resultOfChecking = validation(ship, shiftX, shiftY);
+          // пробуем оплыть по верху
+          if (resultOfChecking) {
+            shiftY = -1;
+            resultOfChecking = validation(ship, shiftX, shiftY);
+          }
+          // если не получается - возвращаем значение shiftY
+          // остонавливаем корабль
+          if (resultOfChecking) { shiftY = 0; shiftX = 0; }
+        }
+        ship.x += shiftX;
+        ship.y += shiftY;
         // вызов функции визуализации кораблей
         shipElementVisual(nShipOnScreen);
         // проверка уход за край, удаление объекта если он вне видимости ПЛ,
