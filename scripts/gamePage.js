@@ -370,6 +370,24 @@ function lidMove(open) {
     elem('lid2').style.top = lid2Y;
   }, SPEED_LID);
 }
+// проверка попадания торпеды в корабль
+function hit(nTorp, nShip) {
+  const torpedo = torped[nTorp];
+  const ship = sh[nShip];
+  const tYmin = torpedo.y;
+  const tYmax = torpedo.y + torpedo.height;
+  const tX = torpedo.x + (torpedo.width / 2);
+  const shXmin = ship.x;
+  const shXmax = ship.x + ship.currentWidth;
+  const shY = ship.y + ship.currentHeight;
+  let result = false;
+
+  if ((tX >= shXmin) && (tX <= shXmax) && (shY >= tYmin) &&
+    (shY <= tYmax)) {
+    result = true;
+  }
+  return result;
+}
 
 // функция игрового процесса
 function gameProcess() {
@@ -569,6 +587,7 @@ function gameProcess() {
         }
       }
     });
+
   }, FRAME_RATE);
 }
 // Запуск игры, кэширование
