@@ -19,6 +19,11 @@ let offset1 = 0; // анимация моря
 let offset2 = -50; // анимация моря
 let directionOffset1 = 'reduction'; // анимация моря
 let directionOffset2 = 'increase'; // анимация моря
+const torpedsImg = [
+  elem('leftTorped'),
+  elem('centerTorped'),
+  elem('rightTorped'),
+];
 // объекты "торпеды"
 // x: "координата X (левый край торпеды)",
 // y: "координата Y (верхний край торпеды)",
@@ -94,9 +99,10 @@ function startTorpedo(nTube) {
     // делаем торпеду видимой
     torpedo.visible = true;
     // вывожу на экран кол-во торпед
-    indTube.innerText = tube.torpeds;
+    //indTube.innerText = tube.torpeds;
     // меняю цвет индикатора запуска торпеды
-    indTube.style.background = 'red';
+    //indTube.style.background = 'red';
+    tube.colorInd = 'red';
   }
 }
 // преобразует данные о повороте перископа (от -300 до 300) в градусы (300-60)
@@ -252,8 +258,8 @@ function createShip(NShip, typeShip) {
     sh[NShip].favoriteLine =
       getRandomInRange(lvlGame.shipMinY, lvlGame.shipMaxY);
   }
-  console.log(tempRnd);
-  console.log(sh[NShip].typeMooving);
+  // console.log(tempRnd);
+  // console.log(sh[NShip].typeMooving);
   // отнимаем корабль выбранного типа из базы уровня
   lvlGame.warShip[typeShip] -= 1;
   // увеличиваем значение счётчика кораблей на экране
@@ -271,11 +277,6 @@ function createShip(NShip, typeShip) {
 }
 // визуализируем торпеды
 function torpedsElementVisual() {
-  const torpedsImg = [
-    elem('leftTorped'),
-    elem('centerTorped'),
-    elem('rightTorped'),
-  ];
   torpedsImg.forEach((torpedoImg, nTorpedo) => {
     if (torped[nTorpedo].visible) {
       torpedoImg.style.top = torped[nTorpedo].y;
@@ -388,6 +389,14 @@ function hit(nTorp, nShip) {
   }
   return result;
 }
+// функция визуализации игрового процесса
+function visualGameProcess() {
+  // цвет и значение. индикаторы торпед.
+  torpedsImg.forEach((elemTorpedo, index) => {
+    elemTorpedo.innerText = subParam.tubes[index].torpeds;
+    elemTorpedo.style.background = subParam.tubes[index].colorInd;
+  });
+}
 
 // функция игрового процесса
 function gameProcess() {
@@ -466,15 +475,12 @@ function gameProcess() {
       - pozitionPeriscope;
 
     // цвет индикаторов торпед
-    if (torped[0].y === TORPEDO_START_Y) {
-      elem('indLeftTorpedText').style.background = 'lightblue';
-    }
-    if (torped[1].y === TORPEDO_START_Y) {
-      elem('indCenterTorpedText').style.background = 'lightblue';
-    }
-    if (torped[2].y === TORPEDO_START_Y) {
-      elem('indRightTorpedText').style.background = 'lightblue';
-    }
+    torped.forEach((torp, index) => {
+      if (torp.y === TORPEDO_START_Y) {
+        subParam.tubes[index].colorInd = 'lightblue';
+      }
+    });
+
 
     // движение перископа по нажатию мыши
     if (perMouseLeft) {
@@ -588,6 +594,7 @@ function gameProcess() {
       }
     });
 
+    visualGameProcess();
   }, FRAME_RATE);
 }
 // Запуск игры, кэширование
