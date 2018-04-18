@@ -51,6 +51,32 @@ const torped = subParam.tubes.map(tube => ({
 let shipsDestroy = 0; // уничтожено кораблей в этом уровне
 let shipsOnScreen = 0; // текущее количество кораблей на экране
 const sh = []; // массив кораблей, отображенных на экране
+// функция полифилл для requestAnimationFrame
+// отEric Möller (Opera), Paul Irish (Google) и Tino Zijdel (Tweakers.net)
+function polifil() {
+  var lastTime = 0;
+  var vendors = ['ms', 'moz', 'webkit', 'o'];
+  for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+      window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+      window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+                                 || window[vendors[x]+'CancelRequestAnimationFrame'];
+  }
+
+  if (!window.requestAnimationFrame)
+      window.requestAnimationFrame = function(callback, element) {
+          var currTime = new Date().getTime();
+          var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+          var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+            timeToCall);
+          lastTime = currTime + timeToCall;
+          return id;
+      };
+
+  if (!window.cancelAnimationFrame)
+      window.cancelAnimationFrame = function(id) {
+          clearTimeout(id);
+      };
+};
 // функция определения существующих кораблей с данной координатой y
 function shipsOnLine(validationY) {
   const shipsOnLineReturn = [];
@@ -359,7 +385,7 @@ function visualGamePage() {
 }
 // функция визуализации игрового процесса
 function visualGameProcess() {
-  setTimeout(function() {
+  setTimeout(() => {
     requestAnimationFrame(visualGameProcess);
     // цвет и значение. индикаторы торпед.
     const torpedsInd = ['indLeftTorpedText', 'indCenterTorpedText',
@@ -412,31 +438,8 @@ function visualGameProcess() {
 
 // функция игрового процесса
 function gameProcess() {
-  // функцию полифилл для requestAnimationFrame
-  (function() {
-    var lastTime = 0;
-    var vendors = ['ms', 'moz', 'webkit', 'o'];
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
-                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
-    }
-
-    if (!window.requestAnimationFrame)
-        window.requestAnimationFrame = function(callback, element) {
-            var currTime = new Date().getTime();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
-              timeToCall);
-            lastTime = currTime + timeToCall;
-            return id;
-        };
-
-    if (!window.cancelAnimationFrame)
-        window.cancelAnimationFrame = function(id) {
-            clearTimeout(id);
-        };
-}());
+  // функция полифилл для requestAnimationFrame
+  polifil();
   // визуализируем объекты игровой страницы
   visualGamePage();
   //  поднимаем перископ
