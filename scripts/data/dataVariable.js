@@ -12,6 +12,7 @@ export const Y_MAX = 800;
 export const warShipProto = [];
 export const TORPEDO_START_Y = 750;
 export const SPEED_LID = 10;
+export const FPS = 60;
 // Выбранная ПЛ
 let nSubCurrent = 0;
 // текущий уровень
