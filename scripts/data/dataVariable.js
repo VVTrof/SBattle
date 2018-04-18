@@ -12,7 +12,8 @@ export const Y_MAX = 800;
 export const warShipProto = [];
 export const TORPEDO_START_Y = 750;
 export const SPEED_LID = 10;
-export const FPS = 60;
+export const FPS = 50;
+export const SPEED_SINK = 250; // количество кадров потопления
 // Выбранная ПЛ
 let nSubCurrent = 0;
 // текущий уровень
@@ -51,6 +52,7 @@ export function nSubChange() {
 // соприкосновении с краем зоны',
 // x             : 'координата x (левый край изображения)',
 // y             : 'координата y (верхний край изображения)',
+// yImage        : координата Y картинки, используется для эффекта потопления
 // width         : 'длина корабля. рекомендовано 200',
 // height        : 'высота корабля. рекомендовано 100',
 // currentWidth  : 'длина корабля c учётом дальности от ПЛ.',
@@ -77,6 +79,7 @@ warShipProto[0] = {
   typeMooving: 'simple',
   x: 0,
   y: 800,
+  yImage: 0,
   width: 300,
   height: 150,
   speedX: 0,
@@ -100,6 +103,7 @@ warShipProto[1] = {
   typeMooving: 'simple',
   x: 0,
   y: 800,
+  yImage: 0,
   width: 300,
   height: 150,
   speedX: 0,
@@ -123,6 +127,7 @@ warShipProto[2] = {
   typeMooving: 'simple',
   x: 0,
   y: 800,
+  yImage: 0,
   width: 300,
   height: 150,
   speedX: 0,

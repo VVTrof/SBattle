@@ -2,7 +2,7 @@ import { preload, elem } from './globalFunctions.js';
 import {
   FRAME_RATE, warShipProto, TORPED_WIDTH,
   TORPED_HEIGHT, X_MIN, X_MAX, Y_MAX, lvlChange, TORPEDO_START_Y,
-  nSubChange, SPEED_LID, FPS
+  nSubChange, SPEED_LID, FPS, SPEED_SINK
 } from './data/dataVariable.js';
 import techParam from './data/dataSubmarine.js';
 import level from './data/dataLevels.js';
@@ -19,6 +19,7 @@ let offset1 = 0; // анимация моря
 let offset2 = -50; // анимация моря
 let directionOffset1 = 'reduction'; // анимация моря
 let directionOffset2 = 'increase'; // анимация моря
+const fire = []; // массив взрывов (gif), по взрыву на торпеду
 const torpedsImg = [
   elem('leftTorped'),
   elem('centerTorped'),
@@ -44,9 +45,9 @@ const torped = subParam.tubes.map(tube => ({
   width: TORPED_WIDTH,
   height: TORPED_HEIGHT,
   speed: tube.speed,
-  visible: false,
   rangeFactor: 1,
   accelerator: 1,
+  power : tube.power,
 }));
 let shipsDestroy = 0; // уничтожено кораблей в этом уровне
 let shipsOnScreen = 0; // текущее количество кораблей на экране
@@ -106,8 +107,8 @@ function validation(vShip, vShiftX, vShiftY) {
     // проверка для всех кораблей на линии кроме себя самого с собой
     if (vShip !== sh[vSh2]) {
       if (Math.abs((vShip.x + vShiftX) - sh[vSh2].x) < safetyDistance) {
-        result = true; console.log("boom!");
-        console.log(vShip);console.log(sh[vSh2]);
+        result = true; // console.log("boom!");
+        // console.log(vShip);console.log(sh[vSh2]);
       }
     }
   });
@@ -119,14 +120,11 @@ function startTorpedo(nTube) {
   const torpedo = torped[nTube];
   const indTubeId =
     ['indLeftTorpedText', 'indCenterTorpedText', 'indRightTorpedText'][nTube];
-  const indTube = document.getElementById(indTubeId);
   if ((torpedo.y === TORPEDO_START_Y) && (tube.torpeds > 0)) {
     torpedo.y = TORPEDO_START_Y - 1;
     torpedo.x = tube.x + pozitionPeriscope;
     // списываем одну торпеду
     tube.torpeds -= 1;
-    // делаем торпеду видимой
-    torpedo.visible = true;
     // вывожу на экран кол-во торпед
     // indTube.innerText = tube.torpeds;
     // меняю цвет индикатора запуска торпеды
@@ -293,10 +291,15 @@ function createShip(NShip, typeShip) {
   lvlGame.numberOfShips -= 1;
   // задаём характеристики элементу
   // создаём элемент корабль
+  const div = document.createElement('div');
+  div.className = 'divShips';
+  div.id = `ship${NShip}`;
+  elem('gamePage').appendChild(div);
+
   const image = document.createElement('img');
   image.className = 'ships';
-  image.id = `ship${NShip}`;
-  elem('gamePage').appendChild(image);
+  image.id = `imageShip${NShip}`;
+  elem(div.id).appendChild(image);
 }
 // открытие и закрытие перископа
 function lidMove(open) {
@@ -411,30 +414,59 @@ function visualGameProcess() {
     elem('lid2').style.top = lid2Y;
     // визуализируем торпеды
     torpedsImg.forEach((torpedoImg, nTorpedo) => {
-      if (torped[nTorpedo].visible) {
-        torpedoImg.style.top = torped[nTorpedo].y;
-        torpedoImg.style.left = (torped[nTorpedo].x - pozitionPeriscope) +
+      torpedoImg.style.top = torped[nTorpedo].y;
+      torpedoImg.style.left = (torped[nTorpedo].x - pozitionPeriscope) +
           ((TORPED_WIDTH - torped[nTorpedo].width) / 2);
-        torpedoImg.style.width = torped[nTorpedo].width;
-        torpedoImg.style.height = torped[nTorpedo].height;
-      }
+      torpedoImg.style.width = torped[nTorpedo].width;
+      torpedoImg.style.height = torped[nTorpedo].height;
     });
     // визуализируем кораблики
     sh.forEach((ship, index) => {
       const name = `ship${index}`;
-      const shipElement = document.getElementById(name);
+      const name2 = `imageShip${index}`;
+      const shipDiv = document.getElementById(name);
+      const shipImage = document.getElementById(name2);
       // const y = Math.floor(sh[nShip].y);
-      shipElement.src = sh[index].src;
-      shipElement.style.top = Math.floor(sh[index].y);
-      shipElement.style.left = sh[index].x - pozitionPeriscope;
-      shipElement.style.zIndex =
-        Math.floor(sh[index].y);
-      shipElement.style.width = sh[index].currentWidth;
-      shipElement.style.height = sh[index].currentHeight;
+      shipDiv.style.top = sh[index].y;
+      shipDiv.style.left = sh[index].x - pozitionPeriscope;
+      shipDiv.style.zIndex = Math.floor(sh[index].y);
+      shipDiv.style.width = sh[index].currentWidth;
+      shipDiv.style.height = sh[index].currentHeight;
+
+      shipImage.src = sh[index].src;
+      shipImage.style.top = sh[index].yImage;
+      shipImage.style.left = 0;
+      shipImage.style.zIndex = Math.floor(sh[index].y);
+      shipImage.style.width = sh[index].currentWidth;
+      shipImage.style.height = sh[index].currentHeight;
+
     });
+    // визуализируем взрывы
+    fire.forEach((fire, index) => {
+      elem('fireId').top = 10;
+      elem('fireId').left = 10;
+      elem('fireId').width = fire.width;
+      elem('fireId').height = fire.height;
+      
+
+    })
   }, 1000 / FPS);
 }
-
+// функция потопления корабля
+function shipDestroy(nShip) {
+  sh[nShip].speedX = sh[nShip].speedX / 2;
+  sh[nShip].speedY = 0;
+  const shiftY = sh[nShip].currentHeight / SPEED_SINK;
+  let timerDestroy;
+  timerDestroy = setInterval(() => {
+    sh[nShip].yImage += shiftY;
+    if (sh[nShip].yImage > sh[nShip].currentHeight) {
+      // удаляем объект и div корабля по окончанию анимации
+      deleteObj(nShip);
+      clearInterval(timerDestroy);
+    }
+  }), FRAME_RATE;
+}
 
 // функция игрового процесса
 function gameProcess() {
@@ -514,8 +546,6 @@ function gameProcess() {
         subParam.tubes[index].colorInd = 'lightblue';
       }
     });
-
-
     // движение перископа по нажатию мыши
     if (perMouseLeft) {
       pozitionPeriscope = rotatePeriscope('left');
@@ -523,9 +553,9 @@ function gameProcess() {
     if (perMouseRight) {
       pozitionPeriscope = rotatePeriscope('right');
     }
-    // рассчет полета торпед, визуализация торпед
+    // рассчет полета торпед
     torped.forEach((torpedo) => {
-      if (torpedo.visible) {
+      if (torpedo.y < TORPEDO_START_Y) {
         // коэффиц. который зависит от удаленности торпеды (от 1 до 0.25)
         torpedo.rangeFactor = 1 - ((TORPEDO_START_Y - torpedo.y) * 0.0025);
         // если торпеда рядом с горизонтом - увеличиваем её прозрачность
@@ -547,14 +577,11 @@ function gameProcess() {
         }
         // если торпеда ушла за горизонт делаем её невидимой
         if (torpedo.y < lvlGame.gorizontY - torpedo.height) {
-          torpedo.visible = false;
+          torpedo.y = TORPEDO_START_Y;
         }
-        // если торпеда попала в цель делаем её невидимой
-        // ---------------------------прописать
-        // вызов функции визуализации торпед
       }
     });
-    // рассчет движения кораблей, визуализация кораблей
+    // рассчет движения кораблей
     sh.forEach((ship, nShipOnScreen) => {
       if (typeof ship === 'object') {
         let shiftX; // изменение координат по x
@@ -624,8 +651,32 @@ function gameProcess() {
         }
       }
     });
+    // проверка на попадания
+    torped.forEach((torp, indexT) => {
+      let result = false;
+      let nDamagedShipY = 0;
+      let nDamagedShip = false;
+      sh.forEach((ship, indexS) => {
+        result = hit(indexT, indexS);
+        // если есть попадание, выбираем корабль с наибольшим y(самый ближний)
+        if (result && ship.y > nDamagedShipY) {
+          nDamagedShipY = ship.y;
+          nDamagedShip = indexS;
+        }
+      });
+      if (nDamagedShip !== false) {
+        // уменьшаем здоровье корабля
+        if (sh[nDamagedShip].health > 0) {
+          sh[nDamagedShip].health -= torped[indexT].power;
+          if (sh[nDamagedShip].health <= 0) { shipDestroy(nDamagedShip); }
+        }
+        // возвращаем торпеду в торпедный аппарат
+        torped[indexT].y = TORPEDO_START_Y;
+        // включаем взрыв торпедный
 
-
+        // ------------------------------------------------------------------
+      }
+    });
   }, FRAME_RATE);
 }
 // Запуск игры, кэширование

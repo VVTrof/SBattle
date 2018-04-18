@@ -328,9 +328,19 @@
   top   : 200;
   z-index: 1;
 }
-.ships {
+.divShips {
   position: absolute;
   z-index : 1;
+  /* border-width: 1;
+  border-style: solid;
+  border-color: black; */
+  overflow: hidden;
+}
+.ships {
+  position: absolute;
+  left: 0;
+  top: 0;
+
 }
 .torpeds {
   position: absolute;
