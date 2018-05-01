@@ -447,7 +447,6 @@ function visualGameProcess() {
       elem('fireId').left = 10;
       elem('fireId').width = fire.width;
       elem('fireId').height = fire.height;
-      
 
     })
   }, 1000 / FPS);

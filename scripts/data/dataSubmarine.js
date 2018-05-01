@@ -34,21 +34,21 @@ techParam[0] = {
   tubes: [
     {
       max: 10,
-      speed: 2,
+      speed: 5,
       torpeds: 99,
       x: 190,
       power: 10,
     },
     {
       max: 10,
-      speed: 3,
+      speed: 5,
       torpeds: 99,
       x: 390,
       power: 10,
     },
     {
       max: 10,
-      speed: 2,
+      speed: 5,
       torpeds: 99,
       x: 590,
       power: 15,
