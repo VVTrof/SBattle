@@ -17,11 +17,13 @@
         document.write("заказчик заходил к нам на сайт с сайта:"+ lastWhere + "<br/>");
     }
 
-
+   if (lastWhere == 0) {localStorage.setItem('last',where);};
 
     if (where==0) document.write("заказчик пришел с <b>пустой страницы</b>")
     else document.write("заказчик пришел с сайта: <b>" + where + "</b>")
-    localStorage.setItem('last',where);
+
+    // localStorage.setItem('last',where);
+
     </script>
   </head>
 
