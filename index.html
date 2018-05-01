@@ -3,6 +3,11 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
+    <script type="text/javascript">
+    var where = document.referrer;
+    if (where==0) document.write("Посетитель пришел с <b>пустой страницы</b>")
+    else document.write("Посетитель пришел с сайта: <b>" + where + "</b>")
+    </script>
   </head>
 
   <body>
